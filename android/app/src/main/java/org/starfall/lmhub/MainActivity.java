@@ -1,4 +1,4 @@
-package com.example.lmhub;
+package org.starfall.lmhub;
 
 import io.flutter.embedding.android.FlutterActivity;
 
