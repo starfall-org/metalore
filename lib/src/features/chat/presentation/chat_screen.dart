@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:lmhub/src/core/storage/chat_repository.dart';
 import 'package:lmhub/src/features/chat/domain/chat_models.dart';
+import 'package:lmhub/src/core/storage/agent_repository.dart';
+import 'package:lmhub/src/features/agents/domain/agent.dart';
+import 'package:lmhub/src/features/chat/domain/chat_service.dart';
 import 'widgets/chat_drawer.dart';
 import 'widgets/chat_input_area.dart';
 import 'widgets/chat_message_list.dart';
@@ -20,6 +23,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   ChatRepository? _chatRepository;
   ChatSession? _currentSession;
+  AgentRepository? _agentRepository;
+  Agent? _selectedAgent;
   bool _isLoading = true;
   bool _isGenerating = false;
 
@@ -27,6 +32,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     _initChat();
+    _loadSelectedAgent();
   }
 
   Future<void> _initChat() async {
@@ -41,6 +47,15 @@ class _ChatScreenState extends State<ChatScreen> {
     } else {
       await _createNewSession();
     }
+  }
+
+  Future<void> _loadSelectedAgent() async {
+    _agentRepository ??= await AgentRepository.init();
+    final agent = await _agentRepository!.getOrInitSelectedAgent();
+    if (!mounted) return;
+    setState(() {
+      _selectedAgent = agent;
+    });
   }
 
   Future<void> _createNewSession() async {
@@ -95,14 +110,21 @@ class _ChatScreenState extends State<ChatScreen> {
     await _chatRepository!.saveSession(_currentSession!);
     _scrollToBottom();
 
-    // Mock AI Response
-    await Future.delayed(const Duration(seconds: 1));
+    // Generate AI Response via ChatService
+    final reply = await ChatService.generateReply(
+      userText: text,
+      history: _currentSession!.messages,
+      agent: _selectedAgent ?? Agent(
+        id: const Uuid().v4(),
+        name: 'Default Agent',
+        systemPrompt: '',
+      ),
+    );
 
     final modelMessage = ChatMessage(
       id: const Uuid().v4(),
       role: ChatRole.model,
-      content:
-          'This is a mock response to: "$text". Real integration coming soon!',
+      content: reply,
       timestamp: DateTime.now(),
     );
 
@@ -146,10 +168,10 @@ class _ChatScreenState extends State<ChatScreen> {
             _scaffoldKey.currentState?.openDrawer();
           },
         ),
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Chào Hỏi Và Hỗ Trợ',
               style: TextStyle(
                 color: Colors.black87,
@@ -158,8 +180,8 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
             ),
             Text(
-              'Gemini Pro', // TODO: Bind to selected agent
-              style: TextStyle(
+              _selectedAgent?.name ?? 'Default Agent',
+              style: const TextStyle(
                 color: Colors.blue,
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
@@ -184,6 +206,9 @@ class _ChatScreenState extends State<ChatScreen> {
         onNewChat: () {
           Navigator.pop(context);
           _createNewSession();
+        },
+        onAgentChanged: () {
+          _loadSelectedAgent();
         },
       ),
       body: Column(

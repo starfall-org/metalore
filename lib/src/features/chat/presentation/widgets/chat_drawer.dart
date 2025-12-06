@@ -7,11 +7,13 @@ import 'package:lmhub/src/features/chat/domain/chat_models.dart';
 class ChatDrawer extends StatefulWidget {
   final Function(String) onSessionSelected;
   final VoidCallback onNewChat;
+  final VoidCallback? onAgentChanged;
 
   const ChatDrawer({
     super.key,
     required this.onSessionSelected,
     required this.onNewChat,
+    this.onAgentChanged,
   });
 
   @override
@@ -138,14 +140,17 @@ class _ChatDrawerState extends State<ChatDrawer> {
                   context,
                   Icons.swap_horiz_outlined,
                   'Change Agent',
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context); // Close drawer
-                    Navigator.push(
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const AgentListScreen(),
                       ),
                     );
+                    if (result == true && widget.onAgentChanged != null) {
+                      widget.onAgentChanged!();
+                    }
                   },
                 ),
               ],

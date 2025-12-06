@@ -104,9 +104,10 @@ class _AgentListScreenState extends State<AgentListScreen> {
                       Icons.chevron_right,
                       color: Colors.grey,
                     ),
-                    onTap: () {
-                      // TODO: Select agent
-                      Navigator.pop(context);
+                    onTap: () async {
+                      await _repository.setSelectedAgentId(agent.id);
+                      if (!mounted) return;
+                      Navigator.pop(context, true);
                     },
                   ),
                 );
