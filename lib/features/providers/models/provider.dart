@@ -1,65 +1,7 @@
 import 'dart:convert';
+import '../../../core/models/ai_model.dart';
 
 enum ProviderType { gemini, openai, anthropic, ollama }
-
-enum ModelType {
-  textGeneration,
-  imageGeneration,
-  audioGeneration,
-  videoGeneration,
-  embedding,
-  rerank,
-}
-
-enum IOType { text, video, image, audio, document }
-
-class ModelInfo {
-  final String name;
-  final ModelType type;
-  final List<IOType> input;
-  final List<IOType> output;
-  final bool tool;
-  final bool reasoning;
-
-  ModelInfo({
-    required this.name,
-    this.type = ModelType.textGeneration,
-    this.input = const [IOType.text],
-    this.output = const [IOType.text],
-    this.tool = true,
-    this.reasoning = false,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'type': type.name,
-      'input': input.map((e) => e.name).toList(),
-      'output': output.map((e) => e.name).toList(),
-      'tool': tool,
-      'reasoning': reasoning,
-    };
-  }
-
-  factory ModelInfo.fromJson(Map<String, dynamic> json) {
-    return ModelInfo(
-      name: json['name'] as String,
-      type: ModelType.values.firstWhere((e) => e.name == json['type']),
-      input:
-          (json['input'] as List<dynamic>?)
-              ?.map((e) => IOType.values.firstWhere((v) => v.name == e))
-              .toList() ??
-          [IOType.text],
-      output:
-          (json['output'] as List<dynamic>?)
-              ?.map((e) => IOType.values.firstWhere((v) => v.name == e))
-              .toList() ??
-          [IOType.text],
-      tool: json['tool'] ?? true,
-      reasoning: json['reasoning'] ?? false,
-    );
-  }
-}
 
 class Provider {
   final String name;
@@ -72,13 +14,40 @@ class Provider {
 
   Provider({
     required this.type,
-    required this.name,
+    String? name,
     this.apiKey,
     this.logoUrl,
-    this.baseUrl,
+    String? baseUrl,
     this.headers = const {},
     this.models = const [],
-  });
+  }) : baseUrl = baseUrl ?? _defaultBaseUrl(type),
+       name = name ?? _defaultName(type);
+
+  static String _defaultName(ProviderType type) {
+    switch (type) {
+      case ProviderType.openai:
+        return 'OpenAI';
+      case ProviderType.anthropic:
+        return 'Anthropic';
+      case ProviderType.ollama:
+        return 'Ollama';
+      case ProviderType.gemini:
+        return 'Gemini';
+    }
+  }
+
+  static String? _defaultBaseUrl(ProviderType type) {
+    switch (type) {
+      case ProviderType.openai:
+        return 'https://api.openai.com/v1';
+      case ProviderType.anthropic:
+        return 'https://api.anthropic.com/v1';
+      case ProviderType.ollama:
+        return 'https://ollama.com';
+      case ProviderType.gemini:
+        return 'https://generativelanguage.googleapis.com/v1beta';
+    }
+  }
 
   Map<String, dynamic> toJson() {
     return {

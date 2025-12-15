@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ai_gateway/core/models/settings/provider.dart';
+import 'package:ai_gateway/core/models/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'add_provider_viewmodel.dart';
-import '../../agents/widgets/models_drawer.dart';
+import '../widgets/add_provider_viewmodel.dart';
+import '../widgets/models_drawer.dart';
 
 class AddProviderScreen extends StatefulWidget {
   final LLMProvider? provider;

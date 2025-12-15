@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ai_gateway/core/storage/provider_repository.dart';
-import 'package:ai_gateway/core/models/settings/provider.dart';
+import 'package:ai_gateway/core/models/provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class AddProviderViewModel extends ChangeNotifier {
@@ -12,7 +12,8 @@ class AddProviderViewModel extends ChangeNotifier {
   final _nameController = TextEditingController(text: 'Gemini');
   final _apiKeyController = TextEditingController();
   final _baseUrlController = TextEditingController();
-  final List<MapEntry<TextEditingController, TextEditingController>> _headers = [];
+  final List<MapEntry<TextEditingController, TextEditingController>> _headers =
+      [];
 
   // Models State
   List<ModelInfo> _selectedModels = [];
@@ -25,7 +26,8 @@ class AddProviderViewModel extends ChangeNotifier {
   TextEditingController get nameController => _nameController;
   TextEditingController get apiKeyController => _apiKeyController;
   TextEditingController get baseUrlController => _baseUrlController;
-  List<MapEntry<TextEditingController, TextEditingController>> get headers => _headers;
+  List<MapEntry<TextEditingController, TextEditingController>> get headers =>
+      _headers;
   List<ModelInfo> get selectedModels => _selectedModels;
   List<ModelInfo> get availableModels => _availableModels;
   ModelInfo? get selectedModelToAdd => _selectedModelToAdd;
@@ -37,7 +39,7 @@ class AddProviderViewModel extends ChangeNotifier {
       _nameController.text = provider.name;
       _apiKeyController.text = provider.apiKey ?? '';
       _baseUrlController.text = provider.baseUrl ?? '';
-      
+
       provider.headers.forEach((key, value) {
         _headers.add(
           MapEntry(
@@ -52,6 +54,7 @@ class AddProviderViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    super.dispose();
     _nameController.dispose();
     _apiKeyController.dispose();
     _baseUrlController.dispose();
@@ -110,9 +113,9 @@ class AddProviderViewModel extends ChangeNotifier {
 
   Future<void> fetchModels(BuildContext context) async {
     if (_apiKeyController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('settings.enter_api_key'.tr())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('settings.enter_api_key'.tr())));
       return;
     }
 
@@ -172,7 +175,11 @@ class AddProviderViewModel extends ChangeNotifier {
 
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('settings.found_models'.tr(args: [models.length.toString()]))),
+            SnackBar(
+              content: Text(
+                'settings.found_models'.tr(args: [models.length.toString()]),
+              ),
+            ),
           );
         }
       } else if (response.statusCode == 401) {
@@ -241,11 +248,14 @@ class AddProviderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveProvider(BuildContext context, {LLMProvider? existingProvider}) async {
+  Future<void> saveProvider(
+    BuildContext context, {
+    LLMProvider? existingProvider,
+  }) async {
     if (_nameController.text.isEmpty || _apiKeyController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('settings.fill_required'.tr())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('settings.fill_required'.tr())));
       return;
     }
 
