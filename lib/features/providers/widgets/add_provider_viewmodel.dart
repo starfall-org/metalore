@@ -16,9 +16,9 @@ class AddProviderViewModel extends ChangeNotifier {
       [];
 
   // Models State
-  List<ModelInfo> _selectedModels = [];
-  List<ModelInfo> _availableModels = [];
-  ModelInfo? _selectedModelToAdd;
+  List<AIModel> _selectedModels = [];
+  List<AIModel> _availableModels = [];
+  AIModel? _selectedModelToAdd;
   bool _isFetchingModels = false;
 
   // Getters
@@ -28,9 +28,9 @@ class AddProviderViewModel extends ChangeNotifier {
   TextEditingController get baseUrlController => _baseUrlController;
   List<MapEntry<TextEditingController, TextEditingController>> get headers =>
       _headers;
-  List<ModelInfo> get selectedModels => _selectedModels;
-  List<ModelInfo> get availableModels => _availableModels;
-  ModelInfo? get selectedModelToAdd => _selectedModelToAdd;
+  List<AIModel> get selectedModels => _selectedModels;
+  List<AIModel> get availableModels => _availableModels;
+  AIModel? get selectedModelToAdd => _selectedModelToAdd;
   bool get isFetchingModels => _isFetchingModels;
 
   void initialize(LLMProvider? provider) {
@@ -81,7 +81,7 @@ class AddProviderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  ModelInfo detectCapabilities(String modelId) {
+  AIModel detectCapabilities(String modelId) {
     List<ModelIO> inputTypes = [ModelIO.text];
     List<ModelIO> outputTypes = [ModelIO.text];
     List<ModelCapability> capabilities = [ModelCapability.textGeneration];
@@ -103,7 +103,7 @@ class AddProviderViewModel extends ChangeNotifier {
       outputTypes = [ModelIO.audio];
     }
 
-    return ModelInfo(
+    return AIModel(
       id: modelId,
       inputTypes: inputTypes,
       outputTypes: outputTypes,
@@ -243,7 +243,7 @@ class AddProviderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedModel(ModelInfo? model) {
+  void updateSelectedModel(AIModel? model) {
     _selectedModelToAdd = model;
     notifyListeners();
   }

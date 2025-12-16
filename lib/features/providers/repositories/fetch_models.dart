@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../core/models/ai_model.dart';
 
-Future<List<ModelInfo>> fetchModels(
+Future<List<AIModel>> fetchModels(
   String url,
   Map<String, String> headers,
 ) async {
@@ -14,8 +14,8 @@ Future<List<ModelInfo>> fetchModels(
 
   if (response.statusCode == 200) {
     final List<dynamic> modelsJson = jsonDecode(response.body);
-    List<ModelInfo> models = modelsJson
-        .map((model) => ModelInfo.fromJson(model))
+    List<AIModel> models = modelsJson
+        .map((model) => AIModel.fromJson(model))
         .toList();
     return models;
   } else {

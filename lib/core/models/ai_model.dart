@@ -9,7 +9,7 @@ enum ModelType {
 
 enum ModelIOType { text, video, image, audio, document }
 
-class ModelInfo {
+class AIModel {
   final String name;
   final ModelType type;
   final List<ModelIOType> input;
@@ -19,7 +19,7 @@ class ModelInfo {
   final int? contextWindow;
   final int? parameters;
 
-  ModelInfo({
+  AIModel({
     required this.name,
     this.type = ModelType.textGeneration,
     this.input = const [ModelIOType.text],
@@ -43,7 +43,7 @@ class ModelInfo {
     };
   }
 
-  factory ModelInfo.fromJson(Map<String, dynamic> json) {
+  factory AIModel.fromJson(Map<String, dynamic> json) {
     // Handle 'id' (OpenAI, Anthropic) and 'name' (Gemini, Ollama)
     final String name =
         json['id'] as String? ?? json['name'] as String? ?? 'unknown';
@@ -115,7 +115,7 @@ class ModelInfo {
         break;
     }
 
-    return ModelInfo(
+    return AIModel(
       name: name,
       type: type,
       input: json['input'] != null ? parseIOList(json['input']) : defaultInput,

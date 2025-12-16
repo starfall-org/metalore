@@ -10,7 +10,7 @@ class Provider {
   final String? logoUrl;
   final String? baseUrl;
   final Map<String, String> headers;
-  final List<ModelInfo> models;
+  final List<AIModel> models;
 
   Provider({
     required this.type,
@@ -63,18 +63,18 @@ class Provider {
 
   factory Provider.fromJson(Map<String, dynamic> json) {
     var modelsJson = json['models'];
-    List<ModelInfo> parsedModels = [];
+    List<AIModel> parsedModels = [];
 
     if (modelsJson != null) {
       if (modelsJson is List &&
           modelsJson.isNotEmpty &&
           modelsJson.first is String) {
         parsedModels = modelsJson
-            .map((e) => ModelInfo(name: e as String))
+            .map((e) => AIModel(name: e as String))
             .toList();
       } else {
         parsedModels = (modelsJson as List)
-            .map((e) => ModelInfo.fromJson(e))
+            .map((e) => AIModel.fromJson(e))
             .toList();
       }
     }

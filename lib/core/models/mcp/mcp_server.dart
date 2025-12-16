@@ -1,10 +1,8 @@
 import 'package:uuid/uuid.dart';
 import 'mcp_core.dart';
-import 'mcp_stdio.dart';
 import 'mcp_http.dart';
 
 export 'mcp_core.dart';
-export 'mcp_stdio.dart';
 export 'mcp_http.dart';
 
 /// MCP Server Definition
@@ -20,9 +18,6 @@ class MCPServer {
 
   /// Transport protocol type
   final MCPTransportType transport;
-
-  /// Configuration for stdio transport (required if transport is stdio)
-  final MCPStdioConfig? stdioConfig;
 
   /// Configuration for HTTP transports (required if transport is sse or streamable)
   final MCPHttpConfig? httpConfig;
@@ -44,7 +39,6 @@ class MCPServer {
     required this.name,
     this.description,
     required this.transport,
-    this.stdioConfig,
     this.httpConfig,
     this.capabilities,
     this.tools = const [],
@@ -67,12 +61,7 @@ class MCPServer {
       name: name,
       description: description,
       transport: MCPTransportType.stdio,
-      stdioConfig: MCPStdioConfig(
-        command: command,
-        args: args,
-        env: env,
-        cwd: cwd,
-      ),
+      httpConfig: null,
     );
   }
 
@@ -116,7 +105,7 @@ class MCPServer {
     String? name,
     String? description,
     MCPTransportType? transport,
-    MCPStdioConfig? stdioConfig,
+
     MCPHttpConfig? httpConfig,
     MCPServerCapabilities? capabilities,
     List<MCPTool>? tools,
@@ -128,7 +117,6 @@ class MCPServer {
       name: name ?? this.name,
       description: description ?? this.description,
       transport: transport ?? this.transport,
-      stdioConfig: stdioConfig ?? this.stdioConfig,
       httpConfig: httpConfig ?? this.httpConfig,
       capabilities: capabilities ?? this.capabilities,
       tools: tools ?? this.tools,
@@ -143,7 +131,6 @@ class MCPServer {
       'name': name,
       if (description != null) 'description': description,
       'transport': transport.name,
-      if (stdioConfig != null) 'stdioConfig': stdioConfig!.toJson(),
       if (httpConfig != null) 'httpConfig': httpConfig!.toJson(),
       if (capabilities != null) 'capabilities': capabilities!.toJson(),
       'tools': tools.map((t) => t.toJson()).toList(),
@@ -161,9 +148,6 @@ class MCPServer {
         (e) => e.name == json['transport'],
         orElse: () => MCPTransportType.sse,
       ),
-      stdioConfig: json['stdioConfig'] != null
-          ? MCPStdioConfig.fromJson(json['stdioConfig'] as Map<String, dynamic>)
-          : null,
       httpConfig: json['httpConfig'] != null
           ? MCPHttpConfig.fromJson(json['httpConfig'] as Map<String, dynamic>)
           : null,

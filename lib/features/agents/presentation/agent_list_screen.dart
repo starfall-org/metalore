@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/storage/agent_repository.dart';
-import 'package:ai_gateway/core/models/ai_agent.dart';
+import '../models/agent.dart';
 import 'add_agent_dialog.dart';
 
 class AgentListScreen extends StatefulWidget {

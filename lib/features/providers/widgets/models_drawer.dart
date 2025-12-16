@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ModelsDrawer extends StatefulWidget {
-  final List<ModelInfo> availableModels;
-  final List<ModelInfo> selectedModels;
-  final ModelInfo? selectedModelToAdd;
+  final List<AIModel> availableModels;
+  final List<AIModel> selectedModels;
+  final AIModel? selectedModelToAdd;
   final bool isFetchingModels;
   final Function() onFetchModels;
-  final Function(ModelInfo?) onUpdateSelectedModel;
+  final Function(AIModel?) onUpdateSelectedModel;
   final Function() onAddModel;
   final Function(String) onRemoveModel;
-  final Function(ModelInfo) onShowCapabilities;
+  final Function(AIModel) onShowCapabilities;
 
   const ModelsDrawer({
     super.key,
@@ -156,7 +156,7 @@ class _ModelsDrawerState extends State<ModelsDrawer> {
                         border: Border.all(color: Colors.grey[300]!),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: DropdownButtonFormField<ModelInfo>(
+                      child: DropdownButtonFormField<AIModel>(
                         initialValue: widget.selectedModelToAdd,
                         decoration: InputDecoration(
                           border: InputBorder.none,

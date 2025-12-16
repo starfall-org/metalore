@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ai_gateway/core/storage/agent_repository.dart';
-import 'package:ai_gateway/core/models/ai_agent.dart';
+
+import '../models/agent.dart';
 
 class AddAgentDialog extends StatefulWidget {
   const AddAgentDialog({super.key});

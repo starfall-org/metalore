@@ -40,10 +40,12 @@ class SystemTTS implements ITTSService {
     // Or we fail if 'bytes' are strictly required.
 
     await _flutterTts.setLanguage("en-US"); // Default or from settings
-    if (settings['pitch'] != null)
+    if (settings['pitch'] != null) {
       await _flutterTts.setPitch(settings['pitch']);
-    if (settings['rate'] != null)
+    }
+    if (settings['rate'] != null) {
       await _flutterTts.setSpeechRate(settings['rate']);
+    }
 
     // This is a violation of "synthesize returns bytes" contract if we just play.
     // But since this is specific to System TTS, let's leave a TODO.

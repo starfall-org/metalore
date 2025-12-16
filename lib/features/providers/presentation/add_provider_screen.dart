@@ -362,7 +362,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
     }
   }
 
-  void _showModelCapabilities(ModelInfo model) {
+  void _showModelCapabilities(AIModel model) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

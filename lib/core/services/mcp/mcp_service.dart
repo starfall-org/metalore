@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../models/mcp/mcp.dart';
+
+import '../../models/mcp/mcp_server.dart';
 
 class MCPService {
   /// Fetches the list of tools from an MCP server.

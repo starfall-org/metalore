@@ -35,7 +35,7 @@ class TTSService {
 
     return service.synthesize(
       text, 
-      model
+      model,
       profile.voiceId, 
       profile.settings,
       apiKey: apiKey,

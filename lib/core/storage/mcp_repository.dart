@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/mcp/mcp.dart';
+import '../models/mcp/mcp_server.dart';
 import 'base_repository.dart';
 
 class MCPRepository extends BaseRepository<MCPServer> {
