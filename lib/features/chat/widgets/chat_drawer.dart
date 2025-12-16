@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ai_gateway/features/agents/views/agent_list_screen.dart';
+import 'package:ai_gateway/features/agents/presentation/agent_list_screen.dart';
 import 'package:ai_gateway/features/screens/settings_screen/settings_screen.dart';
 import 'package:ai_gateway/core/storage/chat_repository.dart';
 import 'package:ai_gateway/core/models/chat/chat_message.dart';

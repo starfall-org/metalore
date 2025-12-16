@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'core/routes.dart';
-import 'features/agents/views/agent_list_screen.dart';
+import 'features/agents/presentation/agent_list_screen.dart';
 import 'features/chat/presentation/chat_screen.dart';
-import 'features/providers/views/providers_screen.dart';
-import 'features/settings/views/settings_screen.dart';
+import 'features/providers/presentation/providers_screen.dart';
+import 'features/settings/presentation/settings_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {

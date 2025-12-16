@@ -21,7 +21,7 @@ class ChatService {
     if (anthropic.isNotEmpty) {
       provider = anthropic.first;
     } else {
-      final openai = providers.where((p) => p.type == ProviderType.openai);
+      final openai = providers.where((p) => p.type == ProviderType.openAI);
       if (openai.isNotEmpty) {
         provider = openai.first;
       }

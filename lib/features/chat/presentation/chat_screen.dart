@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../../agents/views/agent_list_screen.dart';
+import '../../agents/presentation/agent_list_screen.dart';
 import 'chat_viewmodel.dart';
 import '../widgets/chat_drawer.dart';
 import '../widgets/chat_input_area.dart';
