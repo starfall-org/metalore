@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,14 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     });
     
     try {
-      _repository = await ProviderRepository.init();
+      // Add timeout to prevent infinite loading
+      _repository = await ProviderRepository.init().timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException('Timeout initializing provider repository', const Duration(seconds: 10));
+        },
+      );
+      
       final providers = _repository.getProviders();
       
       if (mounted) {
@@ -54,6 +62,11 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
           SnackBar(
             content: Text('Error loading providers: $e'),
             backgroundColor: Colors.red,
+            action: SnackBarAction(
+              label: 'Retry',
+              textColor: Colors.white,
+              onPressed: () => _loadProviders(),
+            ),
           ),
         );
       }

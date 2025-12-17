@@ -35,8 +35,10 @@ class _ModelsDrawerState extends State<ModelsDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      width: MediaQuery.of(context).size.width * 0.85,
-      child: Column(
+      width: MediaQuery.of(context).size.width, // Tối đa chiều ngang
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.5, // Mặc định 1/2 chiều dọc
+        child: Column(
         children: [
           // Header
           Container(
@@ -291,6 +293,7 @@ class _ModelsDrawerState extends State<ModelsDrawer> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

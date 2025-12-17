@@ -116,5 +116,12 @@
     "active_mcp_servers": "Active MCP Servers",
     "save": "Save",
     "cancel": "Cancel"
+  },
+  "preferences": {
+    "auto_detect": "Auto Detect",
+    "auto_detect_language": "Auto Detect Language",
+    "select_language": "Select Language",
+    "about": "About",
+    "current_language": "Current Language"
   }
 }

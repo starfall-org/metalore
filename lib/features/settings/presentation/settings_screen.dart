@@ -33,7 +33,11 @@ class SettingsScreen extends StatelessWidget {
             title: 'settings.appearance'.tr(),
             onTap: () => Navigator.pushNamed(context, AppRoutes.appearance),
           ),
-          SettingsTile(icon: Icons.tune, title: 'settings.preferences'.tr()),
+          SettingsTile(
+            icon: Icons.tune,
+            title: 'settings.preferences'.tr(),
+            onTap: () => Navigator.pushNamed(context, AppRoutes.preferences),
+          ),
           SettingsTile(
             icon: Icons.notifications_outlined,
             title: 'settings.notifications'.tr(),

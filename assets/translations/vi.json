@@ -117,5 +117,12 @@
     "active_mcp_servers": "Máy chủ MCP hoạt động",
     "save": "Lưu",
     "cancel": "Hủy"
+  },
+  "preferences": {
+    "auto_detect": "Tự động phát hiện",
+    "auto_detect_language": "Tự động phát hiện ngôn ngữ",
+    "select_language": "Chọn ngôn ngữ",
+    "about": "Thông tin",
+    "current_language": "Ngôn ngữ hiện tại"
   }
 }

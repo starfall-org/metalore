@@ -60,117 +60,123 @@ class ChatInputArea extends StatelessWidget {
         !isGenerating &&
         ((controller.text.trim().isNotEmpty) || attachments.isNotEmpty);
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
-      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+    return GestureDetector(
+      onTap: () {
+        // Unfocus the TextField when tapping outside
+        FocusScope.of(context).unfocus();
+      },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(28),
-            topRight: Radius.circular(28),
+        padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
+        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(28),
+              topRight: Radius.circular(28),
+            ),
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildAttachmentChips(context),
-            // Input row
-            TextField(
-              enabled: !isGenerating,
-              controller: controller,
-              minLines: 1,
-              maxLines: 4,
-              decoration: InputDecoration(
-                hintText: 'input.ask'.tr(),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(24),
-                  borderSide: BorderSide.none,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildAttachmentChips(context),
+              // Input row
+              TextField(
+                enabled: !isGenerating,
+                controller: controller,
+                minLines: 1,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: 'input.ask'.tr(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                 ),
-                filled: true,
-                fillColor: Theme.of(context).scaffoldBackgroundColor,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
+                onSubmitted: (_) {
+                  if (canSend) onSubmitted(controller.text);
+                },
               ),
-              onSubmitted: (_) {
-                if (canSend) onSubmitted(controller.text);
-              },
-            ),
-            const SizedBox(height: 8),
-            // Buttons row
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Left side buttons
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onPressed: () {
-                        AttachmentOptionsDrawer.show(
-                          context,
-                          onPickAttachments: onPickAttachments,
-                          onMicTap: onMicTap,
-                        );
-                      },
-                      tooltip: 'input.attach_files'.tr(),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.menu,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onPressed: onOpenMenu,
-                      tooltip: 'input.menu'.tr(),
-                    ),
-                  ],
-                ),
-                // Right side buttons
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.smart_toy_outlined,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onPressed: onOpenModelPicker,
-                      tooltip: 'model_picker.title'.tr(),
-                    ),
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: canSend
-                            ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                            : Theme.of(context).colorScheme.surface.withOpacity(0.5),
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
+              const SizedBox(height: 8),
+              // Buttons row
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Left side buttons
+                  Row(
+                    children: [
+                      IconButton(
                         icon: Icon(
-                          Icons.send,
-                          color: canSend
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).iconTheme.color?.withOpacity(0.5),
-                          size: 20,
+                          Icons.add_circle_outline,
+                          color: Theme.of(context).iconTheme.color,
                         ),
-                        onPressed: canSend
-                            ? () => onSubmitted(controller.text)
-                            : null,
-                        tooltip: 'input.send'.tr(),
+                        onPressed: () {
+                          AttachmentOptionsDrawer.show(
+                            context,
+                            onPickAttachments: onPickAttachments,
+                            onMicTap: onMicTap,
+                          );
+                        },
+                        tooltip: 'input.attach_files'.tr(),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                      IconButton(
+                        icon: Icon(
+                          Icons.menu,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: onOpenMenu,
+                        tooltip: 'input.menu'.tr(),
+                      ),
+                    ],
+                  ),
+                  // Right side buttons
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.smart_toy_outlined,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        onPressed: onOpenModelPicker,
+                        tooltip: 'model_picker.title'.tr(),
+                      ),
+                      Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: canSend
+                              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+                              : Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.send,
+                            color: canSend
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                            size: 20,
+                          ),
+                          onPressed: canSend
+                              ? () => onSubmitted(controller.text)
+                              : null,
+                          tooltip: 'input.send'.tr(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

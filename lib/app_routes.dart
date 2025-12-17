@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart'; // Use foundation.dart for debugPrint
 import 'core/routes.dart';
 import 'features/agents/presentation/agent_list_screen.dart';
 import 'features/chat/presentation/chat_screen.dart';
 import 'features/providers/presentation/providers_screen.dart';
 import 'features/settings/presentation/settings_screen.dart';
 import 'features/settings/presentation/appearance_screen.dart';
+import 'features/settings/presentation/preferences_screen.dart';
 import 'features/tts/views/tts_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -21,7 +23,33 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const AppearanceScreen());
     case AppRoutes.tts:
       return MaterialPageRoute(builder: (_) => const TTSScreen());
+    case AppRoutes.preferences:
+      return MaterialPageRoute(builder: (_) => const PreferencesScreen());
     default:
-      return MaterialPageRoute(builder: (_) => const ChatScreen());
+      // Log the undefined route for debugging
+      debugPrint('Undefined route: ${settings.name}. Returning error screen instead of ChatScreen.');
+      return MaterialPageRoute(
+        builder: (context) => Scaffold(
+          appBar: AppBar(title: const Text('Route Not Found')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Route not found:'),
+                Text(settings.name ?? 'Unknown route'),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.chat,
+                    (route) => false,
+                  ),
+                  child: const Text('Go to Chat'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
   }
 }
