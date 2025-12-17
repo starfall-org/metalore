@@ -25,6 +25,9 @@ class _AddProviderScreenState extends State<AddProviderScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {}); // Rebuild to show/hide FAB based on tab
+    });
     _viewModel = AddProviderViewModel();
     _viewModel.initialize(widget.provider);
   }
