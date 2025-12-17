@@ -30,7 +30,8 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
   }
 
   Future<void> _loadProviders() async {
-    if (_isLoading) return; // Prevent multiple simultaneous calls
+    // Only prevent if already loading (not the initial state)
+    if (_isLoading && _providers.isNotEmpty) return;
     
     setState(() {
       _isLoading = true;

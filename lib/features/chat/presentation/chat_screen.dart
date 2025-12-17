@@ -5,6 +5,7 @@ import '../../agents/presentation/agent_list_screen.dart';
 import '../widgets/chat_drawer.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/chat_message_list.dart';
+import '../widgets/models_drawer.dart';
 import 'chat_viewmodel.dart';
 import '../../../core/storage/theme_repository.dart';
 
@@ -182,89 +183,17 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _openModelPicker(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          top: false,
-          child: ListenableBuilder(
-            listenable: _viewModel,
-            builder: (context, _) {
-              final providers = _viewModel.providers;
-              if (providers.isEmpty) {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('No providers configured'),
-                );
-              }
-              return SizedBox(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: ListView(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Text(
-                        'Select model',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    ...providers.map((p) {
-                      final collapsed =
-                          _viewModel.providerCollapsed[p.name] ?? false;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          ListTile(
-                            leading: Icon(
-                              collapsed ? Icons.expand_more : Icons.expand_less,
-                            ),
-                            title: Text(p.name),
-                            onTap: () => _viewModel.setProviderCollapsed(
-                              p.name,
-                              !collapsed,
-                            ),
-                          ),
-                          if (!collapsed)
-                            ...p.models.map((m) {
-                              final isSelected =
-                                  _viewModel.selectedProviderName == p.name &&
-                                  _viewModel.selectedModelName == m.name;
-                              return ListTile(
-                                contentPadding: const EdgeInsets.only(
-                                  left: 56,
-                                  right: 16,
-                                ),
-                                title: Text(m.name),
-                                trailing: isSelected
-                                    ? Icon(
-                                        Icons.check,
-                                        color: Theme.of(context).colorScheme.primary,
-                                      )
-                                    : null,
-                                onTap: () {
-                                  _viewModel.selectModel(p.name, m.name);
-                                  Navigator.pop(ctx);
-                                },
-                              );
-                            }),
-                        ],
-                      );
-                    }),
-                    const SizedBox(height: 8),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
+    ModelsDrawer.show(
+      context,
+      providers: _viewModel.providers,
+      providerCollapsed: _viewModel.providerCollapsed,
+      selectedProviderName: _viewModel.selectedProviderName,
+      selectedModelName: _viewModel.selectedModelName,
+      onToggleProvider: (providerName, collapsed) {
+        _viewModel.setProviderCollapsed(providerName, collapsed);
+      },
+      onSelectModel: (providerName, modelName) {
+        _viewModel.selectModel(providerName, modelName);
       },
     );
   }

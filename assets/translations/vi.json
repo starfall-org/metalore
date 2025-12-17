@@ -27,6 +27,15 @@
     "send": "Gửi",
     "menu": "Menu"
   },
+  "menu": {
+    "title": "Menu",
+    "settings": "Cài đặt",
+    "settings_desc": "Quản lý cài đặt ứng dụng",
+    "about": "Giới thiệu",
+    "about_desc": "Thông tin về ứng dụng",
+    "help": "Trợ giúp",
+    "help_desc": "Nhận trợ giúp và hướng dẫn"
+  },
   "attachment_options": {
     "title": "Tùy chọn đính kèm",
     "gallery": "Thư viện ảnh",

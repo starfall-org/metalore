@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'attachment_options_drawer.dart';
+import 'menu_drawer.dart';
 
 class ChatInputArea extends StatelessWidget {
   final TextEditingController controller;
@@ -66,10 +67,9 @@ class ChatInputArea extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Container(
-        padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
         decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: const BorderRadius.only(
@@ -132,7 +132,9 @@ class ChatInputArea extends StatelessWidget {
                           Icons.menu,
                           color: Theme.of(context).iconTheme.color,
                         ),
-                        onPressed: onOpenMenu,
+                        onPressed: () {
+                          MenuDrawer.show(context);
+                        },
                         tooltip: 'input.menu'.tr(),
                       ),
                     ],
