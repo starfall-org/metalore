@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/models/ai_model.dart';
+import '../../../core/widgets/dropdown.dart';
 
 class ModelsDrawer extends StatefulWidget {
   final List<AIModel> availableModels;
@@ -157,31 +158,16 @@ class _ModelsDrawerState extends State<ModelsDrawer> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: DropdownButtonFormField<AIModel>(
-                        initialValue: widget.selectedModelToAdd,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 8,
-                          ),
-                        ),
-                        items: widget.availableModels.map((model) {
-                          return DropdownMenuItem(
-                            value: model,
-                            child: Text(
-                              model.name,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: widget.onUpdateSelectedModel,
-                      ),
+                    CommonDropdown<AIModel>(
+                      value: widget.selectedModelToAdd,
+                      options: widget.availableModels.map((model) {
+                        return DropdownOption<AIModel>(
+                          value: model,
+                          label: model.name,
+                          icon: const Icon(Icons.smart_toy),
+                        );
+                      }).toList(),
+                      onChanged: widget.onUpdateSelectedModel,
                     ),
                     const SizedBox(height: 8),
                     SizedBox(

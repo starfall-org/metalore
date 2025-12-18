@@ -5,6 +5,7 @@ import '../../../core/models/provider.dart';
 import '../widgets/fetch_models_drawer.dart';
 import '../widgets/model_card.dart';
 import 'add_provider_viewmodel.dart';
+import '../../../core/widgets/dropdown.dart';
 
 class AddProviderScreen extends StatefulWidget {
   final Provider? provider;
@@ -92,14 +93,15 @@ class _AddProviderScreenState extends State<AddProviderScreen>
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            DropdownButtonFormField<ProviderType>(
-              initialValue: _viewModel.selectedType,
-              decoration: InputDecoration(
-                labelText: 'settings.provider_type'.tr(),
-                border: const OutlineInputBorder(),
-              ),
-              items: ProviderType.values.map((type) {
-                return DropdownMenuItem(value: type, child: Text(type.name));
+            CommonDropdown<ProviderType>(
+              value: _viewModel.selectedType,
+              labelText: 'settings.provider_type'.tr(),
+              options: ProviderType.values.map((type) {
+                return DropdownOption<ProviderType>(
+                  value: type,
+                  label: type.name,
+                  icon: Icon(_iconForProviderType(type)),
+                );
               }).toList(),
               onChanged: (value) {
                 if (value != null) {
@@ -259,6 +261,19 @@ class _AddProviderScreenState extends State<AddProviderScreen>
         isDense: true,
       ),
     );
+  }
+
+  IconData _iconForProviderType(ProviderType type) {
+    switch (type) {
+      case ProviderType.google:
+        return Icons.cloud;
+      case ProviderType.openai:
+        return Icons.api;
+      case ProviderType.anthropic:
+        return Icons.psychology_alt;
+      case ProviderType.ollama:
+        return Icons.memory;
+    }
   }
 
   Widget _buildModelsTab() {

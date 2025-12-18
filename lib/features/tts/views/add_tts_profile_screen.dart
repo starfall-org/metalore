@@ -5,6 +5,7 @@ import '../../../core/models/provider.dart';
 import '../../../core/storage/provider_repository.dart';
 import '../../../core/storage/tts_repository.dart';
 import '../../../core/models/tts_profile.dart';
+import '../../../core/widgets/dropdown.dart';
 
 class AddTTSProfileScreen extends StatefulWidget {
   const AddTTSProfileScreen({super.key});
@@ -126,16 +127,14 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<TTSServiceType>(
-            initialValue: _selectedType,
-            decoration: const InputDecoration(
-              labelText: 'Service Type',
-              border: OutlineInputBorder(),
-            ),
-            items: TTSServiceType.values.map((type) {
-              return DropdownMenuItem(
+          CommonDropdown<TTSServiceType>(
+            value: _selectedType,
+            labelText: 'Service Type',
+            options: TTSServiceType.values.map((type) {
+              return DropdownOption<TTSServiceType>(
                 value: type,
-                child: Text(type.name.toUpperCase()),
+                label: type.name.toUpperCase(),
+                icon: Icon(type == TTSServiceType.system ? Icons.settings : Icons.cloud),
               );
             }).toList(),
             onChanged: (value) {
@@ -150,14 +149,22 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
           ),
           const SizedBox(height: 16),
           if (_selectedType == TTSServiceType.provider) ...[
-            DropdownButtonFormField<String>(
-              initialValue: _selectedProviderId,
-              decoration: const InputDecoration(
-                labelText: 'Provider',
-                border: OutlineInputBorder(),
-              ),
-              items: _availableProviders.map((p) {
-                return DropdownMenuItem(value: p.name, child: Text(p.name));
+            CommonDropdown<String>(
+              value: _selectedProviderId,
+              labelText: 'Provider',
+              options: _availableProviders.map((p) {
+                final iconData = p.type == ProviderType.google
+                    ? Icons.cloud
+                    : p.type == ProviderType.openai
+                        ? Icons.api
+                        : p.type == ProviderType.anthropic
+                            ? Icons.psychology_alt
+                            : Icons.memory;
+                return DropdownOption<String>(
+                  value: p.name,
+                  label: p.name,
+                  icon: Icon(iconData),
+                );
               }).toList(),
               onChanged: (value) {
                 setState(() {
@@ -173,16 +180,14 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
               Expanded(
                 child: _isLoadingVoices
                     ? const LinearProgressIndicator()
-                    : DropdownButtonFormField<String>(
-                        initialValue: _selectedVoiceId,
-                        decoration: const InputDecoration(
-                          labelText: 'Voice',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: _availableVoices.map((voice) {
-                          return DropdownMenuItem(
+                    : CommonDropdown<String>(
+                        value: _selectedVoiceId,
+                        labelText: 'Voice',
+                        options: _availableVoices.map((voice) {
+                          return DropdownOption<String>(
                             value: voice,
-                            child: Text(voice),
+                            label: voice,
+                            icon: const Icon(Icons.record_voice_over),
                           );
                         }).toList(),
                         onChanged: (value) {
