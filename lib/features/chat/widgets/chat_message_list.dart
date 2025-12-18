@@ -27,7 +27,11 @@ class ChatMessageList extends StatelessWidget {
     );
   }
 
-  Widget _buildMessageBubble(BuildContext context, ChatMessage message, bool isUser) {
+  Widget _buildMessageBubble(
+    BuildContext context,
+    ChatMessage message,
+    bool isUser,
+  ) {
     final bubbleColor = isUser ? Colors.blue : Colors.grey[200];
     final textColor = isUser ? Colors.white : Colors.black87;
 
@@ -51,20 +55,18 @@ class ChatMessageList extends StatelessWidget {
             if (isUser)
               Text(
                 message.content,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 15,
-                ),
+                style: TextStyle(color: textColor, fontSize: 15),
               )
             else
               // Model: hỗ trợ Markdown để trình bày tốt hơn
               MarkdownBody(
                 data: message.content,
                 selectable: true,
-                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
-                  p: const TextStyle(fontSize: 15, color: Colors.black87),
-                  code: const TextStyle(fontSize: 13),
-                ),
+                styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context))
+                    .copyWith(
+                      p: const TextStyle(fontSize: 15, color: Colors.black87),
+                      code: const TextStyle(fontSize: 13),
+                    ),
               ),
 
             // Hình/đính kèm (nếu có)
@@ -109,7 +111,9 @@ class ChatMessageList extends StatelessWidget {
           Wrap(
             spacing: 6,
             runSpacing: -8,
-            children: otherPaths.map((p) => _attachmentChip(p, isUser)).toList(),
+            children: otherPaths
+                .map((p) => _attachmentChip(p, isUser))
+                .toList(),
           ),
       ],
     );
@@ -138,7 +142,9 @@ class ChatMessageList extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         style: TextStyle(color: isUser ? Colors.white : Colors.black87),
       ),
-      backgroundColor: isUser ? Colors.blue.withOpacity(0.2) : Colors.grey[300],
+      backgroundColor: isUser
+          ? Colors.blue.withValues(alpha: 0.2)
+          : Colors.grey[300],
       visualDensity: VisualDensity.compact,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );
@@ -147,12 +153,16 @@ class ChatMessageList extends StatelessWidget {
   Widget _fallbackAttachmentTile(String path, bool isUser) {
     final name = path.split('/').last;
     return Container(
-      color: isUser ? Colors.white.withOpacity(0.15) : Colors.black12,
+      color: isUser ? Colors.white.withValues(alpha: 0.15) : Colors.black12,
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
-          const Icon(Icons.image_not_supported, size: 18, color: Colors.black54),
+          const Icon(
+            Icons.image_not_supported,
+            size: 18,
+            color: Colors.black54,
+          ),
           const SizedBox(width: 6),
           Expanded(
             child: Text(

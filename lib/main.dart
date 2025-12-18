@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 import 'core/models/language_preferences.dart';
 import 'core/storage/theme_repository.dart';
 import 'core/storage/language_repository.dart';
+import 'core/storage/app_preferences_repository.dart';
 import 'core/services/custom_asset_loader.dart';
 import 'app.dart';
 
@@ -15,6 +16,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
+  // Initialize Firebase for Analytics and FCM
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize Hive
@@ -25,6 +27,9 @@ Future<void> main() async {
 
   // Initialize LanguageRepository
   await LanguageRepository.init();
+
+  // Initialize AppPreferencesRepository (global preferences)
+  await AppPreferencesRepository.init();
 
   // On Android, prevent content from drawing under status/navigation bars
   await SystemChrome.setEnabledSystemUIMode(

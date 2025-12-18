@@ -91,7 +91,7 @@ class AddProviderViewModel extends ChangeNotifier {
     if (provider != null) {
       _selectedType = provider.type;
       _nameController.text = provider.name;
-      _apiKeyController.text = provider.apiKey ?? '';
+      _apiKeyController.text = provider.apiKey;
       _baseUrlController.text = (provider.baseUrl.isNotEmpty == true)
           ? provider.baseUrl
           : getDefaultBaseUrl();

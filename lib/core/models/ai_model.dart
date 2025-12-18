@@ -16,6 +16,8 @@ class AIModel {
   final List<ModelIOType> output;
   final bool tool;
   final bool reasoning;
+  final bool builtinWebSearch;
+  final bool builtinWebFetch;
   final int? contextWindow;
   final int? parameters;
 
@@ -26,6 +28,8 @@ class AIModel {
     this.output = const [ModelIOType.text],
     this.tool = true,
     this.reasoning = false,
+    this.builtinWebSearch = false,
+    this.builtinWebFetch = false,
     this.contextWindow,
     this.parameters,
   });
@@ -38,6 +42,8 @@ class AIModel {
       'output': output.map((e) => e.name).toList(),
       'tool': tool,
       'reasoning': reasoning,
+      'builtinWebSearch': builtinWebSearch,
+      'builtinWebFetch': builtinWebFetch,
       'contextWindow': contextWindow,
       'parameters': parameters,
     };
@@ -51,7 +57,7 @@ class AIModel {
     // Infer ModelType from name/id as providers don't return our internal enum values
     ModelType type = ModelType.textGeneration;
     final lowerName = name.toLowerCase();
-
+    final bool defaultBuiltin = lowerName.contains('gemini');
     if (lowerName.contains('embed')) {
       type = ModelType.embedding;
     } else if (lowerName.contains('dall-e') ||
@@ -124,6 +130,12 @@ class AIModel {
           : defaultOutput,
       tool: json['tool'] is bool ? json['tool'] : true,
       reasoning: reasoning,
+      builtinWebSearch: json['builtinWebSearch'] is bool
+          ? json['builtinWebSearch']
+          : defaultBuiltin,
+      builtinWebFetch: json['builtinWebFetch'] is bool
+          ? json['builtinWebFetch']
+          : defaultBuiltin,
       contextWindow: contextWindow,
       parameters: safeInt(json['parameters']),
     );

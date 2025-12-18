@@ -155,8 +155,8 @@ class ChatInputArea extends StatelessWidget {
                         width: 40,
                         decoration: BoxDecoration(
                           color: canSend
-                              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-                              : Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
+                              : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
@@ -164,7 +164,7 @@ class ChatInputArea extends StatelessWidget {
                             Icons.send,
                             color: canSend
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).iconTheme.color?.withOpacity(0.5),
+                                : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
                             size: 20,
                           ),
                           onPressed: canSend

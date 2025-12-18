@@ -100,11 +100,7 @@ class OllamaRoutes {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'chat': chat,
-      'tags': tags,
-      'embeddings': embeddings,
-    };
+    return {'chat': chat, 'tags': tags, 'embeddings': embeddings};
   }
 
   static OllamaRoutes fromJson(Map<String, dynamic> json) {
@@ -112,6 +108,76 @@ class OllamaRoutes {
       chat: json['chat'] ?? '/api/chat',
       tags: json['tags'] ?? '/api/tags',
       embeddings: json['embeddings'] ?? '/api/embeddings',
+    );
+  }
+}
+
+class GoogleRoutes {
+  final String generateContent;
+  final String streamGenerateContent;
+  final String models;
+
+  const GoogleRoutes({
+    this.generateContent = '/v1beta/models/{model}:generateContent',
+    this.streamGenerateContent = '/v1beta/models/{model}:streamGenerateContent',
+    this.models = '/v1beta/models',
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'generateContent': generateContent,
+      'streamGenerateContent': streamGenerateContent,
+      'models': models,
+    };
+  }
+
+  static GoogleRoutes fromJson(Map<String, dynamic> json) {
+    return GoogleRoutes(
+      generateContent:
+          json['generateContent'] ?? '/v1beta/models/{model}:generateContent',
+      streamGenerateContent:
+          json['streamGenerateContent'] ??
+          '/v1beta/models/{model}:streamGenerateContent',
+      models: json['models'] ?? '/v1beta/models',
+    );
+  }
+}
+
+class VertexAIConfig {
+  final String projectId;
+  final String location;
+
+  const VertexAIConfig({this.projectId = '', this.location = 'us-central1'});
+
+  Map<String, dynamic> toJson() {
+    return {'projectId': projectId, 'location': location};
+  }
+
+  static VertexAIConfig fromJson(Map<String, dynamic> json) {
+    return VertexAIConfig(
+      projectId: json['projectId'] ?? '',
+      location: json['location'] ?? 'us-central1',
+    );
+  }
+}
+
+class AzureConfig {
+  final String deploymentId;
+  final String apiVersion;
+
+  const AzureConfig({
+    this.deploymentId = '',
+    this.apiVersion = '2024-02-15-preview',
+  });
+
+  Map<String, dynamic> toJson() {
+    return {'deploymentId': deploymentId, 'apiVersion': apiVersion};
+  }
+
+  static AzureConfig fromJson(Map<String, dynamic> json) {
+    return AzureConfig(
+      deploymentId: json['deploymentId'] ?? '',
+      apiVersion: json['apiVersion'] ?? '2024-02-15-preview',
     );
   }
 }
@@ -125,6 +191,9 @@ class Provider {
   final OpenAIRoutes openAIRoutes;
   final AnthropicRoutes anthropicRoutes;
   final OllamaRoutes ollamaRoutes;
+  final GoogleRoutes googleRoutes;
+  final VertexAIConfig? vertexAIConfig;
+  final AzureConfig? azureConfig;
   final Map<String, String> headers;
   final List<AIModel> models;
 
@@ -137,10 +206,13 @@ class Provider {
     this.openAIRoutes = const OpenAIRoutes(),
     this.anthropicRoutes = const AnthropicRoutes(),
     this.ollamaRoutes = const OllamaRoutes(),
+    this.googleRoutes = const GoogleRoutes(),
+    this.vertexAIConfig,
+    this.azureConfig,
     this.headers = const {},
     this.models = const [],
-  })  : name = name ?? _defaultName(type),
-        baseUrl = baseUrl ?? _defaultBaseUrl(type);
+  }) : name = name ?? _defaultName(type),
+       baseUrl = baseUrl ?? _defaultBaseUrl(type);
 
   static String _defaultName(ProviderType type) {
     switch (type) {
@@ -179,6 +251,9 @@ class Provider {
       'openAIRoutes': openAIRoutes.toJson(),
       'anthropicRoutes': anthropicRoutes.toJson(),
       'ollamaRoutes': ollamaRoutes.toJson(),
+      'googleRoutes': googleRoutes.toJson(),
+      if (vertexAIConfig != null) 'vertexAIConfig': vertexAIConfig!.toJson(),
+      if (azureConfig != null) 'azureConfig': azureConfig!.toJson(),
       'models': models.map((m) => m.toJson()).toList(),
     };
   }
@@ -216,8 +291,19 @@ class Provider {
       ollamaRoutes: json['ollamaRoutes'] != null
           ? OllamaRoutes.fromJson(json['ollamaRoutes'])
           : const OllamaRoutes(),
-      headers: (json['headers'] as Map<String, dynamic>?)
-              ?.map((key, value) => MapEntry(key, value.toString())) ??
+      googleRoutes: json['googleRoutes'] != null
+          ? GoogleRoutes.fromJson(json['googleRoutes'])
+          : const GoogleRoutes(),
+      vertexAIConfig: json['vertexAIConfig'] != null
+          ? VertexAIConfig.fromJson(json['vertexAIConfig'])
+          : null,
+      azureConfig: json['azureConfig'] != null
+          ? AzureConfig.fromJson(json['azureConfig'])
+          : null,
+      headers:
+          (json['headers'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ) ??
           {},
       models: parsedModels,
     );

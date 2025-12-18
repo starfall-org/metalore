@@ -12,6 +12,11 @@ class AIAgent {
   final int maxTokens;
   final List<String> activeMCPServerIds; // Renamed from activeMCPServer
 
+  /// Optional per-agent preference override:
+  /// - null: follow global preferences
+  /// - true/false: override global preference for this agent
+  final bool? persistChatSelection;
+
   AIAgent({
     required this.id,
     required this.name,
@@ -23,6 +28,7 @@ class AIAgent {
     this.conversationLength = 10,
     this.maxTokens = 4000,
     this.activeMCPServerIds = const [],
+    this.persistChatSelection,
   });
 
   Map<String, dynamic> toJson() {
@@ -37,6 +43,8 @@ class AIAgent {
       'conversationLength': conversationLength,
       'maxTokens': maxTokens,
       'activeMCPServerIds': activeMCPServerIds,
+      if (persistChatSelection != null)
+        'persistChatSelection': persistChatSelection,
     };
   }
 
@@ -56,6 +64,7 @@ class AIAgent {
           (json['activeMCPServer'] as List?)
               ?.cast<String>() ?? // Backwards compatibility
           const [],
+      persistChatSelection: json['persistChatSelection'] as bool?,
     );
   }
 

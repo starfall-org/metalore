@@ -7,6 +7,8 @@ import '../../../core/storage/mcp_repository.dart';
 import '../../../core/models/ai_agent.dart';
 import '../../../core/models/mcp/mcp_server.dart';
 
+enum _PersistOverride { followGlobal, forceOn, forceOff }
+
 class AddAgentDialog extends StatefulWidget {
   const AddAgentDialog({super.key});
 
@@ -28,6 +30,9 @@ class _AddAgentDialogState extends State<AddAgentDialog> {
   int _maxTokensValue = 4000;
   List<MCPServer> _availableMCPServers = [];
   final List<String> _selectedMCPServerIds = [];
+
+  // Persist selection override for this agent: null => follow global; true/false => override
+  _PersistOverride _persistOverride = _PersistOverride.followGlobal;
 
   @override
   void initState() {
@@ -69,6 +74,9 @@ class _AddAgentDialogState extends State<AddAgentDialog> {
       conversationLength: _conversationLengthValue,
       maxTokens: _maxTokensValue,
       activeMCPServerIds: _selectedMCPServerIds,
+      persistChatSelection: _persistOverride == _PersistOverride.followGlobal
+          ? null
+          : (_persistOverride == _PersistOverride.forceOn),
     );
 
     await repository.addAgent(newAgent);
@@ -384,6 +392,48 @@ class _AddAgentDialogState extends State<AddAgentDialog> {
                          ],
                        ),
                      ),
+
+                   // Persist chat selection override (Agent-level)
+                   Padding(
+                     padding: const EdgeInsets.symmetric(vertical: 8),
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text('agents.persist_section_title'.tr()),
+                         const SizedBox(height: 8),
+                         RadioListTile<_PersistOverride>(
+                           title: Text('agents.persist_follow_global'.tr()),
+                           value: _PersistOverride.followGlobal,
+                           groupValue: _persistOverride,
+                           onChanged: (val) {
+                             if (val != null) {
+                               setState(() => _persistOverride = val);
+                             }
+                           },
+                         ),
+                         RadioListTile<_PersistOverride>(
+                           title: Text('agents.persist_force_on'.tr()),
+                           value: _PersistOverride.forceOn,
+                           groupValue: _persistOverride,
+                           onChanged: (val) {
+                             if (val != null) {
+                               setState(() => _persistOverride = val);
+                             }
+                           },
+                         ),
+                         RadioListTile<_PersistOverride>(
+                           title: Text('agents.persist_force_off'.tr()),
+                           value: _PersistOverride.forceOff,
+                           groupValue: _persistOverride,
+                           onChanged: (val) {
+                             if (val != null) {
+                               setState(() => _persistOverride = val);
+                             }
+                           },
+                         ),
+                       ],
+                     ),
+                   ),
                   ],
                 ),
               ),

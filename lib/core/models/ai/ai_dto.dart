@@ -204,6 +204,7 @@ class AIResponse {
   final List<AIToolCall> toolCalls;
   final String? finishReason;
   final List<AIContent> contents;
+  final String? reasoningContent;
   final Map<String, dynamic> raw;
 
   const AIResponse({
@@ -211,6 +212,7 @@ class AIResponse {
     this.toolCalls = const [],
     this.finishReason,
     this.contents = const [],
+    this.reasoningContent,
     this.raw = const {},
   });
 
@@ -219,6 +221,7 @@ class AIResponse {
     List<AIToolCall>? toolCalls,
     String? finishReason,
     List<AIContent>? contents,
+    String? reasoningContent,
     Map<String, dynamic>? raw,
   }) {
     return AIResponse(
@@ -226,6 +229,7 @@ class AIResponse {
       toolCalls: toolCalls ?? this.toolCalls,
       finishReason: finishReason ?? this.finishReason,
       contents: contents ?? this.contents,
+      reasoningContent: reasoningContent ?? this.reasoningContent,
       raw: raw ?? this.raw,
     );
   }
@@ -237,6 +241,7 @@ class AIResponse {
       if (finishReason != null) 'finishReason': finishReason,
       if (contents.isNotEmpty)
         'contents': contents.map((c) => c.toJson()).toList(),
+      if (reasoningContent != null) 'reasoningContent': reasoningContent,
       if (raw.isNotEmpty) 'raw': raw,
     };
   }
@@ -251,6 +256,7 @@ class AIResponse {
       contents: (json['contents'] as List? ?? const [])
           .map((e) => AIContent.fromJson((e as Map).cast<String, dynamic>()))
           .toList(),
+      reasoningContent: json['reasoningContent'] as String?,
       raw: (json['raw'] as Map?)?.cast<String, dynamic>() ?? const {},
     );
   }

@@ -37,7 +37,9 @@ class ModelsDrawer extends StatelessWidget {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outline.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -47,9 +49,9 @@ class ModelsDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Text(
                 'model_picker.title'.tr(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             const Divider(),
@@ -69,12 +71,17 @@ class ModelsDrawer extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           leading: Container(
                             width: 40,
                             height: 40,
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
@@ -86,7 +93,8 @@ class ModelsDrawer extends StatelessWidget {
                           trailing: Icon(
                             collapsed ? Icons.expand_more : Icons.expand_less,
                           ),
-                          onTap: () => onToggleProvider(provider.name, !collapsed),
+                          onTap: () =>
+                              onToggleProvider(provider.name, !collapsed),
                         ),
                         if (!collapsed)
                           ...provider.models.map((model) {
@@ -104,7 +112,9 @@ class ModelsDrawer extends StatelessWidget {
                               trailing: isSelected
                                   ? Icon(
                                       Icons.check,
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
                                     )
                                   : null,
                               onTap: () {

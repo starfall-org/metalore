@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:ai_gateway/core/services/ai/openai.dart';
+import 'package:ai_gateway/core/services/ai/openai/openai.dart';
 import 'package:ai_gateway/core/services/ai/anthropic.dart';
 import 'package:ai_gateway/core/services/ai/base.dart';
 import 'package:ai_gateway/core/models/ai_model.dart';

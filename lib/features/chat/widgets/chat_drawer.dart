@@ -51,108 +51,122 @@ class _ChatDrawerState extends State<ChatDrawer> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.menu, color: Theme.of(context).iconTheme.color?.withOpacity(0.7)),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Text(
-                  'LMHub',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).textTheme.titleLarge?.color,
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.menu,
+                      color: Theme.of(
+                        context,
+                      ).iconTheme.color?.withValues(alpha: 0.7),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
-                  tooltip: 'drawer.new_chat'.tr(),
-                  onPressed: widget.onNewChat,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              children: [
-                const SizedBox(height: 16),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 8,
-                  ),
-                  child: Text(
-                    'drawer.recent'.tr(),
+                  Text(
+                    'LMHub',
                     style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Theme.of(context).iconTheme.color?.withOpacity(0.7),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.titleLarge?.color,
                     ),
                   ),
-                ),
-                if (_sessions.isEmpty)
+                  IconButton(
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    tooltip: 'drawer.new_chat'.tr(),
+                    onPressed: widget.onNewChat,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                children: [
+                  const SizedBox(height: 16),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 8,
+                    ),
                     child: Text(
-                      'drawer.no_history'.tr(),
-                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6)),
+                      'drawer.recent'.tr(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(
+                          context,
+                        ).iconTheme.color?.withValues(alpha: 0.7),
+                      ),
                     ),
                   ),
-                ..._sessions.map((session) => _buildHistoryItem(session)),
-              ],
-            ),
-          ),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Column(
-              children: [
-                _buildDrawerItem(
-                  context,
-                  Icons.help_outline,
-                  'drawer.help_activity'.tr(),
-                ),
-                _buildDrawerItem(
-                  context,
-                  Icons.settings_outlined,
-                  'drawer.settings'.tr(),
-                  onTap: () {
-                    Navigator.pop(context); // Close drawer
-                    Navigator.pushNamed(context, AppRoutes.settings);
-                  },
-                ),
-                _buildDrawerItem(
-                  context,
-                  Icons.swap_horiz_outlined,
-                  'drawer.change_agent'.tr(),
-                  onTap: () async {
-                    Navigator.pop(context); // Close drawer
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AgentListScreen(),
+                  if (_sessions.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'drawer.no_history'.tr(),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                        ),
                       ),
-                    );
-                    if (result == true && widget.onAgentChanged != null) {
-                      widget.onAgentChanged!();
-                    }
-                  },
-                ),
-              ],
+                    ),
+                  ..._sessions.map((session) => _buildHistoryItem(session)),
+                ],
+              ),
             ),
-          ),
-        ],
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              child: Column(
+                children: [
+                  _buildDrawerItem(
+                    context,
+                    Icons.help_outline,
+                    'drawer.help_activity'.tr(),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    Icons.settings_outlined,
+                    'drawer.settings'.tr(),
+                    onTap: () {
+                      Navigator.pop(context); // Close drawer
+                      Navigator.pushNamed(context, AppRoutes.settings);
+                    },
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    Icons.swap_horiz_outlined,
+                    'drawer.change_agent'.tr(),
+                    onTap: () async {
+                      Navigator.pop(context); // Close drawer
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AgentListScreen(),
+                        ),
+                      );
+                      if (result == true && widget.onAgentChanged != null) {
+                        widget.onAgentChanged!();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
   }
 
   Widget _buildHistoryItem(Conversation session) {
@@ -162,7 +176,11 @@ class _ChatDrawerState extends State<ChatDrawer> {
         color: Theme.of(context).colorScheme.error,
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),
-        child: Icon(Icons.delete, color: Theme.of(context).colorScheme.onError, size: 20),
+        child: Icon(
+          Icons.delete,
+          color: Theme.of(context).colorScheme.onError,
+          size: 20,
+        ),
       ),
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
@@ -172,7 +190,7 @@ class _ChatDrawerState extends State<ChatDrawer> {
         leading: Icon(
           Icons.chat_bubble_outline,
           size: 20,
-          color: Theme.of(context).iconTheme.color?.withOpacity(0.7),
+          color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
         ),
         title: Text(
           session.title,
@@ -194,7 +212,10 @@ class _ChatDrawerState extends State<ChatDrawer> {
     VoidCallback? onTap,
   }) {
     return ListTile(
-      leading: Icon(icon, color: Theme.of(context).iconTheme.color?.withOpacity(0.7)),
+      leading: Icon(
+        icon,
+        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
+      ),
       title: Text(
         title,
         style: TextStyle(

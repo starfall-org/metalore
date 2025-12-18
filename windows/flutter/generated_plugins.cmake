@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  firebase_auth
+  dynamic_color
   firebase_core
   flutter_tts
 )

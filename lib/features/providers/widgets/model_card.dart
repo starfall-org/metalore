@@ -6,20 +6,13 @@ class ModelCard extends StatelessWidget {
   final VoidCallback? onTap;
   final Widget? trailing;
 
-  const ModelCard({
-    super.key,
-    required this.model,
-    this.onTap,
-    this.trailing,
-  });
+  const ModelCard({super.key, required this.model, this.onTap, this.trailing});
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
@@ -29,11 +22,7 @@ class ModelCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.blue[100],
-                child: Icon(
-                  _getModelIcon(),
-                  color: Colors.blue[600],
-                  size: 20,
-                ),
+                child: Icon(_getModelIcon(), color: Colors.blue[600], size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -52,10 +41,7 @@ class ModelCard extends StatelessWidget {
                       spacing: 4,
                       runSpacing: 4,
                       children: [
-                        _buildTag(
-                          _getModelTypeLabel(),
-                          Colors.purple,
-                        ),
+                        _buildTag(_getModelTypeLabel(), Colors.purple),
                         ..._buildIOTags(),
                         if (model.parameters != null)
                           _buildTag(
@@ -111,19 +97,19 @@ class ModelCard extends StatelessWidget {
 
   List<Widget> _buildIOTags() {
     final List<Widget> tags = [];
-    
+
     // Input tags
     if (model.input.isNotEmpty) {
       final inputStr = model.input.map((e) => _getIOIcon(e)).join('');
       tags.add(_buildTag('In: $inputStr', Colors.blue));
     }
-    
+
     // Output tags
     if (model.output.isNotEmpty) {
       final outputStr = model.output.map((e) => _getIOIcon(e)).join('');
       tags.add(_buildTag('Out: $outputStr', Colors.green));
     }
-    
+
     return tags;
   }
 
@@ -157,9 +143,9 @@ class ModelCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,

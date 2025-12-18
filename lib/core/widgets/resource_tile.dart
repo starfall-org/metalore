@@ -30,7 +30,7 @@ class ResourceTile extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(
-          color: Theme.of(context).dividerColor.withOpacity(0.1),
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
         ),
       ),
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -40,8 +40,8 @@ class ResourceTile extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: (leadingColor ?? Theme.of(context).primaryColor).withOpacity(
-              0.1,
+            color: (leadingColor ?? Theme.of(context).primaryColor).withValues(
+              alpha: 0.1,
             ),
             shape: BoxShape.circle,
           ),

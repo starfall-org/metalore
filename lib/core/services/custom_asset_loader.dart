@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomAssetLoader extends AssetLoader {
@@ -39,7 +39,8 @@ class CustomAssetLoader extends AssetLoader {
       
       return result;
     } catch (e) {
-      print('Error loading translation for ${locale.languageCode}: $e');
+      debugPrint('Error loading translation for ${locale.languageCode}: $e');
+      
       
       // Nếu không tìm thấy file, fallback sang tiếng Anh
       if (locale.languageCode != 'en') {
@@ -47,7 +48,7 @@ class CustomAssetLoader extends AssetLoader {
           final String jsonString = await rootBundle.loadString('$path/en.json');
           return jsonDecode(jsonString);
         } catch (fallbackError) {
-          print('Error loading fallback English translation: $fallbackError');
+          debugPrint('Error loading fallback English translation: $fallbackError');
           // Return a minimal valid structure to prevent complete failure
           return {
             'app_title': 'LMHub',

@@ -48,7 +48,9 @@ dependencies:
   path_provider: ^2.1.5
   meta: ^1.17.0
   firebase_core: ^4.3.0
-  firebase_ai: ^3.6.1
+
+  # Material You (Dynamic Color) support
+  dynamic_color: ^1.7.0
 
 dev_dependencies:
   flutter_test:

@@ -28,7 +28,9 @@ class AttachmentOptionsDrawer extends StatelessWidget {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outline.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -38,23 +40,31 @@ class AttachmentOptionsDrawer extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Text(
                 'attachment_options.title'.tr(),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
             const Divider(),
             // Attachment options
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               leading: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.photo_library, color: Theme.of(context).colorScheme.primary),
+                child: Icon(
+                  Icons.photo_library,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               title: Text('attachment_options.gallery'.tr()),
               subtitle: Text('attachment_options.gallery_desc'.tr()),
@@ -64,12 +74,15 @@ class AttachmentOptionsDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               leading: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.camera_alt, color: Colors.green),
@@ -83,15 +96,21 @@ class AttachmentOptionsDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               leading: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.orange.withOpacity(0.1),
+                  color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.insert_drive_file, color: Colors.orange),
+                child: const Icon(
+                  Icons.insert_drive_file,
+                  color: Colors.orange,
+                ),
               ),
               title: Text('attachment_options.document'.tr()),
               subtitle: Text('attachment_options.document_desc'.tr()),
@@ -102,12 +121,15 @@ class AttachmentOptionsDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               leading: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.purple.withOpacity(0.1),
+                  color: Colors.purple.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.audiotrack, color: Colors.purple),
@@ -121,12 +143,15 @@ class AttachmentOptionsDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 8,
+                vertical: 4,
+              ),
               leading: Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.teal.withOpacity(0.1),
+                  color: Colors.teal.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.videocam, color: Colors.teal),
@@ -141,15 +166,23 @@ class AttachmentOptionsDrawer extends StatelessWidget {
             ),
             if (onMicTap != null)
               ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
+                ),
                 leading: Container(
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.error.withOpacity(0.1),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.error.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(Icons.mic, color: Theme.of(context).colorScheme.error),
+                  child: Icon(
+                    Icons.mic,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                 ),
                 title: Text('attachment_options.voice_record'.tr()),
                 subtitle: Text('attachment_options.voice_record_desc'.tr()),

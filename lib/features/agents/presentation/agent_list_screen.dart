@@ -27,6 +27,7 @@ class _AgentListScreenState extends State<AgentListScreen> {
 
   Future<void> _loadAgents() async {
     _repository = await AgentRepository.init();
+    if (!mounted) return;
     setState(() {
       _agents = _repository.getAgents();
       _isLoading = false;
@@ -86,7 +87,7 @@ class _AgentListScreenState extends State<AgentListScreen> {
                       leadingIcon: Icons.smart_toy,
                       onTap: () async {
                         await _repository.setSelectedAgentId(agent.id);
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         Navigator.pop(context, true);
                       },
                       onDelete: () => _confirmDelete(agent),

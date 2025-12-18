@@ -48,7 +48,12 @@ class _ChatScreenState extends State<ChatScreen> {
           key: _viewModel.scaffoldKey,
           appBar: AppBar(
             leading: IconButton(
-              icon: Icon(Icons.menu, color: Theme.of(context).iconTheme.color?.withOpacity(0.7)),
+              icon: Icon(
+                Icons.menu,
+                color: Theme.of(
+                  context,
+                ).iconTheme.color?.withValues(alpha: 0.7),
+              ),
               onPressed: _viewModel.openDrawer,
             ),
             title: Column(
@@ -140,7 +145,9 @@ class _ChatScreenState extends State<ChatScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: CircleAvatar(
           radius: 14,
-          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.primary.withValues(alpha: 0.1),
           child: Text(
             ((_viewModel.selectedAgent?.name.isNotEmpty == true
                     ? _viewModel.selectedAgent!.name[0]
@@ -159,7 +166,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _buildPopupMenu() {
     return PopupMenuButton<String>(
-      icon: Icon(Icons.more_vert, color: Theme.of(context).iconTheme.color?.withOpacity(0.7)),
+      icon: Icon(
+        Icons.more_vert,
+        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
+      ),
       onSelected: (value) {
         switch (value) {
           case 'regen':
@@ -202,7 +212,11 @@ class _ChatScreenState extends State<ChatScreen> {
       return Center(
         child: Text(
           'chat.start'.tr(),
-          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6)),
+          style: TextStyle(
+            color: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+          ),
         ),
       );
     }

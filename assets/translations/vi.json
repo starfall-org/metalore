@@ -36,21 +36,6 @@
     "help": "Trợ giúp",
     "help_desc": "Nhận trợ giúp và hướng dẫn"
   },
-  "attachment_options": {
-    "title": "Tùy chọn đính kèm",
-    "gallery": "Thư viện ảnh",
-    "gallery_desc": "Chọn từ thư viện ảnh của bạn",
-    "camera": "Camera",
-    "camera_desc": "Chụp ảnh mới bằng camera",
-    "document": "Tài liệu",
-    "document_desc": "Chọn tệp tài liệu (PDF, DOC, TXT)",
-    "audio": "Audio",
-    "audio_desc": "Chọn tệp audio hoặc ghi âm mới",
-    "video": "Video",
-    "video_desc": "Chọn tệp video hoặc quay video mới",
-    "voice_record": "Ghi âm giọng nói",
-    "voice_record_desc": "Ghi âm giọng nói của bạn"
-  },
   "model_picker": {
     "title": "Chọn Model",
     "select_model": "Chọn model",
@@ -92,6 +77,13 @@
     "system_default": "Mặc định hệ thống",
     "light": "Sáng",
     "dark": "Tối",
+    "custom": "Tùy chỉnh",
+    "primary_color": "Màu chính",
+    "secondary_color": "Màu phụ",
+    "color_presets": "Bảng màu có sẵn",
+    "custom_color": "Màu tùy chỉnh",
+    "pure_dark": "Chế độ đen tuyệt đối",
+    "pure_dark_desc": "Nền tối hoàn toàn (#000) chỉ áp dụng khi dùng chế độ Tối",
     "preview_title": "Tiêu đề xem trước",
     "preview_subtitle": "Phụ đề ở đây",
     "preview_button": "Nút chính",
@@ -132,7 +124,11 @@
     "max_tokens": "Số token tối đa",
     "active_mcp_servers": "Máy chủ MCP hoạt động",
     "save": "Lưu",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "persist_section_title": "Lưu lựa chọn chat",
+    "persist_follow_global": "Theo cài đặt Global",
+    "persist_force_on": "Bật bắt buộc cho Agent này",
+    "persist_force_off": "Tắt bắt buộc cho Agent này"
   },
   "preferences": {
     "auto_detect": "Tự động phát hiện",
@@ -143,6 +139,9 @@
     "language_changed": "Ngôn ngữ đã được thay đổi. Ứng dụng sẽ khởi động lại.",
     "language_change_error": "Không thể thay đổi ngôn ngữ. Vui lòng thử lại.",
     "auto_detect_enabled": "Tự động phát hiện ngôn ngữ đã được bật. Ứng dụng sẽ khởi động lại.",
-    "auto_detect_error": "Không thể bật/tắt tự động phát hiện. Vui lòng thử lại."
+    "auto_detect_error": "Không thể bật/tắt tự động phát hiện. Vui lòng thử lại.",
+    "chat_settings": "Cài đặt chat",
+    "persist_chat_selection": "Lưu model/provider và tools theo từng cuộc trò chuyện",
+    "prefer_agent_settings": "Ưu tiên cài đặt Agent thay vì Global"
   }
 }

@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../../../core/storage/language_repository.dart';
+import '../../../core/storage/app_preferences_repository.dart';
 import '../widgets/settings_section_header.dart';
 import '../widgets/settings_tile.dart';
 
@@ -16,6 +17,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   late LanguageRepository _languageRepository;
   bool _autoDetectLanguage = true;
   String _selectedLanguage = 'auto';
+
+  // App (chat) preferences
+  bool _persistChatSelection = false; // mặc định không lưu
+  bool _preferAgentSettings = false;  // mặc định ưu tiên global
 
   final List<Map<String, dynamic>> _supportedLanguages = [
     {'code': 'auto', 'name': 'preferences.auto_detect', 'flag': '🌐'},
@@ -33,6 +38,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     super.initState();
     _languageRepository = LanguageRepository.instance;
     _loadPreferences();
+    _loadAppPreferences();
   }
 
   void _loadPreferences() {
@@ -40,6 +46,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     setState(() {
       _autoDetectLanguage = preferences.autoDetectLanguage;
       _selectedLanguage = preferences.languageCode;
+    });
+  }
+
+  void _loadAppPreferences() {
+    final appPrefs = AppPreferencesRepository.instance.currentPreferences;
+    setState(() {
+      _persistChatSelection = appPrefs.persistChatSelection;
+      _preferAgentSettings = appPrefs.preferAgentSettings;
     });
   }
 
@@ -174,6 +188,66 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       ),
       body: ListView(
         children: [
+          // Chat preferences section
+          SettingsSectionHeader('preferences.chat_settings'.tr()),
+          SettingsTile(
+            icon: Icons.save_outlined,
+            title: 'preferences.persist_chat_selection'.tr(),
+            trailing: Switch(
+              value: _persistChatSelection,
+              onChanged: (val) async {
+                setState(() => _persistChatSelection = val);
+                try {
+                  await AppPreferencesRepository.instance
+                      .setPersistChatSelection(val);
+                } catch (_) {
+                  // Revert on error
+                  setState(() => _persistChatSelection =
+                      AppPreferencesRepository
+                          .instance.currentPreferences.persistChatSelection);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('preferences.auto_detect_error'.tr()),
+                        backgroundColor:
+                            Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+          ),
+          SettingsTile(
+            icon: Icons.manage_accounts_outlined,
+            title: 'preferences.prefer_agent_settings'.tr(),
+            trailing: Switch(
+              value: _preferAgentSettings,
+              onChanged: (val) async {
+                setState(() => _preferAgentSettings = val);
+                try {
+                  await AppPreferencesRepository.instance
+                      .setPreferAgentSettings(val);
+                } catch (_) {
+                  // Revert on error
+                  setState(() => _preferAgentSettings =
+                      AppPreferencesRepository
+                          .instance.currentPreferences.preferAgentSettings);
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('preferences.auto_detect_error'.tr()),
+                        backgroundColor:
+                            Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+          ),
+
+          // Language section (existing)
           SettingsSectionHeader('Language'),
           SettingsTile(
             icon: Icons.language_outlined,
@@ -185,9 +259,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           ),
           if (!_autoDetectLanguage) ...[
             SettingsSectionHeader('preferences.select_language'.tr()),
-            ..._supportedLanguages.where((lang) => lang['code'] != 'auto').map((
-              language,
-            ) {
+            ..._supportedLanguages
+                .where((lang) => lang['code'] != 'auto')
+                .map((language) {
               final isSelected = _selectedLanguage == language['code'];
               return SettingsTile(
                 icon: Icons.language,

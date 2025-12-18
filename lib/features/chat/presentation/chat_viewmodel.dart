@@ -13,6 +13,9 @@ import '../../../core/storage/agent_repository.dart';
 import '../../../core/storage/chat_repository.dart';
 import '../../../core/storage/provider_repository.dart';
 import '../../../core/models/provider.dart';
+import '../../../core/storage/app_preferences_repository.dart';
+import '../../../core/storage/mcp_repository.dart';
+import '../../../core/models/mcp/mcp_server.dart';
 
 class ChatViewModel extends ChangeNotifier {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -87,9 +90,49 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _shouldPersistSelections() {
+    final prefs = AppPreferencesRepository.instance.currentPreferences;
+    // If preferAgentSettings is on and agent has an override, use it
+    if (prefs.preferAgentSettings && _selectedAgent?.persistChatSelection != null) {
+      return _selectedAgent!.persistChatSelection!;
+    }
+    return prefs.persistChatSelection;
+  }
+
+  Future<List<String>> _snapshotEnabledToolNames(AIAgent agent) async {
+    try {
+      final mcpRepo = await MCPRepository.init();
+      final servers = agent.activeMCPServerIds
+          .map((id) => mcpRepo.getItem(id))
+          .whereType<MCPServer>()
+          .toList();
+      final names = <String>{};
+      for (final s in servers) {
+        for (final t in s.tools) {
+          if (t.enabled) names.add(t.name);
+        }
+      }
+      return names.toList();
+    } catch (_) {
+      return const <String>[];
+    }
+  }
+
   void selectModel(String providerName, String modelName) {
     _selectedProviderName = providerName;
     _selectedModelName = modelName;
+
+    // Persist selection into current conversation if preference allows
+    if (_currentSession != null && _shouldPersistSelections()) {
+      _currentSession = _currentSession!.copyWith(
+        providerName: providerName,
+        modelName: modelName,
+        updatedAt: DateTime.now(),
+      );
+      // ignore: discarded_futures
+      _chatRepository?.saveConversation(_currentSession!);
+    }
+
     notifyListeners();
   }
 
@@ -162,21 +205,62 @@ class ChatViewModel extends ChangeNotifier {
           '${modelInput.isEmpty ? '' : '$modelInput\n'}[Attachments: $names]';
     }
 
-    // Select provider/model based on current selection, fallback to first available
+    // Select provider/model based on preferences (persisted per conversation if enabled)
     final providerRepo = await ProviderRepository.init();
     final providers = providerRepo.getProviders();
-    String providerName =
-        _selectedProviderName ?? (providers.isNotEmpty ? providers.first.name : '');
-    String modelName = _selectedModelName ??
-        ((providers.isNotEmpty && providers.first.models.isNotEmpty)
-            ? providers.first.models.first.name
-            : '');
+
+    final persist = _shouldPersistSelections();
+    String providerName;
+    String modelName;
+
+    if (persist &&
+        _currentSession?.providerName != null &&
+        _currentSession?.modelName != null) {
+      providerName = _currentSession!.providerName!;
+      modelName = _currentSession!.modelName!;
+    } else {
+      providerName =
+          _selectedProviderName ?? (providers.isNotEmpty ? providers.first.name : '');
+      modelName = _selectedModelName ??
+          ((providers.isNotEmpty && providers.first.models.isNotEmpty)
+              ? providers.first.models.first.name
+              : '');
+      // If persistence is enabled, store selection on the conversation
+      if (_currentSession != null && persist) {
+        _currentSession = _currentSession!.copyWith(
+          providerName: providerName,
+          modelName: modelName,
+          updatedAt: DateTime.now(),
+        );
+        await _chatRepository!.saveConversation(_currentSession!);
+      }
+    }
+
+    // Prepare allowed tool names if persistence is enabled
+    List<String>? allowedToolNames;
+    if (persist) {
+      if (_currentSession!.enabledToolNames == null) {
+        // Snapshot currently enabled MCP tools from agent for this conversation
+        final agent = _selectedAgent ??
+            AIAgent(
+              id: const Uuid().v4(),
+              name: 'Default Agent',
+              systemPrompt: '',
+            );
+        final names = await _snapshotEnabledToolNames(agent);
+        _currentSession = _currentSession!.copyWith(
+          enabledToolNames: names,
+          updatedAt: DateTime.now(),
+        );
+        await _chatRepository!.saveConversation(_currentSession!);
+      }
+      allowedToolNames = _currentSession!.enabledToolNames;
+    }
 
     final reply = await ChatService.generateReply(
       userText: modelInput,
       history: _currentSession!.messages,
-      agent:
-          _selectedAgent ??
+      agent: _selectedAgent ??
           AIAgent(
             id: const Uuid().v4(),
             name: 'Default Agent',
@@ -184,6 +268,7 @@ class ChatViewModel extends ChangeNotifier {
           ),
       providerName: providerName,
       modelName: modelName,
+      allowedToolNames: allowedToolNames,
     );
 
     final modelMessage = ChatMessage(
@@ -315,15 +400,55 @@ class ChatViewModel extends ChangeNotifier {
     _isGenerating = true;
     notifyListeners();
 
-    // Resolve provider/model for regeneration
+    // Resolve provider/model for regeneration with persistence consideration
     final providerRepo = await ProviderRepository.init();
     final providers = providerRepo.getProviders();
-    final providerName =
-        _selectedProviderName ?? (providers.isNotEmpty ? providers.first.name : '');
-    final modelName = _selectedModelName ??
-        ((providers.isNotEmpty && providers.first.models.isNotEmpty)
-            ? providers.first.models.first.name
-            : '');
+
+    final persist = _shouldPersistSelections();
+    String providerName;
+    String modelName;
+
+    if (persist &&
+        _currentSession?.providerName != null &&
+        _currentSession?.modelName != null) {
+      providerName = _currentSession!.providerName!;
+      modelName = _currentSession!.modelName!;
+    } else {
+      providerName =
+          _selectedProviderName ?? (providers.isNotEmpty ? providers.first.name : '');
+      modelName = _selectedModelName ??
+          ((providers.isNotEmpty && providers.first.models.isNotEmpty)
+              ? providers.first.models.first.name
+              : '');
+      if (_currentSession != null && persist) {
+        _currentSession = _currentSession!.copyWith(
+          providerName: providerName,
+          modelName: modelName,
+          updatedAt: DateTime.now(),
+        );
+        await _chatRepository!.saveConversation(_currentSession!);
+      }
+    }
+
+    // Allowed tools from conversation if persisted
+    List<String>? allowedToolNames;
+    if (persist) {
+      if (_currentSession!.enabledToolNames == null) {
+        final agent = _selectedAgent ??
+            AIAgent(
+              id: const Uuid().v4(),
+              name: 'Default Agent',
+              systemPrompt: '',
+            );
+        final names = await _snapshotEnabledToolNames(agent);
+        _currentSession = _currentSession!.copyWith(
+          enabledToolNames: names,
+          updatedAt: DateTime.now(),
+        );
+        await _chatRepository!.saveConversation(_currentSession!);
+      }
+      allowedToolNames = _currentSession!.enabledToolNames;
+    }
 
     final reply = await ChatService.generateReply(
       userText: userText,
@@ -336,6 +461,7 @@ class ChatViewModel extends ChangeNotifier {
           ),
       providerName: providerName,
       modelName: modelName,
+      allowedToolNames: allowedToolNames,
     );
 
     final modelMessage = ChatMessage(
