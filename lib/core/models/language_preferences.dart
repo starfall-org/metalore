@@ -44,7 +44,7 @@ class LanguagePreferences {
       if (json.trim().isEmpty) {
         return LanguagePreferences.defaults();
       }
-      
+
       // Handle both proper JSON and the old string format
       if (json.trim().startsWith('{')) {
         // Try to parse as proper JSON first
@@ -65,12 +65,18 @@ class LanguagePreferences {
       // Simple JSON parser for our specific format
       final Map<String, dynamic> data = {};
       final cleanJson = json.trim();
-      
+
       // Extract values using regex for more reliable parsing
-      final languageCodeMatch = RegExp(r'"languageCode":"([^"]*)"').firstMatch(cleanJson);
-      final countryCodeMatch = RegExp(r'"countryCode":"([^"]*)"').firstMatch(cleanJson);
-      final autoDetectMatch = RegExp(r'"autoDetectLanguage":(true|false)').firstMatch(cleanJson);
-      
+      final languageCodeMatch = RegExp(
+        r'"languageCode":"([^"]*)"',
+      ).firstMatch(cleanJson);
+      final countryCodeMatch = RegExp(
+        r'"countryCode":"([^"]*)"',
+      ).firstMatch(cleanJson);
+      final autoDetectMatch = RegExp(
+        r'"autoDetectLanguage":(true|false)',
+      ).firstMatch(cleanJson);
+
       if (languageCodeMatch != null) {
         data['languageCode'] = languageCodeMatch.group(1);
       }
@@ -80,7 +86,7 @@ class LanguagePreferences {
       if (autoDetectMatch != null) {
         data['autoDetectLanguage'] = autoDetectMatch.group(1) == 'true';
       }
-      
+
       return data;
     } catch (e) {
       return {};
@@ -91,16 +97,19 @@ class LanguagePreferences {
     // Fallback to the old string format parsing
     final parts = json.split(',');
     final Map<String, dynamic> data = {};
-    
+
     for (final part in parts) {
       final keyValue = part.split(':');
       if (keyValue.length == 2) {
         final key = keyValue[0].trim().replaceAll('{', '').replaceAll('"', '');
-        final value = keyValue[1].trim().replaceAll('}', '').replaceAll('"', '');
+        final value = keyValue[1]
+            .trim()
+            .replaceAll('}', '')
+            .replaceAll('"', '');
         data[key] = value;
       }
     }
-    
+
     return LanguagePreferences.fromJson(data);
   }
 
@@ -108,7 +117,7 @@ class LanguagePreferences {
     if (autoDetectLanguage || languageCode == 'auto') {
       return null; // Use auto-detection
     }
-    
+
     if (countryCode != null) {
       return Locale(languageCode, countryCode);
     }
@@ -143,6 +152,8 @@ class LanguagePreferences {
 
   @override
   int get hashCode {
-    return languageCode.hashCode ^ countryCode.hashCode ^ autoDetectLanguage.hashCode;
+    return languageCode.hashCode ^
+        countryCode.hashCode ^
+        autoDetectLanguage.hashCode;
   }
 }

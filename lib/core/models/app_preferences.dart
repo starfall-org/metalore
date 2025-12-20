@@ -5,41 +5,62 @@ import 'dart:convert';
 /// - preferAgentSettings: when true, agent-level overrides take precedence over global preferences
 class AppPreferences {
   final bool persistChatSelection;
-  final bool preferAgentSettings;
+  final VibrationSettings vibrationSettings;
+  final bool hideStatusBar;
+  final bool hideNavigationBar;
+  final bool debugMode;
 
   const AppPreferences({
     required this.persistChatSelection,
-    required this.preferAgentSettings,
+    required this.vibrationSettings,
+    this.hideStatusBar = false,
+    this.hideNavigationBar = false,
+    this.debugMode = false,
   });
 
   factory AppPreferences.defaults() {
-    return const AppPreferences(
-      persistChatSelection: false, // mặc định KHÔNG lưu
-      preferAgentSettings: false,  // mặc định ưu tiên Global settings
+    return AppPreferences(
+      persistChatSelection: false,
+      vibrationSettings: VibrationSettings.defaults(),
+      hideStatusBar: false,
+      hideNavigationBar: false,
+      debugMode: false,
     );
   }
 
   AppPreferences copyWith({
     bool? persistChatSelection,
-    bool? preferAgentSettings,
+    VibrationSettings? vibrationSettings,
+    bool? hideStatusBar,
+    bool? hideNavigationBar,
+    bool? debugMode,
   }) {
     return AppPreferences(
       persistChatSelection: persistChatSelection ?? this.persistChatSelection,
-      preferAgentSettings: preferAgentSettings ?? this.preferAgentSettings,
+      vibrationSettings: vibrationSettings ?? this.vibrationSettings,
+      hideStatusBar: hideStatusBar ?? this.hideStatusBar,
+      hideNavigationBar: hideNavigationBar ?? this.hideNavigationBar,
+      debugMode: debugMode ?? this.debugMode,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'persistChatSelection': persistChatSelection,
-      'preferAgentSettings': preferAgentSettings,
+      'vibrationSettings': vibrationSettings.toJson(),
+      'hideStatusBar': hideStatusBar,
+      'hideNavigationBar': hideNavigationBar,
+      'debugMode': debugMode,
     };
   }
 
   factory AppPreferences.fromJson(Map<String, dynamic> json) {
     return AppPreferences(
       persistChatSelection: (json['persistChatSelection'] as bool?) ?? false,
-      preferAgentSettings: (json['preferAgentSettings'] as bool?) ?? false,
+      vibrationSettings: VibrationSettings.fromJson(json['vibrationSettings']),
+      hideStatusBar: (json['hideStatusBar'] as bool?) ?? false,
+      hideNavigationBar: (json['hideNavigationBar'] as bool?) ?? false,
+      debugMode: (json['debugMode'] as bool?) ?? false,
     );
   }
 
@@ -58,5 +79,69 @@ class AppPreferences {
     } catch (_) {
       return AppPreferences.defaults();
     }
+  }
+}
+
+class VibrationSettings {
+  final bool enable;
+  final bool onHoldChatConversation;
+  final bool onNewMessage;
+  final bool onGenerateToken;
+  final bool onDeleteItem;
+
+  const VibrationSettings({
+    required this.enable,
+    required this.onHoldChatConversation,
+    required this.onNewMessage,
+    required this.onGenerateToken,
+    required this.onDeleteItem,
+  });
+
+  factory VibrationSettings.defaults() {
+    return const VibrationSettings(
+      enable: false,
+      onHoldChatConversation: false,
+      onNewMessage: false,
+      onGenerateToken: false,
+      onDeleteItem: false,
+    );
+  }
+
+  VibrationSettings copyWith({
+    bool? enable,
+    bool? onHoldChatConversation,
+    bool? onNewMessage,
+    bool? onGenerateToken,
+    bool? onDeleteItem,
+  }) {
+    return VibrationSettings(
+      enable: enable ?? this.enable,
+      onHoldChatConversation:
+          onHoldChatConversation ?? this.onHoldChatConversation,
+      onNewMessage: onNewMessage ?? this.onNewMessage,
+      onGenerateToken: onGenerateToken ?? this.onGenerateToken,
+      onDeleteItem: onDeleteItem ?? this.onDeleteItem,
+    );
+  }
+
+  static VibrationSettings fromJson(Map<String, dynamic> json) {
+    return VibrationSettings(
+      enable: (json['enable'] as bool?) ?? false,
+      onHoldChatConversation:
+          (json['onHoldChatConversation'] as bool?) ?? false,
+      onNewMessage: (json['onNewMessage'] as bool?) ?? false,
+      onGenerateToken: (json['onGenerateToken'] as bool?) ?? false,
+      onDeleteItem: (json['onDeleteItem'] as bool?) ?? false,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'enable': enable,
+      'onHoldChatConversation': onHoldChatConversation,
+      'onNewMessage': onNewMessage,
+      'onGenerateToken': onGenerateToken,
+      'onDeleteItem': onDeleteItem,
+    };
   }
 }

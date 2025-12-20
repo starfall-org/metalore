@@ -16,24 +16,36 @@ import '../models/mcp/mcp_server.dart';
 class ChatService {
   // Thu thập MCP tools ưu tiên cache; cập nhật khi dùng.
   static Future<List<AIToolFunction>> _collectMcpTools(AIAgent agent) async {
-    if (agent.activeMCPServerIds.isEmpty) {
+    if (agent.activeMCPServers.isEmpty) {
       return const <AIToolFunction>[];
     }
     try {
       final mcpRepository = await MCPRepository.init();
       final mcpService = MCPService();
 
-      final servers = agent.activeMCPServerIds
-          .map((id) => mcpRepository.getItem(id))
+      final servers = agent.activeMCPServers
+          .map((i) => mcpRepository.getItem(i.id))
           .whereType<MCPServer>()
           .toList();
+
       if (servers.isEmpty) return const <AIToolFunction>[];
 
+      // Build a map of allowed tools per server for easy lookup
+      final allowedToolsMap = {
+        for (var s in agent.activeMCPServers) s.id: s.activeToolIds.toSet(),
+      };
+
+      List<MCPTool> filterTools(List<MCPServer> serversToFilter) {
+        return serversToFilter.expand((s) {
+          final allowedNames = allowedToolsMap[s.id] ?? {};
+          return s.tools.where(
+            (t) => t.enabled && allowedNames.contains(t.name),
+          );
+        }).toList();
+      }
+
       // Dùng cache nếu có
-      List<MCPTool> cachedTools = servers
-          .expand((s) => s.tools)
-          .where((t) => t.enabled)
-          .toList();
+      List<MCPTool> cachedTools = filterTools(servers);
 
       if (cachedTools.isEmpty) {
         // Không có cache: fetch ngay và lưu lại
@@ -41,17 +53,15 @@ class ChatService {
           servers.map((s) async {
             try {
               final tools = await mcpService.fetchTools(s);
-              await mcpRepository.updateItem(s.copyWith(tools: tools));
-              return tools;
+              final updatedServer = s.copyWith(tools: tools);
+              await mcpRepository.updateItem(updatedServer);
+              return updatedServer;
             } catch (_) {
-              return <MCPTool>[];
+              return s;
             }
           }),
         );
-        cachedTools = fetchedLists
-            .expand((e) => e)
-            .where((t) => t.enabled)
-            .toList();
+        cachedTools = filterTools(fetchedLists);
       } else {
         // Có cache: làm mới ở nền khi được dùng, không chặn luồng chat
         // ignore: discarded_futures
@@ -100,13 +110,14 @@ class ChatService {
       }
     }
     if (selected != null) {
-      enableSearch = selected.builtinWebSearch;
-      enableFetch = selected.builtinWebFetch;
+      enableSearch = selected.builtInTools.search;
+      enableFetch = selected.builtInTools.urlContext;
     }
 
     final builtin = <AIToolFunction>[];
     if (enableSearch) {
       builtin.add(
+        /// TODO
         const AIToolFunction(
           name: 'web_search',
           description:
@@ -205,7 +216,7 @@ class ChatService {
           .toList();
     }
 
-    final systemInstruction = agent.systemPrompt;
+    final systemInstruction = agent.config.systemPrompt;
 
     switch (provider.type) {
       case ProviderType.google:
@@ -315,7 +326,7 @@ class ChatService {
         await for (final resp in stream) {
           yield resp.text;
         }
-              break;
+        break;
 
       case ProviderType.anthropic:
         final service = Anthropic(
@@ -346,7 +357,7 @@ class ChatService {
         await for (final resp in stream) {
           yield resp.text;
         }
-              break;
+        break;
 
       case ProviderType.ollama:
         final service = Ollama(
@@ -374,7 +385,7 @@ class ChatService {
         await for (final resp in stream) {
           yield resp.text;
         }
-              break;
+        break;
     }
   }
 

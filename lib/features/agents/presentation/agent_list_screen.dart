@@ -2,11 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../core/storage/agent_repository.dart';
 import '../../../core/models/ai_agent.dart';
-import 'add_agent_screen.dart';
-import 'agent_detailed_screen.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../core/widgets/item_card.dart';
+import 'add_agent_screen.dart';
+import 'agent_detailed_screen.dart';
 
 class AgentListScreen extends StatefulWidget {
   const AgentListScreen({super.key});
@@ -90,7 +90,7 @@ class _AgentListScreenState extends State<AgentListScreen> {
                 final agent = _agents[index];
                 return ItemCard(
                   title: agent.name,
-                  subtitle: agent.systemPrompt,
+                  subtitle: agent.config.systemPrompt,
                   icon: CircleAvatar(
                     backgroundColor: Theme.of(
                       context,

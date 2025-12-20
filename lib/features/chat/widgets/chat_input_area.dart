@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../../../core/models/ai_model.dart';
 import 'attachment_options_drawer.dart';
 import 'menu_drawer.dart';
 
@@ -13,6 +14,7 @@ class ChatInputArea extends StatelessWidget {
   final void Function(int index) onRemoveAttachment;
   // Nút mở drawer chọn model
   final VoidCallback onOpenModelPicker;
+  final AIModel? selectedAIModel;
 
   // Trạng thái sinh câu trả lời để disable input/nút gửi
   final bool isGenerating;
@@ -30,6 +32,7 @@ class ChatInputArea extends StatelessWidget {
     required this.onPickAttachments,
     required this.onRemoveAttachment,
     required this.onOpenModelPicker,
+    this.selectedAIModel,
     this.isGenerating = false,
     this.onMicTap,
     this.onOpenMenu,
@@ -67,7 +70,9 @@ class ChatInputArea extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: Container(
-        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+        ),
         child: Container(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           decoration: BoxDecoration(
@@ -115,7 +120,7 @@ class ChatInputArea extends StatelessWidget {
                     children: [
                       IconButton(
                         icon: Icon(
-                          Icons.add_circle_outline,
+                          Icons.add,
                           color: Theme.of(context).iconTheme.color,
                         ),
                         onPressed: () {
@@ -129,7 +134,7 @@ class ChatInputArea extends StatelessWidget {
                       ),
                       IconButton(
                         icon: Icon(
-                          Icons.menu,
+                          Icons.settings_input_component,
                           color: Theme.of(context).iconTheme.color,
                         ),
                         onPressed: () {
@@ -142,21 +147,64 @@ class ChatInputArea extends StatelessWidget {
                   // Right side buttons
                   Row(
                     children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.smart_toy_outlined,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
+                      ElevatedButton(
                         onPressed: onOpenModelPicker,
-                        tooltip: 'model_picker.title'.tr(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (selectedAIModel != null) ...[
+                              if (selectedAIModel!.icon != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Image.asset(
+                                    selectedAIModel!.icon!,
+                                    width: 20,
+                                    height: 20,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Icon(Icons.token, size: 20),
+                                  ),
+                                )
+                              else
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Icon(Icons.token, size: 20),
+                                ),
+                              Flexible(
+                                child: Text(
+                                  selectedAIModel!.name,
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(
+                                    color: Theme.of(context).iconTheme.color,
+                                  ),
+                                ),
+                              ),
+                            ] else ...[
+                              const Padding(
+                                padding: EdgeInsets.only(right: 8.0),
+                                child: Icon(Icons.token, size: 20),
+                              ),
+                              Text(
+                                'model_picker.title'.tr(),
+                                style: TextStyle(
+                                  color: Theme.of(context).iconTheme.color,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
                       Container(
                         height: 40,
                         width: 40,
                         decoration: BoxDecoration(
                           color: canSend
-                              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.1)
-                              : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
+                              ? Theme.of(
+                                  context,
+                                ).colorScheme.primary.withValues(alpha: 0.1)
+                              : Theme.of(
+                                  context,
+                                ).colorScheme.surface.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                         ),
                         child: IconButton(
@@ -164,7 +212,9 @@ class ChatInputArea extends StatelessWidget {
                             Icons.send,
                             color: canSend
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
+                                : Theme.of(
+                                    context,
+                                  ).iconTheme.color?.withValues(alpha: 0.5),
                             size: 20,
                           ),
                           onPressed: canSend

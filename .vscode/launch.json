@@ -37,6 +37,11 @@
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
+            "args": [
+                "--web-port",
+                "8080",
+                "--verbose" 
+            ],
             "env": {
                 "GRADLE_USER_HOME": "/teamspace/studios/this_studio/.cache/gradle",
                 "PUB_CACHE": "/teamspace/studios/this_studio/.cache/pub-cache"

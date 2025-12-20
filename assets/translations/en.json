@@ -185,10 +185,30 @@
     "persist_off": "Always Off"
   },
   "tts": {
-    "title": "TTS Profiles"
+    "title": "Speech Services",
+    "add_tts": "Add Speech Service",
+    "edit_tts": "Edit Speech Service",
+    "name": "Name",
+    "provider": "Provider",
+    "language": "Language",
+    "voice": "Voice",
+    "speed": "Speed",
+    "pitch": "Pitch",
+    "volume": "Volume",
+    "delete_confirm": "Are you sure you want to delete {}?",
+    "tts_deleted": "Service {} deleted"
   },
   "mcp": {
-    "title": "MCP Servers"
+    "title": "MCP Servers",
+    "add_mcp": "Add MCP Server",
+    "edit_mcp": "Edit MCP Server",
+    "name": "Name",
+    "url": "URL",
+    "protocol": "Protocol",
+    "streamable": "Stream",
+    "sse": "SSE",
+    "delete_confirm": "Are you sure you want to delete {}?",
+    "mcp_deleted": "Server {} deleted"
   },
   "message": {
     "copy": "Copy",

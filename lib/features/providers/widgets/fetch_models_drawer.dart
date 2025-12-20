@@ -142,38 +142,40 @@ class FetchModelsDrawer extends StatelessWidget {
                           ],
                         ),
                       )
-                    : ListView.separated(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: availableModels.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 8),
-                        itemBuilder: (context, index) {
-                          final model = availableModels[index];
-                          final isSelected = selectedModels.any(
-                            (m) => m.name == model.name,
-                          );
+                    : SafeArea(
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: availableModels.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            final model = availableModels[index];
+                            final isSelected = selectedModels.any(
+                              (m) => m.name == model.name,
+                            );
 
-                          return ModelCard(
-                            model: model,
-                            onTap: () => onShowCapabilities(model),
-                            trailing: IconButton(
-                              icon: Icon(
-                                isSelected ? Icons.close : Icons.add_circle,
-                                color: isSelected
-                                    ? Theme.of(context).colorScheme.error
-                                    : Theme.of(context).colorScheme.primary,
-                                size: 24,
+                            return ModelCard(
+                              model: model,
+                              onTap: () => onShowCapabilities(model),
+                              trailing: IconButton(
+                                icon: Icon(
+                                  isSelected ? Icons.close : Icons.add_circle,
+                                  color: isSelected
+                                      ? Theme.of(context).colorScheme.error
+                                      : Theme.of(context).colorScheme.primary,
+                                  size: 24,
+                                ),
+                                onPressed: () {
+                                  if (isSelected) {
+                                    viewModel.removeModelDirectly(model);
+                                  } else {
+                                    viewModel.addModelDirectly(model);
+                                  }
+                                },
                               ),
-                              onPressed: () {
-                                if (isSelected) {
-                                  viewModel.removeModelDirectly(model);
-                                } else {
-                                  viewModel.addModelDirectly(model);
-                                }
-                              },
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
               ),
             ],

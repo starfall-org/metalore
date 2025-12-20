@@ -6,11 +6,13 @@ import '../widgets/chat_drawer.dart';
 import '../widgets/chat_input_area.dart';
 import '../widgets/chat_message_list.dart';
 import '../widgets/models_drawer.dart';
-import 'chat_viewmodel.dart';
+import '../viewmodel/chat_viewmodel.dart';
 import '../../../core/widgets/sidebar_right.dart';
 import '../../../core/widgets/empty_state.dart';
 import 'dart:io';
 
+
+/// TODO: Add short comments describing the feature of each code blocks for easier debug
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
 
@@ -71,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 Text(
-                  _viewModel.selectedAgent?.name ?? 'Default Agent',
+                  _viewModel.selectedAgent?.name ?? 'Default',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 12,
@@ -125,6 +127,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   onOpenModelPicker: () => _openModelPicker(context),
                   onMicTap: _viewModel.speakLastModelMessage,
                   onOpenMenu: _viewModel.openDrawer,
+                  selectedAIModel: _viewModel.selectedAIModel,
                 ),
               ),
             ],

@@ -97,8 +97,8 @@ class AgentDetailedScreen extends StatelessWidget {
                 ),
               ),
               child: Text(
-                agent.systemPrompt.isNotEmpty
-                    ? agent.systemPrompt
+                agent.config.systemPrompt.isNotEmpty
+                    ? agent.config.systemPrompt
                     : 'No system prompt configured.',
                 style: const TextStyle(height: 1.5),
               ),
@@ -119,32 +119,32 @@ class AgentDetailedScreen extends StatelessWidget {
                 _buildInfoCard(
                   context,
                   'agents.temperature'.tr(),
-                  agent.temperature?.toString() ?? 'Default',
+                  agent.config.temperature?.toString() ?? 'Default',
                 ),
                 _buildInfoCard(
                   context,
                   'agents.top_p'.tr(),
-                  agent.topP?.toString() ?? 'Default',
+                  agent.config.topP?.toString() ?? 'Default',
                 ),
                 _buildInfoCard(
                   context,
                   'agents.top_k'.tr(),
-                  agent.topK?.toString() ?? 'Default',
+                  agent.config.topK?.toString() ?? 'Default',
                 ),
                 _buildInfoCard(
                   context,
                   'Stream',
-                  agent.enableStream ? 'ON' : 'OFF',
+                  agent.config.enableStream ? 'ON' : 'OFF',
                 ),
                 _buildInfoCard(
                   context,
                   'agents.context_window'.tr(),
-                  agent.contextWindow.toString(),
+                  agent.config.contextWindow.toString(),
                 ),
                 _buildInfoCard(
                   context,
                   'agents.max_tokens'.tr(),
-                  agent.maxTokens.toString(),
+                  agent.config.maxTokens.toString(),
                 ),
               ],
             ),
@@ -152,7 +152,7 @@ class AgentDetailedScreen extends StatelessWidget {
             _buildInfoCard(
               context,
               'agents.conversation_length'.tr(),
-              agent.conversationLength.toString(),
+              agent.config.conversationLength.toString(),
             ),
 
             const SizedBox(height: 32),

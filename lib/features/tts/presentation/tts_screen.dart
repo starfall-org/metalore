@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/storage/tts_repository.dart';
-import '../../../core/models/tts_profile.dart';
+import '../../../core/models/speech_service.dart';
 import 'add_tts_profile_screen.dart';
 
 class TTSScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class TTSScreen extends StatefulWidget {
 }
 
 class _TTSScreenState extends State<TTSScreen> {
-  List<TTSProfile> _profiles = [];
+  List<SpeechService> _profiles = [];
   bool _isLoading = true;
   late TTSRepository _repository;
 
@@ -70,7 +70,7 @@ class _TTSScreenState extends State<TTSScreen> {
     );
   }
 
-  Widget _buildProfileTile(TTSProfile profile) {
+  Widget _buildProfileTile(SpeechService profile) {
     return Dismissible(
       key: Key(profile.id),
       background: Container(

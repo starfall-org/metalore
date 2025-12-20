@@ -1,9 +1,22 @@
-enum ChatRole { user, model, system, tool }
+enum ChatRole {
+  user,
+  model,
+  system,
+  tool,
+  developer,
+} // developer is replacement for system role in OpenAI's official API
 
 class ChatMessage {
+  /// auto-generated unique ID
   final String id;
+
+  /// Role of the message
   final ChatRole role;
+
+  /// Text content of the message
   final String content;
+
+  /// Timestamp of the message
   final DateTime timestamp;
 
   /// Paths (or URIs) attached by the user
@@ -43,12 +56,14 @@ class ChatMessage {
       role: ChatRole.values.firstWhere((e) => e.name == json['role']),
       content: (json['content'] ?? '') as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
-      attachments: (json['attachments'] as List<dynamic>?)
+      attachments:
+          (json['attachments'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
       reasoningContent: json['reasoningContent'] as String?,
-      aiMedia: (json['aiMedia'] as List<dynamic>?)
+      aiMedia:
+          (json['aiMedia'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],

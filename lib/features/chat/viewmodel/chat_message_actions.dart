@@ -1,25 +1,6 @@
 part of 'chat_viewmodel.dart';
 
-extension ChatViewModelActions on ChatViewModel {
-  Future<List<String>> _snapshotEnabledToolNames(AIAgent agent) async {
-    try {
-      final mcpRepo = await MCPRepository.init();
-      final servers = agent.activeMCPServerIds
-          .map((id) => mcpRepo.getItem(id))
-          .whereType<MCPServer>()
-          .toList();
-      final names = <String>{};
-      for (final s in servers) {
-        for (final t in s.tools) {
-          if (t.enabled) names.add(t.name);
-        }
-      }
-      return names.toList();
-    } catch (_) {
-      return const <String>[];
-    }
-  }
-
+extension ChatViewModelMessageActions on ChatViewModel {
   Future<void> handleSubmitted(String text, BuildContext context) async {
     if (((text.trim().isEmpty) && pendingAttachments.isEmpty) ||
         currentSession == null) {
@@ -82,8 +63,10 @@ extension ChatViewModelActions on ChatViewModel {
       modelName = currentSession!.modelName!;
     } else {
       providerName =
-          selectedProviderName ?? (providersList.isNotEmpty ? providersList.first.name : '');
-      modelName = selectedModelName ??
+          selectedProviderName ??
+          (providersList.isNotEmpty ? providersList.first.name : '');
+      modelName =
+          selectedModelName ??
           ((providersList.isNotEmpty && providersList.first.models.isNotEmpty)
               ? providersList.first.models.first.name
               : '');
@@ -103,11 +86,12 @@ extension ChatViewModelActions on ChatViewModel {
     if (persist) {
       if (currentSession!.enabledToolNames == null) {
         // Snapshot currently enabled MCP tools from agent for this conversation
-        final agent = selectedAgent ??
+        final agent =
+            selectedAgent ??
             AIAgent(
               id: const Uuid().v4(),
               name: 'Default Agent',
-              systemPrompt: '',
+              config: RequestConfig(systemPrompt: '', enableStream: true),
             );
         final names = await _snapshotEnabledToolNames(agent);
         currentSession = currentSession!.copyWith(
@@ -119,18 +103,19 @@ extension ChatViewModelActions on ChatViewModel {
       allowedToolNames = currentSession!.enabledToolNames;
     }
 
-    final doStream = selectedAgent?.enableStream ?? true;
+    final doStream = selectedAgent?.config.enableStream ?? true;
     if (doStream) {
       final stream = ChatService.generateStream(
         userText: modelInput,
         history: currentSession!.messages
             .take(currentSession!.messages.length - 1)
             .toList(),
-        agent: selectedAgent ??
+        agent:
+            selectedAgent ??
             AIAgent(
               id: const Uuid().v4(),
               name: 'Default Agent',
-              systemPrompt: '',
+              config: RequestConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -188,11 +173,12 @@ extension ChatViewModelActions on ChatViewModel {
         history: currentSession!.messages
             .take(currentSession!.messages.length - 1)
             .toList(),
-        agent: selectedAgent ??
+        agent:
+            selectedAgent ??
             AIAgent(
               id: const Uuid().v4(),
               name: 'Default Agent',
-              systemPrompt: '',
+              config: RequestConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -216,88 +202,6 @@ extension ChatViewModelActions on ChatViewModel {
       await chatRepository!.saveConversation(currentSession!);
       scrollToBottom();
     }
-  }
-
-  void scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
-  Future<void> pickAttachments(BuildContext context) async {
-    try {
-      final result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.image,
-      );
-      final paths = result?.paths.whereType<String>().toList() ?? const [];
-      if (paths.isEmpty) return;
-
-      for (final p in paths) {
-        if (!pendingAttachments.contains(p)) {
-          pendingAttachments.add(p);
-        }
-      }
-      notify();
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'chat.unable_pick'.tr(namedArgs: {'error': e.toString()}),
-            ),
-          ),
-        );
-      }
-    }
-  }
-
-  void removeAttachmentAt(int index) {
-    if (index < 0 || index >= pendingAttachments.length) return;
-    pendingAttachments.removeAt(index);
-    notify();
-  }
-
-  String getTranscript() {
-    if (currentSession == null) return '';
-    return currentSession!.messages
-        .map((m) {
-          final who = m.role == ChatRole.user
-              ? 'role.you'.tr(context: scaffoldKey.currentContext!)
-              : (m.role == ChatRole.model
-                    ? (selectedAgent?.name ?? 'AI')
-                    : 'role.system'.tr(context: scaffoldKey.currentContext!));
-          return '$who: ${m.content}';
-        })
-        .join('\n\n');
-  }
-
-  Future<void> copyTranscript(BuildContext context) async {
-    final txt = getTranscript();
-    if (txt.isEmpty) return;
-    await Clipboard.setData(ClipboardData(text: txt));
-
-    if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('chat.copied'.tr())));
-    }
-  }
-
-  Future<void> clearChat() async {
-    if (currentSession == null) return;
-    currentSession = currentSession!.copyWith(
-      messages: [],
-      updatedAt: DateTime.now(),
-    );
-    notify();
-    await chatRepository!.saveConversation(currentSession!);
   }
 
   Future<void> regenerateLast(BuildContext context) async {
@@ -340,8 +244,10 @@ extension ChatViewModelActions on ChatViewModel {
       modelName = currentSession!.modelName!;
     } else {
       providerName =
-          selectedProviderName ?? (providersList.isNotEmpty ? providersList.first.name : '');
-      modelName = selectedModelName ??
+          selectedProviderName ??
+          (providersList.isNotEmpty ? providersList.first.name : '');
+      modelName =
+          selectedModelName ??
           ((providersList.isNotEmpty && providersList.first.models.isNotEmpty)
               ? providersList.first.models.first.name
               : '');
@@ -358,11 +264,12 @@ extension ChatViewModelActions on ChatViewModel {
     List<String>? allowedToolNames;
     if (persist) {
       if (currentSession!.enabledToolNames == null) {
-        final agent = selectedAgent ??
+        final agent =
+            selectedAgent ??
             AIAgent(
               id: const Uuid().v4(),
               name: 'Default Agent',
-              systemPrompt: '',
+              config: RequestConfig(systemPrompt: '', enableStream: true),
             );
         final names = await _snapshotEnabledToolNames(agent);
         currentSession = currentSession!.copyWith(
@@ -374,16 +281,17 @@ extension ChatViewModelActions on ChatViewModel {
       allowedToolNames = currentSession!.enabledToolNames;
     }
 
-    final doStream = selectedAgent?.enableStream ?? true;
+    final doStream = selectedAgent?.config.enableStream ?? true;
     if (doStream) {
       final stream = ChatService.generateStream(
         userText: userText,
         history: history,
-        agent: selectedAgent ??
+        agent:
+            selectedAgent ??
             AIAgent(
               id: const Uuid().v4(),
               name: 'Default Agent',
-              systemPrompt: '',
+              config: RequestConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -440,11 +348,12 @@ extension ChatViewModelActions on ChatViewModel {
       final reply = await ChatService.generateReply(
         userText: userText,
         history: history,
-        agent: selectedAgent ??
+        agent:
+            selectedAgent ??
             AIAgent(
               id: const Uuid().v4(),
               name: 'Default Agent',
-              systemPrompt: '',
+              config: RequestConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -469,120 +378,6 @@ extension ChatViewModelActions on ChatViewModel {
 
       await chatRepository!.saveConversation(currentSession!);
       scrollToBottom();
-    }
-  }
-
-  Future<void> speakLastModelMessage() async {
-    if (currentSession == null || currentSession!.messages.isEmpty) return;
-    final lastModel = currentSession!.messages.lastWhere(
-      (m) => m.role == ChatRole.model,
-      orElse: () => ChatMessage(
-        id: '',
-        role: ChatRole.model,
-        content: '',
-        timestamp: DateTime.now(),
-      ),
-    );
-    if (lastModel.content.isEmpty) return;
-    tts ??= FlutterTts();
-    await tts!.speak(lastModel.content);
-  }
-
-  void openDrawer() {
-    scaffoldKey.currentState?.openDrawer();
-  }
-
-  void openEndDrawer() {
-    scaffoldKey.currentState?.openEndDrawer();
-  }
-
-  void closeEndDrawer() {
-    scaffoldKey.currentState?.closeEndDrawer();
-  }
-
-  void setInspectingAttachments(List<String> attachments) {
-    inspectingAttachments
-      ..clear()
-      ..addAll(attachments);
-    notify();
-  }
-
-  void openAttachmentsSidebar(List<String> attachments) {
-    setInspectingAttachments(attachments);
-    openEndDrawer();
-  }
-
-  Future<void> copyMessage(BuildContext context, ChatMessage message) async {
-    if (message.content.trim().isEmpty) return;
-    await Clipboard.setData(ClipboardData(text: message.content));
-    if (context.mounted) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('chat.copied'.tr())));
-    }
-  }
-
-  Future<void> deleteMessage(ChatMessage message) async {
-    if (currentSession == null) return;
-    final msgs = List<ChatMessage>.from(currentSession!.messages)
-      ..removeWhere((m) => m.id == message.id);
-    currentSession = currentSession!.copyWith(
-      messages: msgs,
-      updatedAt: DateTime.now(),
-    );
-    notify();
-    await chatRepository!.saveConversation(currentSession!);
-  }
-
-  Future<void> openEditMessageDialog(BuildContext context, ChatMessage message) async {
-    final result = await EditMessageDialog.show(
-      context,
-      initialContent: message.content,
-      initialAttachments: message.attachments,
-    );
-    if (result == null) return;
-    if (!context.mounted) return;
-    await applyMessageEdit(
-      message,
-      result.content,
-      result.attachments,
-      resend: result.resend,
-      context: context,
-    );
-  }
-
-  Future<void> applyMessageEdit(
-    ChatMessage original,
-    String newContent,
-    List<String> newAttachments, {
-    bool resend = false,
-    BuildContext? context,
-  }) async {
-    if (currentSession == null) return;
-
-    final msgs = List<ChatMessage>.from(currentSession!.messages);
-    final idx = msgs.indexWhere((m) => m.id == original.id);
-    if (idx == -1) return;
-
-    final updated = ChatMessage(
-      id: original.id,
-      role: original.role,
-      content: newContent,
-      timestamp: original.timestamp,
-      attachments: newAttachments,
-      reasoningContent: original.reasoningContent,
-      aiMedia: original.aiMedia,
-    );
-    msgs[idx] = updated;
-
-    currentSession = currentSession!.copyWith(
-      messages: msgs,
-      updatedAt: DateTime.now(),
-    );
-    notify();
-    await chatRepository!.saveConversation(currentSession!);
-
-    if (resend && context != null && context.mounted) {
-      await regenerateLast(context);
     }
   }
 }

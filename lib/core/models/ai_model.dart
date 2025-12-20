@@ -11,9 +11,12 @@ enum ModelIOType { text, video, image, audio }
 
 class AIModel {
   final String name;
+  final String displayName;
+  final String? icon;
   final ModelType type;
   final List<ModelIOType> input;
   final List<ModelIOType> output;
+  final ModelBuiltInTools builtInTools;
   final bool tool;
   final bool reasoning;
   final bool builtinWebSearch;
@@ -23,9 +26,12 @@ class AIModel {
 
   AIModel({
     required this.name,
+    required this.displayName,
+    this.icon,
     this.type = ModelType.textGeneration,
     this.input = const [ModelIOType.text],
     this.output = const [ModelIOType.text],
+    required this.builtInTools,
     this.tool = true,
     this.reasoning = false,
     this.builtinWebSearch = false,
@@ -37,9 +43,12 @@ class AIModel {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
+      'displayName': displayName,
+      if (icon != null) 'icon': icon,
       'type': type.name,
       'input': input.map((e) => e.name).toList(),
       'output': output.map((e) => e.name).toList(),
+      'builtInTools': builtInTools.toJson(),
       'tool': tool,
       'reasoning': reasoning,
       'builtinWebSearch': builtinWebSearch,
@@ -53,6 +62,8 @@ class AIModel {
     // Handle 'id' (OpenAI, Anthropic) and 'name' (Gemini, Ollama)
     final String name =
         json['id'] as String? ?? json['name'] as String? ?? 'unknown';
+    final String displayName =
+        json['displayName'] as String? ?? name.replaceAll('-', ' ');
 
     // Infer ModelType from name/id as providers don't return our internal enum values
     ModelType type = ModelType.textGeneration;
@@ -123,11 +134,18 @@ class AIModel {
 
     return AIModel(
       name: name,
+      displayName: displayName,
+      icon: json['icon'] as String?,
       type: type,
       input: json['input'] != null ? parseIOList(json['input']) : defaultInput,
       output: json['output'] != null
           ? parseIOList(json['output'])
           : defaultOutput,
+      builtInTools: ModelBuiltInTools(
+        urlContext: json['urlContext'] as bool,
+        search: json['search'] as bool,
+        codeExecution: json['codeExecution'] as bool,
+      ),
       tool: json['tool'] is bool ? json['tool'] : true,
       reasoning: reasoning,
       builtinWebSearch: json['builtinWebSearch'] is bool
@@ -163,4 +181,32 @@ List<ModelIOType> parseIOList(dynamic list) {
         .toList();
   }
   return [ModelIOType.text];
+}
+
+class ModelBuiltInTools {
+  final bool urlContext;
+  final bool search;
+  final bool codeExecution;
+
+  ModelBuiltInTools({
+    required this.urlContext,
+    required this.search,
+    required this.codeExecution,
+  });
+
+  factory ModelBuiltInTools.fromJson(Map<String, dynamic> json) {
+    return ModelBuiltInTools(
+      urlContext: json['urlContext'] as bool,
+      search: json['search'] as bool,
+      codeExecution: json['codeExecution'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'urlContext': urlContext,
+      'search': search,
+      'codeExecution': codeExecution,
+    };
+  }
 }

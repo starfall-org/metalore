@@ -1,17 +1,17 @@
-enum AIContentType { text, image, audio, video, file }
+enum AIContentType { text, image, audio, video }
 
 class AIContent {
   final AIContentType type;
   final String? text;
   final String? uri;
-  final String? dataBase64;
+  final String? filePath;
   final String? mimeType;
 
   const AIContent({
     required this.type,
     this.text,
     this.uri,
-    this.dataBase64,
+    this.filePath,
     this.mimeType,
   });
 
@@ -20,7 +20,7 @@ class AIContent {
       'type': type.name,
       'text': text,
       'uri': uri,
-      'dataBase64': dataBase64,
+      'filePath': filePath,
       'mimeType': mimeType,
     };
   }
@@ -33,7 +33,7 @@ class AIContent {
       ),
       text: json['text'] as String?,
       uri: json['uri'] as String?,
-      dataBase64: json['dataBase64'] as String?,
+      filePath: json['filePath'] as String?,
       mimeType: json['mimeType'] as String?,
     );
   }
@@ -94,7 +94,7 @@ class AIToolCall {
 }
 
 class AIMessage {
-  final String role; // system | user | assistant | tool
+  final String role; // system/developer | user | assistant | tool
   final List<AIContent> content;
   final String? name;
   final String? toolCallId;

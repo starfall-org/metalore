@@ -1,14 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
-import '../../../core/storage/agent_repository.dart';
-import '../../../core/storage/mcp_repository.dart';
 import '../../../core/models/ai_agent.dart';
-import '../../../core/models/mcp/mcp_server.dart';
+import '../viewmodel/add_agent_viewmodel.dart';
 import 'agent_detailed_screen.dart';
-
-enum _PersistOverride { followGlobal, forceOn, forceOff }
 
 class AddAgentScreen extends StatefulWidget {
   final AIAgent? agent;
@@ -20,107 +15,26 @@ class AddAgentScreen extends StatefulWidget {
 }
 
 class _AddAgentScreenState extends State<AddAgentScreen> {
-  final _nameController = TextEditingController();
-  final _promptController = TextEditingController();
-
-  bool _enableStream = true;
-  bool _isTopPEnabled = false;
-  double _topPValue = 1.0;
-  bool _isTopKEnabled = false;
-  double _topKValue = 40.0;
-  bool _isTemperatureEnabled = false;
-  double _temperatureValue = 0.7;
-  int _contextWindowValue = 60000;
-  int _conversationLengthValue = 10;
-  int _maxTokensValue = 4000;
-  List<MCPServer> _availableMCPServers = [];
-  final List<String> _selectedMCPServerIds = [];
-
-  // Persist selection override for this agent: null => follow global; true/false => override
-  _PersistOverride _persistOverride = _PersistOverride.followGlobal;
+  late AddAgentViewModel _viewModel;
 
   @override
   void initState() {
     super.initState();
-    if (widget.agent != null) {
-      final a = widget.agent!;
-      _nameController.text = a.name;
-      _promptController.text = a.systemPrompt;
-      _enableStream = a.enableStream;
-      if (a.topP != null) {
-        _isTopPEnabled = true;
-        _topPValue = a.topP!;
-      }
-      if (a.topK != null) {
-        _isTopKEnabled = true;
-        _topKValue = a.topK!;
-      }
-      if (a.temperature != null) {
-        _isTemperatureEnabled = true;
-        _temperatureValue = a.temperature!;
-      }
-      _contextWindowValue = a.contextWindow;
-      _conversationLengthValue = a.conversationLength;
-      _maxTokensValue = a.maxTokens;
-      _selectedMCPServerIds.addAll(a.activeMCPServerIds);
-
-      if (a.persistChatSelection == null) {
-        _persistOverride = _PersistOverride.followGlobal;
-      } else {
-        _persistOverride = a.persistChatSelection!
-            ? _PersistOverride.forceOn
-            : _PersistOverride.forceOff;
-      }
-    }
-    _loadMCPServers();
+    _viewModel = AddAgentViewModel();
+    _viewModel.initialize(widget.agent);
+    _viewModel.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _promptController.dispose();
+    _viewModel.dispose();
     super.dispose();
   }
 
-  Future<void> _loadMCPServers() async {
-    final mcpRepo = await MCPRepository.init();
-    setState(() {
-      _availableMCPServers = mcpRepo.getMCPServers();
-    });
-  }
-
   Future<void> _saveAgent() async {
-    if (_nameController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('agents.name'.tr())));
-      return;
-    }
-
-    final repository = await AgentRepository.init();
-    final newAgent = AIAgent(
-      id: widget.agent?.id ?? const Uuid().v4(),
-      name: _nameController.text,
-      systemPrompt: _promptController.text,
-      enableStream: _enableStream,
-      topP: _isTopPEnabled ? _topPValue : null,
-      topK: _isTopKEnabled ? _topKValue : null,
-      temperature: _isTemperatureEnabled ? _temperatureValue : null,
-      contextWindow: _contextWindowValue,
-      conversationLength: _conversationLengthValue,
-      maxTokens: _maxTokensValue,
-      activeMCPServerIds: _selectedMCPServerIds,
-      persistChatSelection: _persistOverride == _PersistOverride.followGlobal
-          ? null
-          : (_persistOverride == _PersistOverride.forceOn),
-    );
-
-    if (widget.agent != null) {
-      await repository.updateAgent(newAgent);
-    } else {
-      await repository.addAgent(newAgent);
-    }
-
+    await _viewModel.saveAgent(widget.agent, context);
     if (mounted) {
       Navigator.pop(context, true);
     }
@@ -196,7 +110,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
               const SizedBox(height: 32),
 
               TextField(
-                controller: _nameController,
+                controller: _viewModel.nameController,
                 decoration: InputDecoration(
                   labelText: 'agents.name'.tr(),
                   prefixIcon: const Icon(Icons.badge_outlined),
@@ -209,7 +123,7 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
 
               // System Prompt
               TextField(
-                controller: _promptController,
+                controller: _viewModel.promptController,
                 maxLines: 6,
                 decoration: InputDecoration(
                   labelText: 'agents.system_prompt'.tr(),
@@ -247,64 +161,64 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                       SwitchListTile(
                         title: Text('agents.stream'.tr()),
                         subtitle: Text('agents.stream_desc'.tr()),
-                        value: _enableStream,
+                        value: _viewModel.enableStream,
                         onChanged: (value) =>
-                            setState(() => _enableStream = value),
+                            _viewModel.toggleStream(value),
                       ),
                       const Divider(),
 
                       // Top P
                       SwitchListTile(
                         title: Text('agents.top_p'.tr()),
-                        value: _isTopPEnabled,
+                        value: _viewModel.isTopPEnabled,
                         onChanged: (value) =>
-                            setState(() => _isTopPEnabled = value),
+                            _viewModel.toggleTopP(value),
                       ),
-                      if (_isTopPEnabled)
+                      if (_viewModel.isTopPEnabled)
                         _buildSlider(
-                          value: _topPValue,
+                          value: _viewModel.topPValue,
                           min: 0,
                           max: 1,
                           divisions: 20,
-                          label: _topPValue.toStringAsFixed(2),
-                          onChanged: (v) => setState(() => _topPValue = v),
+                          label: _viewModel.topPValue.toStringAsFixed(2),
+                          onChanged: (v) => _viewModel.setTopPValue(v),
                         ),
 
                       const Divider(),
                       // Top K
                       SwitchListTile(
                         title: Text('agents.top_k'.tr()),
-                        value: _isTopKEnabled,
+                        value: _viewModel.isTopKEnabled,
                         onChanged: (value) =>
-                            setState(() => _isTopKEnabled = value),
+                            _viewModel.toggleTopK(value),
                       ),
-                      if (_isTopKEnabled)
+                      if (_viewModel.isTopKEnabled)
                         _buildSlider(
-                          value: _topKValue,
+                          value: _viewModel.topKValue,
                           min: 1,
                           max: 100,
                           divisions: 99,
-                          label: _topKValue.round().toString(),
-                          onChanged: (v) => setState(() => _topKValue = v),
+                          label: _viewModel.topKValue.round().toString(),
+                          onChanged: (v) => _viewModel.setTopKValue(v),
                         ),
 
                       const Divider(),
                       // Temperature
                       SwitchListTile(
                         title: Text('agents.temperature'.tr()),
-                        value: _isTemperatureEnabled,
+                        value: _viewModel.isTemperatureEnabled,
                         onChanged: (value) =>
-                            setState(() => _isTemperatureEnabled = value),
+                            _viewModel.toggleTemperature(value),
                       ),
-                      if (_isTemperatureEnabled)
+                      if (_viewModel.isTemperatureEnabled)
                         _buildSlider(
-                          value: _temperatureValue,
+                          value: _viewModel.temperatureValue,
                           min: 0,
                           max: 2,
                           divisions: 20,
-                          label: _temperatureValue.toStringAsFixed(2),
+                          label: _viewModel.temperatureValue.toStringAsFixed(2),
                           onChanged: (v) =>
-                              setState(() => _temperatureValue = v),
+                              _viewModel.setTemperatureValue(v),
                         ),
                     ],
                   ),
@@ -315,29 +229,29 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
               // Context window etc.
               _buildNumberField(
                 label: 'agents.context_window'.tr(),
-                value: _contextWindowValue,
-                onChanged: (v) => _contextWindowValue = v,
+                value: _viewModel.contextWindowValue,
+                onChanged: (v) => _viewModel.setContextWindowValue(v),
                 icon: Icons.window_outlined,
               ),
               const SizedBox(height: 16),
               _buildNumberField(
                 label: 'agents.conversation_length'.tr(),
-                value: _conversationLengthValue,
-                onChanged: (v) => _conversationLengthValue = v,
+                value: _viewModel.conversationLengthValue,
+                onChanged: (v) => _viewModel.setConversationLengthValue(v),
                 icon: Icons.history_outlined,
               ),
               const SizedBox(height: 16),
               _buildNumberField(
                 label: 'agents.max_tokens'.tr(),
-                value: _maxTokensValue,
-                onChanged: (v) => _maxTokensValue = v,
+                value: _viewModel.maxTokensValue,
+                onChanged: (v) => _viewModel.setMaxTokensValue(v),
                 icon: Icons.token_outlined,
               ),
 
               const SizedBox(height: 32),
 
               // Active MCP Servers
-              if (_availableMCPServers.isNotEmpty) ...[
+              if (_viewModel.availableMCPServers.isNotEmpty) ...[
                 Text(
                   'agents.mcp_servers'.tr(),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -352,18 +266,12 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
-                    children: _availableMCPServers.map((server) {
+                    children: _viewModel.availableMCPServers.map((server) {
                       return CheckboxListTile(
                         title: Text(server.name),
-                        value: _selectedMCPServerIds.contains(server.id),
+                        value: _viewModel.selectedMCPServerIds.contains(server.id),
                         onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true) {
-                              _selectedMCPServerIds.add(server.id);
-                            } else {
-                              _selectedMCPServerIds.remove(server.id);
-                            }
-                          });
+                          _viewModel.toggleMCPServer(server.id);
                         },
                       );
                     }).toList(),
@@ -382,33 +290,33 @@ class _AddAgentScreenState extends State<AddAgentScreen> {
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
-                child: SegmentedButton<_PersistOverride>(
+                child: SegmentedButton<PersistOverride>(
                   segments: [
                     ButtonSegment(
-                      value: _PersistOverride.followGlobal,
-                      label: Text(
-                        'agents.persist_disable'.tr(),
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                    ButtonSegment(
-                      value: _PersistOverride.forceOn,
+                      value: PersistOverride.on,
                       label: Text(
                         'agents.persist_on'.tr(),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
                     ButtonSegment(
-                      value: _PersistOverride.forceOff,
+                      value: PersistOverride.off,
                       label: Text(
                         'agents.persist_off'.tr(),
                         style: const TextStyle(fontSize: 12),
                       ),
                     ),
+                    ButtonSegment(
+                      value: PersistOverride.disable,
+                      label: Text(
+                        'agents.persist_disable'.tr(),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ),
                   ],
-                  selected: {_persistOverride},
-                  onSelectionChanged: (Set<_PersistOverride> newSelection) {
-                    setState(() => _persistOverride = newSelection.first);
+                  selected: {_viewModel.persistOverride},
+                  onSelectionChanged: (Set<PersistOverride> newSelection) {
+                    _viewModel.setPersistOverride(newSelection.first);
                   },
                   showSelectedIcon: false,
                 ),

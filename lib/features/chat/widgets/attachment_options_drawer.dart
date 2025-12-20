@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AttachmentOptionsDrawer extends StatelessWidget {
   final VoidCallback onPickAttachments;
@@ -17,15 +16,15 @@ class AttachmentOptionsDrawer extends StatelessWidget {
       top: false,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-        child: Column(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Handle bar
             Center(
               child: Container(
-                width: 40,
-                height: 4,
+                width: 60,
+                height: 6,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
                   color: Theme.of(
@@ -35,17 +34,7 @@ class AttachmentOptionsDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            // Title
-            Padding(
-              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-              child: Text(
-                'attachment_options.title'.tr(),
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ),
-            const Divider(),
+
             // Attachment options
             ListTile(
               contentPadding: const EdgeInsets.symmetric(
@@ -53,8 +42,8 @@ class AttachmentOptionsDrawer extends StatelessWidget {
                 vertical: 4,
               ),
               leading: Container(
-                width: 40,
-                height: 40,
+                width: 60,
+                height: 60,
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
@@ -62,12 +51,11 @@ class AttachmentOptionsDrawer extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
-                  Icons.photo_library,
+                  Icons.library_add,
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              title: Text('attachment_options.gallery'.tr()),
-              subtitle: Text('attachment_options.gallery_desc'.tr()),
+
               onTap: () {
                 Navigator.pop(context);
                 onPickAttachments();
@@ -79,20 +67,17 @@ class AttachmentOptionsDrawer extends StatelessWidget {
                 vertical: 4,
               ),
               leading: Container(
-                width: 40,
-                height: 40,
+                width: 60,
+                height: 60,
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.camera_alt, color: Colors.green),
               ),
-              title: Text('attachment_options.camera'.tr()),
-              subtitle: Text('attachment_options.camera_desc'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Implement camera pick
-                onPickAttachments();
               },
             ),
             ListTile(
@@ -107,91 +92,13 @@ class AttachmentOptionsDrawer extends StatelessWidget {
                   color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
-                  Icons.insert_drive_file,
-                  color: Colors.orange,
-                ),
+                child: const Icon(Icons.attach_file, color: Colors.orange),
               ),
-              title: Text('attachment_options.document'.tr()),
-              subtitle: Text('attachment_options.document_desc'.tr()),
               onTap: () {
                 Navigator.pop(context);
                 // TODO: Implement document pick
-                onPickAttachments();
               },
             ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.purple.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.audiotrack, color: Colors.purple),
-              ),
-              title: Text('attachment_options.audio'.tr()),
-              subtitle: Text('attachment_options.audio_desc'.tr()),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Implement audio pick
-                onPickAttachments();
-              },
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.teal.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.videocam, color: Colors.teal),
-              ),
-              title: Text('attachment_options.video'.tr()),
-              subtitle: Text('attachment_options.video_desc'.tr()),
-              onTap: () {
-                Navigator.pop(context);
-                // TODO: Implement video pick
-                onPickAttachments();
-              },
-            ),
-            if (onMicTap != null)
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                leading: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.error.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    Icons.mic,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ),
-                title: Text('attachment_options.voice_record'.tr()),
-                subtitle: Text('attachment_options.voice_record_desc'.tr()),
-                onTap: () {
-                  Navigator.pop(context);
-                  onMicTap?.call();
-                },
-              ),
-            const SizedBox(height: 8),
           ],
         ),
       ),

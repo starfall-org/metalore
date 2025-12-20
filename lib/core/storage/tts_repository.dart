@@ -1,8 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import '../models/tts_profile.dart';
+import '../models/speech_service.dart';
 import 'base_repository.dart';
 
-class TTSRepository extends BaseRepository<TTSProfile> {
+class TTSRepository extends BaseRepository<SpeechService> {
   static const String _boxName = 'tts_profiles';
 
   TTSRepository(super.box);
@@ -16,17 +16,17 @@ class TTSRepository extends BaseRepository<TTSProfile> {
   String get boxName => _boxName;
 
   @override
-  TTSProfile deserializeItem(String json) => TTSProfile.fromJsonString(json);
+  SpeechService deserializeItem(String json) => SpeechService.fromJsonString(json);
 
   @override
-  String serializeItem(TTSProfile item) => item.toJsonString();
+  String serializeItem(SpeechService item) => item.toJsonString();
 
   @override
-  String getItemId(TTSProfile item) => item.id;
+  String getItemId(SpeechService item) => item.id;
 
-  List<TTSProfile> getProfiles() => getItems();
+  List<SpeechService> getProfiles() => getItems();
 
-  Future<void> addProfile(TTSProfile profile) => saveItem(profile);
+  Future<void> addProfile(SpeechService profile) => saveItem(profile);
 
   Future<void> deleteProfile(String id) => deleteItem(id);
 }

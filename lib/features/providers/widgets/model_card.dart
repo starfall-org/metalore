@@ -64,7 +64,7 @@ class ModelCard extends StatelessWidget {
   }
 
   Widget _getModelIcon() {
-    return buildBrandLogo(model.name, model.name);
+    return buildBrandLogo(model.name);
   }
 
   Widget _getModelTypeLabel() {

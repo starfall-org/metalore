@@ -12,6 +12,139 @@ enum ProviderType {
   const ProviderType(this.name);
 }
 
+class Provider {
+  final String name;
+  final ProviderType type;
+  final String apiKey;
+  final String logoUrl;
+  final String baseUrl;
+  final OpenAIRoutes openAIRoutes;
+  final bool vertexAI;
+  final bool azureAI;
+  final bool responsesApi;
+  final VertexAIConfig? vertexAIConfig;
+  final AzureConfig? azureConfig;
+  final Map<String, String> headers;
+  final List<AIModel> models;
+
+  Provider({
+    required this.type,
+    String? name,
+    this.apiKey = '',
+    this.logoUrl = '',
+    String? baseUrl,
+    this.openAIRoutes = const OpenAIRoutes(),
+    this.vertexAI = false,
+    this.azureAI = false,
+    this.responsesApi = false,
+    this.vertexAIConfig,
+    this.azureConfig,
+    this.headers = const {},
+    this.models = const [],
+  }) : name = name ?? _defaultName(type),
+       baseUrl = baseUrl ?? _defaultBaseUrl(type);
+
+  static String _defaultName(ProviderType type) {
+    switch (type) {
+      case ProviderType.openai:
+        return 'OpenAI';
+      case ProviderType.anthropic:
+        return 'Anthropic';
+      case ProviderType.ollama:
+        return 'Ollama';
+      case ProviderType.google:
+        return 'Google';
+    }
+  }
+
+  static String _defaultBaseUrl(ProviderType type) {
+    switch (type) {
+      case ProviderType.openai:
+        return 'https://api.openai.com/v1';
+      case ProviderType.anthropic:
+        return 'https://api.anthropic.com/v1';
+      case ProviderType.ollama:
+        return 'https://ollama.com';
+      case ProviderType.google:
+        return 'https://generativelanguage.googleapis.com/v1beta';
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.name,
+      'name': name,
+      'logoUrl': logoUrl,
+      'apiKey': apiKey,
+      'baseUrl': baseUrl,
+      'headers': headers,
+      'openAIRoutes': openAIRoutes.toJson(),
+      'vertexAI': vertexAI,
+      'azureAI': azureAI,
+      'responsesApi': responsesApi,
+      if (vertexAIConfig != null) 'vertexAIConfig': vertexAIConfig!.toJson(),
+      if (azureConfig != null) 'azureConfig': azureConfig!.toJson(),
+      'models': models.map((m) => m.toJson()).toList(),
+    };
+  }
+
+  factory Provider.fromJson(Map<String, dynamic> json) {
+    var modelsJson = json['models'];
+    List<AIModel> parsedModels = [];
+
+    if (modelsJson != null) {
+      if (modelsJson is List &&
+          modelsJson.isNotEmpty &&
+          modelsJson.first is String) {
+        parsedModels = modelsJson
+            .map(
+              (e) => AIModel(
+                name: e as String,
+                displayName: (e).replaceAll('-', ' '),
+              ),
+            )
+            .toList();
+      } else {
+        parsedModels = (modelsJson as List)
+            .map((e) => AIModel.fromJson(e))
+            .toList();
+      }
+    }
+
+    return Provider(
+      type: ProviderType.values.firstWhere((e) => e.name == json['type']),
+      name: json['name'] as String?,
+      logoUrl: (json['logoUrl'] as String?) ?? '',
+      apiKey: (json['apiKey'] as String?) ?? '',
+      baseUrl: json['baseUrl'] as String?,
+      openAIRoutes: json['openAIRoutes'] != null
+          ? OpenAIRoutes.fromJson(json['openAIRoutes'])
+          : const OpenAIRoutes(),
+      vertexAI: json['vertexAI'] != null || json['vertexAI'] != false,
+      azureAI: json['azureAI'] != null || json['azureAI'] != false,
+      responsesApi:
+          json['responsesApi'] != null || json['responsesApi'] != false,
+      vertexAIConfig: json['vertexAIConfig'] != null
+          ? VertexAIConfig.fromJson(json['vertexAIConfig'])
+          : null,
+      azureConfig: json['azureConfig'] != null
+          ? AzureConfig.fromJson(json['azureConfig'])
+          : null,
+      headers:
+          (json['headers'] as Map<String, dynamic>?)?.map(
+            (key, value) => MapEntry(key, value.toString()),
+          ) ??
+          {},
+      models: parsedModels,
+    );
+  }
+
+  String toJsonString() => json.encode(toJson());
+
+  factory Provider.fromJsonString(String jsonString) =>
+      Provider.fromJson(json.decode(jsonString));
+}
+
 class OpenAIRoutes {
   final String chatCompletion;
   final String modelsRouteOrUrl;
@@ -156,132 +289,4 @@ class AzureConfig {
       apiVersion: json['apiVersion'] ?? '2024-02-15-preview',
     );
   }
-}
-
-class Provider {
-  final String name;
-  final ProviderType type;
-  final String apiKey;
-  final String logoUrl;
-  final String baseUrl;
-  final OpenAIRoutes openAIRoutes;
-  final bool vertexAI;
-  final bool azureAI;
-  final bool responsesApi;
-  final VertexAIConfig? vertexAIConfig;
-  final AzureConfig? azureConfig;
-  final Map<String, String> headers;
-  final List<AIModel> models;
-
-  Provider({
-    required this.type,
-    String? name,
-    this.apiKey = '',
-    this.logoUrl = '',
-    String? baseUrl,
-    this.openAIRoutes = const OpenAIRoutes(),
-    this.vertexAI = false,
-    this.azureAI = false,
-    this.responsesApi = false,
-    this.vertexAIConfig,
-    this.azureConfig,
-    this.headers = const {},
-    this.models = const [],
-  }) : name = name ?? _defaultName(type),
-       baseUrl = baseUrl ?? _defaultBaseUrl(type);
-
-  static String _defaultName(ProviderType type) {
-    switch (type) {
-      case ProviderType.openai:
-        return 'OpenAI';
-      case ProviderType.anthropic:
-        return 'Anthropic';
-      case ProviderType.ollama:
-        return 'Ollama';
-      case ProviderType.google:
-        return 'Google';
-    }
-  }
-
-  static String _defaultBaseUrl(ProviderType type) {
-    switch (type) {
-      case ProviderType.openai:
-        return 'https://api.openai.com/v1';
-      case ProviderType.anthropic:
-        return 'https://api.anthropic.com/v1';
-      case ProviderType.ollama:
-        return 'https://ollama.com';
-      case ProviderType.google:
-        return 'https://generativelanguage.googleapis.com/v1beta';
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'type': type.name,
-      'name': name,
-      'logoUrl': logoUrl,
-      'apiKey': apiKey,
-      'baseUrl': baseUrl,
-      'headers': headers,
-      'openAIRoutes': openAIRoutes.toJson(),
-      'vertexAI': vertexAI,
-      'azureAI': azureAI,
-      'responsesApi': responsesApi,
-      if (vertexAIConfig != null) 'vertexAIConfig': vertexAIConfig!.toJson(),
-      if (azureConfig != null) 'azureConfig': azureConfig!.toJson(),
-      'models': models.map((m) => m.toJson()).toList(),
-    };
-  }
-
-  factory Provider.fromJson(Map<String, dynamic> json) {
-    var modelsJson = json['models'];
-    List<AIModel> parsedModels = [];
-
-    if (modelsJson != null) {
-      if (modelsJson is List &&
-          modelsJson.isNotEmpty &&
-          modelsJson.first is String) {
-        parsedModels = modelsJson
-            .map((e) => AIModel(name: e as String))
-            .toList();
-      } else {
-        parsedModels = (modelsJson as List)
-            .map((e) => AIModel.fromJson(e))
-            .toList();
-      }
-    }
-
-    return Provider(
-      type: ProviderType.values.firstWhere((e) => e.name == json['type']),
-      name: json['name'] as String?,
-      logoUrl: (json['logoUrl'] as String?) ?? '',
-      apiKey: (json['apiKey'] as String?) ?? '',
-      baseUrl: json['baseUrl'] as String?,
-      openAIRoutes: json['openAIRoutes'] != null
-          ? OpenAIRoutes.fromJson(json['openAIRoutes'])
-          : const OpenAIRoutes(),
-      vertexAI: json['vertexAI'] != null || json['vertexAI'] != false,
-      azureAI: json['azureAI'] != null || json['azureAI'] != false,
-      responsesApi:
-          json['responsesApi'] != null || json['responsesApi'] != false,
-      vertexAIConfig: json['vertexAIConfig'] != null
-          ? VertexAIConfig.fromJson(json['vertexAIConfig'])
-          : null,
-      azureConfig: json['azureConfig'] != null
-          ? AzureConfig.fromJson(json['azureConfig'])
-          : null,
-      headers:
-          (json['headers'] as Map<String, dynamic>?)?.map(
-            (key, value) => MapEntry(key, value.toString()),
-          ) ??
-          {},
-      models: parsedModels,
-    );
-  }
-
-  String toJsonString() => json.encode(toJson());
-
-  factory Provider.fromJsonString(String jsonString) =>
-      Provider.fromJson(json.decode(jsonString));
 }

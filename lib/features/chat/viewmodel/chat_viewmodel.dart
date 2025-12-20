@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../../core/models/ai_agent.dart';
+import '../../../core/models/ai_model.dart';
 import '../../../core/models/chat/message.dart';
 import '../../../core/services/chat_service.dart';
 import '../../../core/models/chat/conversation.dart';
@@ -20,6 +21,11 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 part 'chat_viewmodel_actions.dart';
+part 'chat_message_actions.dart';
+part 'chat_attachment_actions.dart';
+part 'chat_operations.dart';
+part 'chat_edit_actions.dart';
+part 'chat_ui_actions.dart';
 
 class ChatViewModel extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -44,6 +50,17 @@ class ChatViewModel extends ChangeNotifier {
   final Map<String, bool> providerCollapsed = {}; // true = collapsed
   String? selectedProviderName;
   String? selectedModelName;
+
+  AIModel? get selectedAIModel {
+    if (selectedProviderName == null || selectedModelName == null) return null;
+    try {
+      final provider =
+          providers.firstWhere((p) => p.name == selectedProviderName);
+      return provider.models.firstWhere((m) => m.name == selectedModelName);
+    } catch (e) {
+      return null;
+    }
+  }
 
   FlutterTts? tts;
 
@@ -87,7 +104,7 @@ class ChatViewModel extends ChangeNotifier {
   bool shouldPersistSelections() {
     final prefs = AppPreferencesRepository.instance.currentPreferences;
     // If preferAgentSettings is on and agent has an override, use it
-    if (prefs.preferAgentSettings && selectedAgent?.persistChatSelection != null) {
+    if (selectedAgent?.persistChatSelection != null) {
       return selectedAgent!.persistChatSelection!;
     }
     return prefs.persistChatSelection;

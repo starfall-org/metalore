@@ -4,7 +4,7 @@ import '../../../core/models/ai_model.dart';
 import '../../../core/models/provider.dart';
 import '../../../core/storage/provider_repository.dart';
 import '../../../core/storage/tts_repository.dart';
-import '../../../core/models/tts_profile.dart';
+import '../../../core/models/speech_service.dart';
 import '../../../core/widgets/dropdown.dart';
 
 class AddTTSProfileScreen extends StatefulWidget {
@@ -88,11 +88,19 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
 
     final repository = await TTSRepository.init();
 
-    final profile = TTSProfile(
+    Provider? selectedProvider;
+    if (_selectedType == TTSServiceType.provider) {
+      selectedProvider = _availableProviders.firstWhere(
+        (p) => p.name == _selectedProviderId,
+      );
+    }
+
+    final profile = SpeechService(
       id: const Uuid().v4(),
+      icon: 'assets/brand_icons.json', // Default icon path or logic
       name: _nameController.text,
       type: _selectedType,
-      provider: _selectedProviderId,
+      provider: selectedProvider,
       voiceId: _selectedVoiceId,
     );
 
