@@ -1,17 +1,18 @@
 import 'package:flutter/widgets.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/language_preferences.dart';
-import 'base_repository.dart';
+import 'shared_prefs_base_repository.dart';
 
-class LanguageRepository extends BaseRepository<LanguagePreferences> {
-  static const String _boxName = 'language_preferences';
+class LanguageRepository
+    extends SharedPreferencesBaseRepository<LanguagePreferences> {
+  static const String _prefix = 'language';
 
   // Expose a notifier for reactive UI updates
   final ValueNotifier<LanguagePreferences> languageNotifier = ValueNotifier(
     LanguagePreferences.defaults(),
   );
 
-  LanguageRepository(super.box) {
+  LanguageRepository(super.prefs) {
     _loadInitialPreferences();
   }
 
@@ -28,8 +29,8 @@ class LanguageRepository extends BaseRepository<LanguagePreferences> {
     if (_instance != null) {
       return _instance!;
     }
-    final box = await Hive.openBox<String>(_boxName);
-    _instance = LanguageRepository(box);
+    final prefs = await SharedPreferences.getInstance();
+    _instance = LanguageRepository(prefs);
     return _instance!;
   }
 
@@ -41,18 +42,32 @@ class LanguageRepository extends BaseRepository<LanguagePreferences> {
   }
 
   @override
-  String get boxName => _boxName;
-
-  @override
-  LanguagePreferences deserializeItem(String json) =>
-      LanguagePreferences.fromJsonString(json);
-
-  @override
-  String serializeItem(LanguagePreferences item) => item.toJsonString();
+  String get prefix => _prefix;
 
   // Single settings object, so ID is constant
   @override
   String getItemId(LanguagePreferences item) => 'language_settings';
+
+  @override
+  Map<String, dynamic> serializeToFields(LanguagePreferences item) {
+    return {
+      'languageCode': item.languageCode,
+      'countryCode': item.countryCode,
+      'autoDetectLanguage': item.autoDetectLanguage,
+    };
+  }
+
+  @override
+  LanguagePreferences deserializeFromFields(
+    String id,
+    Map<String, dynamic> fields,
+  ) {
+    return LanguagePreferences(
+      languageCode: fields['languageCode'] as String? ?? 'auto',
+      countryCode: fields['countryCode'] as String?,
+      autoDetectLanguage: fields['autoDetectLanguage'] as bool? ?? true,
+    );
+  }
 
   Future<void> updatePreferences(LanguagePreferences preferences) async {
     try {
@@ -94,11 +109,13 @@ class LanguageRepository extends BaseRepository<LanguagePreferences> {
   Future<void> resetToDefaults() async {
     await updatePreferences(LanguagePreferences.defaults());
   }
+
   Locale getInitialLocale(Locale deviceLocale) {
     try {
       final preferences = currentPreferences;
 
-      if (preferences.autoDetectLanguage || preferences.languageCode == 'auto') {
+      if (preferences.autoDetectLanguage ||
+          preferences.languageCode == 'auto') {
         return _getSupportedLocale(deviceLocale);
       } else {
         return _getLocaleFromPreferences(preferences);

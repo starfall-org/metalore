@@ -115,8 +115,17 @@
       "auto_detect_error": "无法切换自动",
       "chat_settings": "聊天设置",
       "persist_chat_selection": "保留选择",
-      "prefer_agent_settings": "首选 AI 配置文件设置"
-    }
+      "prefer_agent_settings": "首选 AI 配置文件设置",
+      "debug_mode": "调试模式",
+      "developer": "开发商",
+      "display": "展示",
+      "general": "一般的",
+      "hide_navigation_bar": "隐藏导航栏",
+      "hide_status_bar": "隐藏状态栏",
+      "system": "系统",
+      "vibration_enabled": "振动"
+    },
+    "data_section": "数据"
   },
   "providers": {
     "title": "供应商",
@@ -158,7 +167,20 @@
     "models_available": "可用型号",
     "fetch": "拿来",
     "tap_to_fetch_models": "点击获取模型",
-    "model": {}
+    "model": {
+      "context_window": "上下文窗口",
+      "display_name": "显示名称",
+      "display_name_hint": "例如：双子座闪光",
+      "icon": "图标",
+      "icon_hint": "图标 url 或路径",
+      "id": "ID",
+      "id_hint": "例如：双子座闪光",
+      "input_types": "输入类型",
+      "output_types": "输出类型",
+      "reasoning": "推理"
+    },
+    "add_model": "添加型号",
+    "edit_model": "编辑模型"
   },
   "agents": {
     "title": "人工智能档案",
@@ -237,5 +259,165 @@
     "text": "文本",
     "image": "图像",
     "audio": "声音的"
+  },
+  "about": {
+    "actions": {
+      "bug_report_opened": "错误报告已打开",
+      "feature_request_opened": "功能请求已打开",
+      "help_center_opened": "帮助中心已开通",
+      "open_source_opened": "开源信息已打开",
+      "privacy_policy_opened": "隐私政策已开放",
+      "terms_opened": "服务条款已开通"
+    },
+    "app_description": "具有多提供商支持的综合人工智能聊天平台",
+    "build_date": "构建日期",
+    "developers": {
+      "team_desc": "对AI技术充满热情的专业团队",
+      "team_role": "开发团队",
+      "title": "开发商"
+    },
+    "features": {
+      "ai_profiles": "人工智能档案",
+      "ai_profiles_desc": "自定义和管理 AI 配置文件",
+      "chat": "人工智能聊天",
+      "chat_desc": "与 AI 模型的智能对话",
+      "mcp": "MCP服务器",
+      "mcp_desc": "模型上下文协议集成",
+      "providers": "供应商",
+      "providers_desc": "多提供商人工智能支持",
+      "title": "主要特点"
+    },
+    "legal": {
+      "open_source": "开源",
+      "open_source_desc": "开源许可信息",
+      "privacy_policy": "隐私政策",
+      "privacy_policy_desc": "查看数据隐私政策",
+      "terms_of_service": "服务条款",
+      "terms_of_service_desc": "查看条款和条件",
+      "title": "合法的"
+    },
+    "subtitle": "信息和细节",
+    "support": {
+      "feature_request": "功能请求",
+      "feature_request_desc": "提出新功能",
+      "help_center": "帮助中心",
+      "help_center_desc": "了解如何使用该应用程序",
+      "report_bug": "报告错误",
+      "report_bug_desc": "向我们发送错误报告",
+      "title": "支持"
+    },
+    "title": "关于应用程序",
+    "version": "版本"
+  },
+  "datacontrols": {
+    "actions": {
+      "anonymize_started": "数据匿名化启动",
+      "backup_started": "数据备份开始",
+      "cache_cleaned": "缓存已清理",
+      "delete_all_completed": "所有数据已删除",
+      "export_started": "数据导出开始",
+      "manage_files_opened": "文件管理器已打开",
+      "restore_started": "数据恢复开始"
+    },
+    "delete_all_confirm": {
+      "message": "此操作将永久删除所有应用程序数据。您确定要继续吗？",
+      "title": "确认全部删除"
+    },
+    "management": {
+      "backup": "备份数据",
+      "backup_desc": "创建应用程序数据的备份",
+      "export": "导出数据",
+      "export_desc": "将数据导出到文件",
+      "restore": "恢复数据",
+      "restore_desc": "从备份恢复",
+      "title": "数据管理"
+    },
+    "overview": {
+      "subtitle": "应用数据统计及信息",
+      "title": "数据概览"
+    },
+    "privacy": {
+      "anonymize": "匿名数据",
+      "anonymize_desc": "删除个人身份信息",
+      "delete_all": "删除所有数据",
+      "delete_all_desc": "永久删除所有应用数据",
+      "title": "隐私"
+    },
+    "stats": {
+      "conversations": "对话",
+      "profiles": "型材",
+      "providers": "供应商"
+    },
+    "storage": {
+      "clean_cache": "清理缓存",
+      "clean_cache_desc": "清除临时缓存文件",
+      "manage_files": "管理文件",
+      "manage_files_desc": "查看和管理保存的文件",
+      "title": "存储控制"
+    },
+    "subtitle": "管理和控制数据",
+    "title": "数据控制"
+  },
+  "home": {
+    "actions": {
+      "ai_profiles": "人工智能档案",
+      "mcp": "MCP服务器",
+      "providers": "供应商",
+      "tts": "语音服务"
+    },
+    "drawer": {
+      "subtitle": "应用程序导航"
+    },
+    "no_recent_activity": "最近没有活动",
+    "quick_actions": "快速行动",
+    "recent_activity": "最近的活动",
+    "start_chat": "开始聊天",
+    "subtitle": "主仪表板",
+    "title": "家",
+    "welcome": {
+      "subtitle": "综合性AI聊天平台",
+      "title": "欢迎来到人工智能网关"
+    }
+  },
+  "nav": {
+    "ai_profiles": "人工智能档案",
+    "chat": "聊天",
+    "mcp": "MCP服务器",
+    "providers": "供应商",
+    "settings": "设置",
+    "tts": "语音服务"
+  },
+  "update": {
+    "actions": {
+      "download_started": "下载开始",
+      "update_check_completed": "更新检查完成",
+      "update_skipped": "更新已跳过"
+    },
+    "build_date": "构建日期",
+    "check_now": "立即查看",
+    "check_status": "检查更新",
+    "checking": "检查...",
+    "current_version": "当前版本",
+    "current_version_desc": "当前应用程序版本信息",
+    "download_update": "下载更新",
+    "feature_1": "性能和速度改进",
+    "feature_2": "优化的用户界面",
+    "feature_3": "新功能和错误修复",
+    "history_1_feature_1": "初次发布",
+    "history_1_feature_2": "基本聊天功能",
+    "history_2_feature_1": "用户界面改进",
+    "history_2_feature_2": "性能优化",
+    "latest_version": "最新版本",
+    "new_version_available": "新版本可用",
+    "skip_this_version": "跳过此版本",
+    "stable_channel": "稳定的",
+    "subtitle": "检查并安装更新",
+    "title": "更新",
+    "up_to_date": "最新",
+    "update_available": "可用更新",
+    "update_channel": "更新频道",
+    "update_history": "更新历史",
+    "version_number": "版本号",
+    "whats_new": "什么是新的"
   }
 }

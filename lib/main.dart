@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
@@ -15,8 +14,6 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  await Hive.initFlutter();
 
   // Initialize all app services and repositories
   await AppServices.init();

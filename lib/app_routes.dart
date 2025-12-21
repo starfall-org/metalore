@@ -10,10 +10,16 @@ import 'features/settings/presentation/settings_screen.dart';
 import 'features/settings/presentation/appearance_screen.dart';
 import 'features/settings/presentation/preferences_screen.dart';
 import 'features/tts/presentation/tts_screen.dart';
+import 'features/home/presentation/home_screen.dart';
+import 'features/datacontrols/presentation/datacontrols_screen.dart';
+import 'features/about/presentation/about_screen.dart';
+import 'features/update/presentation/update_screen.dart';
 
 /// Generate a route based on the route name.
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
+    case AppRoutes.home:
+      return MaterialPageRoute(builder: (_) => const HomeScreen());
     case AppRoutes.chat:
       return MaterialPageRoute(builder: (_) => const ChatScreen());
     case AppRoutes.aiProfiles:
@@ -28,6 +34,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (_) => const TTSScreen());
     case AppRoutes.preferences:
       return MaterialPageRoute(builder: (_) => const PreferencesScreen());
+    case AppRoutes.datacontrols:
+      return MaterialPageRoute(builder: (_) => const DataControlsScreen());
+    case AppRoutes.about:
+      return MaterialPageRoute(builder: (_) => const AboutScreen());
+    case AppRoutes.update:
+      return MaterialPageRoute(builder: (_) => const UpdateScreen());
     case AppRoutes.providersAddOrEdit:
       return MaterialPageRoute(builder: (_) => const AddProviderScreen());
     case AppRoutes.aiProfilesAddOrEdit:

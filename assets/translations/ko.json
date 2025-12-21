@@ -115,8 +115,17 @@
       "auto_detect_error": "자동으로 전환하지 못했습니다.",
       "chat_settings": "채팅 설정",
       "persist_chat_selection": "선택 유지",
-      "prefer_agent_settings": "AI 프로필 설정 선호"
-    }
+      "prefer_agent_settings": "AI 프로필 설정 선호",
+      "debug_mode": "디버그 모드",
+      "developer": "개발자",
+      "display": "표시하다",
+      "general": "일반적인",
+      "hide_navigation_bar": "탐색 표시줄 숨기기",
+      "hide_status_bar": "상태 표시줄 숨기기",
+      "system": "체계",
+      "vibration_enabled": "진동"
+    },
+    "data_section": "데이터"
   },
   "providers": {
     "title": "공급자",
@@ -158,7 +167,20 @@
     "models_available": "사용 가능한 모델",
     "fetch": "술책",
     "tap_to_fetch_models": "모델을 가져오려면 탭하세요.",
-    "model": {}
+    "model": {
+      "context_window": "컨텍스트 창",
+      "display_name": "표시 이름",
+      "display_name_hint": "예: 쌍둥이자리 플래시",
+      "icon": "상",
+      "icon_hint": "아이콘 URL 또는 경로",
+      "id": "ID",
+      "id_hint": "예: 쌍둥이자리 플래시",
+      "input_types": "입력 유형",
+      "output_types": "출력 유형",
+      "reasoning": "추리"
+    },
+    "add_model": "모델 추가",
+    "edit_model": "모델 편집"
   },
   "agents": {
     "title": "AI 프로필",
@@ -237,5 +259,165 @@
     "text": "텍스트",
     "image": "영상",
     "audio": "오디오"
+  },
+  "about": {
+    "actions": {
+      "bug_report_opened": "버그 신고가 열렸습니다.",
+      "feature_request_opened": "기능 요청이 열렸습니다.",
+      "help_center_opened": "고객센터 개설",
+      "open_source_opened": "오픈소스 정보 공개됨",
+      "privacy_policy_opened": "개인정보처리방침 열림",
+      "terms_opened": "서비스 약관이 열렸습니다."
+    },
+    "app_description": "다중 공급자 지원을 갖춘 포괄적인 AI 채팅 플랫폼",
+    "build_date": "빌드 날짜",
+    "developers": {
+      "team_desc": "AI 기술에 대한 열정을 가진 전문팀",
+      "team_role": "개발팀",
+      "title": "개발자"
+    },
+    "features": {
+      "ai_profiles": "AI 프로필",
+      "ai_profiles_desc": "AI 프로필 사용자 정의 및 관리",
+      "chat": "AI채팅",
+      "chat_desc": "AI 모델과의 스마트한 대화",
+      "mcp": "MCP 서버",
+      "mcp_desc": "모델 컨텍스트 프로토콜 통합",
+      "providers": "공급자",
+      "providers_desc": "다중 공급자 AI 지원",
+      "title": "주요 특징"
+    },
+    "legal": {
+      "open_source": "오픈 소스",
+      "open_source_desc": "오픈소스 라이선스 정보",
+      "privacy_policy": "개인 정보 보호 정책",
+      "privacy_policy_desc": "데이터 개인정보 보호정책 보기",
+      "terms_of_service": "서비스 약관",
+      "terms_of_service_desc": "이용약관 보기",
+      "title": "합법적인"
+    },
+    "subtitle": "정보 및 세부정보",
+    "support": {
+      "feature_request": "기능 요청",
+      "feature_request_desc": "새로운 기능 제안",
+      "help_center": "도움말 센터",
+      "help_center_desc": "앱 사용 방법 알아보기",
+      "report_bug": "버그 신고",
+      "report_bug_desc": "우리에게 버그 보고서 보내기",
+      "title": "지원하다"
+    },
+    "title": "앱 소개",
+    "version": "버전"
+  },
+  "datacontrols": {
+    "actions": {
+      "anonymize_started": "데이터 익명화가 시작되었습니다.",
+      "backup_started": "데이터 백업이 시작되었습니다",
+      "cache_cleaned": "캐시 정리됨",
+      "delete_all_completed": "모든 데이터가 삭제되었습니다.",
+      "export_started": "데이터 내보내기가 시작되었습니다.",
+      "manage_files_opened": "파일 관리자가 열렸습니다.",
+      "restore_started": "데이터 복원이 시작되었습니다"
+    },
+    "delete_all_confirm": {
+      "message": "이 작업을 수행하면 모든 앱 데이터가 영구적으로 삭제됩니다. 계속하시겠습니까?",
+      "title": "모두 삭제 확인"
+    },
+    "management": {
+      "backup": "백업 데이터",
+      "backup_desc": "앱 데이터 백업 생성",
+      "export": "데이터 내보내기",
+      "export_desc": "데이터를 파일로 내보내기",
+      "restore": "데이터 복원",
+      "restore_desc": "백업에서 복원",
+      "title": "데이터 관리"
+    },
+    "overview": {
+      "subtitle": "앱 데이터 통계 및 정보",
+      "title": "데이터 개요"
+    },
+    "privacy": {
+      "anonymize": "데이터 익명화",
+      "anonymize_desc": "개인 식별 정보 제거",
+      "delete_all": "모든 데이터 삭제",
+      "delete_all_desc": "모든 앱 데이터를 영구적으로 삭제",
+      "title": "은둔"
+    },
+    "stats": {
+      "conversations": "대화",
+      "profiles": "프로필",
+      "providers": "공급자"
+    },
+    "storage": {
+      "clean_cache": "캐시 정리",
+      "clean_cache_desc": "임시 캐시 파일 지우기",
+      "manage_files": "파일 관리",
+      "manage_files_desc": "저장된 파일 보기 및 관리",
+      "title": "스토리지 제어"
+    },
+    "subtitle": "데이터 관리 및 제어",
+    "title": "데이터 통제"
+  },
+  "home": {
+    "actions": {
+      "ai_profiles": "AI 프로필",
+      "mcp": "MCP 서버",
+      "providers": "공급자",
+      "tts": "음성 서비스"
+    },
+    "drawer": {
+      "subtitle": "앱 내비게이션"
+    },
+    "no_recent_activity": "최근 활동 없음",
+    "quick_actions": "빠른 작업",
+    "recent_activity": "최근 활동",
+    "start_chat": "채팅 시작",
+    "subtitle": "메인 대시보드",
+    "title": "집",
+    "welcome": {
+      "subtitle": "종합 AI 채팅 플랫폼",
+      "title": "AI 게이트웨이에 오신 것을 환영합니다"
+    }
+  },
+  "nav": {
+    "ai_profiles": "AI 프로필",
+    "chat": "채팅",
+    "mcp": "MCP 서버",
+    "providers": "공급자",
+    "settings": "설정",
+    "tts": "음성 서비스"
+  },
+  "update": {
+    "actions": {
+      "download_started": "다운로드가 시작되었습니다",
+      "update_check_completed": "업데이트 확인 완료",
+      "update_skipped": "업데이트를 건너뛰었습니다."
+    },
+    "build_date": "빌드 날짜",
+    "check_now": "지금 확인하세요",
+    "check_status": "업데이트 확인",
+    "checking": "확인 중...",
+    "current_version": "현재 버전",
+    "current_version_desc": "현재 앱 버전 정보",
+    "download_update": "업데이트 다운로드",
+    "feature_1": "성능 및 속도 개선",
+    "feature_2": "최적화된 사용자 인터페이스",
+    "feature_3": "새로운 기능 및 버그 수정",
+    "history_1_feature_1": "최초 출시",
+    "history_1_feature_2": "기본 채팅 기능",
+    "history_2_feature_1": "UI 개선",
+    "history_2_feature_2": "성능 최적화",
+    "latest_version": "최신 버전",
+    "new_version_available": "새 버전 사용 가능",
+    "skip_this_version": "이 버전 건너뛰기",
+    "stable_channel": "안정적인",
+    "subtitle": "업데이트 확인 및 설치",
+    "title": "업데이트",
+    "up_to_date": "최신",
+    "update_available": "업데이트 가능",
+    "update_channel": "채널 업데이트",
+    "update_history": "업데이트 기록",
+    "version_number": "버전 번호",
+    "whats_new": "새로운 소식"
   }
 }

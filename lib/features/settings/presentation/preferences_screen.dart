@@ -29,7 +29,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   bool _debugMode = false;
 
   final List<Map<String, dynamic>> _supportedLanguages = [
-    {'code': 'auto', 'name': 'settings.preferences.auto_detect', 'flag': ''},
+    {'code': 'auto', 'name': 'settings.preferences.system', 'flag': '🌐'},
     {'code': 'en', 'name': 'English', 'flag': '🇺🇸'},
     {'code': 'fr', 'name': 'French', 'flag': '🇫🇷'},
     {'code': 'de', 'name': 'German', 'flag': '🇩🇪'},
@@ -102,59 +102,28 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     }
   }
 
-  Future<void> _toggleAutoDetect(bool value) async {
-    try {
-      setState(() {
-        _autoDetectLanguage = value;
-        if (value) {
-          _selectedLanguage = 'auto';
-        }
-      });
-
-      await _languageRepository.setAutoDetect(value);
-
-      if (value) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('settings.preferences.auto_detect_enabled'.tr()),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        }
-        _restartApp();
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('settings.preferences.auto_detect_error'.tr()),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-        _loadPreferences();
-      }
-    }
-  }
-
   Future<void> _selectLanguage(String languageCode) async {
     try {
       setState(() {
         _selectedLanguage = languageCode;
-        _autoDetectLanguage = false;
+        _autoDetectLanguage = languageCode == 'auto';
       });
 
-      String? countryCode;
-      if (languageCode.contains('_')) {
-        final parts = languageCode.split('_');
-        countryCode = parts[1];
-        languageCode = parts[0];
-      }
+      if (languageCode == 'auto') {
+        await _languageRepository.setAutoDetect(true);
+      } else {
+        String? countryCode;
+        if (languageCode.contains('_')) {
+          final parts = languageCode.split('_');
+          countryCode = parts[1];
+          languageCode = parts[0];
+        }
 
-      await _languageRepository.setLanguage(
-        languageCode,
-        countryCode: countryCode,
-      );
+        await _languageRepository.setLanguage(
+          languageCode,
+          countryCode: countryCode,
+        );
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -296,26 +265,11 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           SettingsSectionHeader('settings.preferences.select_language'.tr()),
           const SizedBox(height: 12),
           SettingsCard(
-            child: Column(
-              children: [
-                SettingsTile(
-                  icon: Icons.language_outlined,
-                  title: 'settings.preferences.auto_detect'.tr(),
-                  trailing: Switch(
-                    value: _autoDetectLanguage,
-                    onChanged: _toggleAutoDetect,
-                  ),
-                ),
-                if (!_autoDetectLanguage) ...[
-                  const Divider(height: 1, indent: 56, endIndent: 16),
-                  SettingsTile(
-                    icon: Icons.translate_outlined,
-                    title: 'settings.preferences.current_language'.tr(),
-                    subtitle: _getCurrentLanguageName(),
-                    onTap: () => _showLanguagePicker(),
-                  ),
-                ],
-              ],
+            child: SettingsTile(
+              icon: Icons.language_outlined,
+              title: 'settings.preferences.current_language'.tr(),
+              subtitle: _getCurrentLanguageName(),
+              onTap: () => _showLanguagePicker(),
             ),
           ),
         ],
@@ -357,29 +311,26 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
             Flexible(
               child: ListView(
                 shrinkWrap: true,
-                children: _supportedLanguages
-                    .where((lang) => lang['code'] != 'auto')
-                    .map((language) {
-                      final isSelected = _selectedLanguage == language['code'];
-                      return ListTile(
-                        leading: Text(
-                          language['flag'],
-                          style: const TextStyle(fontSize: 24),
-                        ),
-                        title: Text(language['name'].tr()),
-                        trailing: isSelected
-                            ? Icon(
-                                Icons.check_circle,
-                                color: Theme.of(context).colorScheme.primary,
-                              )
-                            : null,
-                        onTap: () {
-                          Navigator.pop(context);
-                          _selectLanguage(language['code']);
-                        },
-                      );
-                    })
-                    .toList(),
+                children: _supportedLanguages.map((language) {
+                  final isSelected = _selectedLanguage == language['code'];
+                  return ListTile(
+                    leading: Text(
+                      language['flag'],
+                      style: const TextStyle(fontSize: 24),
+                    ),
+                    title: Text(language['name'].tr()),
+                    trailing: isSelected
+                        ? Icon(
+                            Icons.check_circle,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                        : null,
+                    onTap: () {
+                      Navigator.pop(context);
+                      _selectLanguage(language['code']);
+                    },
+                  );
+                }).toList(),
               ),
             ),
           ],

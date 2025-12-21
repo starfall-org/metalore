@@ -87,12 +87,27 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   SettingsTile(
                     icon: Icons.system_update_outlined,
-                    title: 'settings.update.title'.tr(),
+                    title: 'update.title'.tr(),
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.update),
                   ),
                   const Divider(height: 1, indent: 56, endIndent: 16),
                   SettingsTile(
                     icon: Icons.info_outline,
-                    title: 'settings.info.title'.tr(),
+                    title: 'about.title'.tr(),
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.about),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            SettingsSectionHeader('settings.data_section'.tr()),
+            SettingsCard(
+              child: Column(
+                children: [
+                  SettingsTile(
+                    icon: Icons.storage,
+                    title: 'datacontrols.title'.tr(),
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.datacontrols),
                   ),
                 ],
               ),

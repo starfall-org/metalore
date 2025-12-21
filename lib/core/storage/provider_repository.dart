@@ -1,29 +1,33 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/provider.dart';
-import 'base_repository.dart';
+import 'shared_prefs_base_repository.dart';
 
-class ProviderRepository extends BaseRepository<Provider> {
-  static const String _boxName = 'providers';
+class ProviderRepository extends SharedPreferencesBaseRepository<Provider> {
+  static const String _prefix = 'provider';
 
-  ProviderRepository(super.box);
+  ProviderRepository(super.prefs);
 
   static Future<ProviderRepository> init() async {
-    final box = await Hive.openBox<String>(_boxName);
-    return ProviderRepository(box);
+    final prefs = await SharedPreferences.getInstance();
+    return ProviderRepository(prefs);
   }
 
   @override
-  String get boxName => _boxName;
-
-  @override
-  Provider deserializeItem(String json) => Provider.fromJsonString(json);
-
-  @override
-  String serializeItem(Provider item) => item.toJsonString();
+  String get prefix => _prefix;
 
   @override
   String getItemId(Provider item) => item.name;
+
+  @override
+  Map<String, dynamic> serializeToFields(Provider item) {
+    return item.toJson();
+  }
+
+  @override
+  Provider deserializeFromFields(String id, Map<String, dynamic> fields) {
+    return Provider.fromJson(fields);
+  }
 
   List<Provider> getProviders() => getItems();
 

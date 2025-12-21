@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-Script dịch thuật sử dụng Google Translate
-Dịch từ tệp assets/translations/en.json sang các ngôn ngữ khác
+Script quản lý translation files
+Giữ nguyên khóa đã có, dịch và bổ sung khóa mới từ en.json
 """
 
 import json
-import asyncio 
 import sys
+import asyncio
 from pathlib import Path
-from googletrans import Translator
+from typing import Dict, Any, Set
+import copy
 import time
-from typing import Dict, Any
+from googletrans import Translator
 
 # Cấu hình các ngôn ngữ đích
 TARGET_LANGUAGES = {
@@ -30,17 +31,58 @@ class TranslationManager:
         self.base_path = Path(__file__).parent.parent / "assets" / "translations"
         self.source_file = self.base_path / "en.json"
         
-    def load_source_file(self) -> Dict[str, Any]:
-        """Đọc tệp en.json gốc"""
+    def load_json_file(self, file_path: Path) -> Dict[str, Any]:
+        """Đọc file JSON"""
         try:
-            with open(self.source_file, 'r', encoding='utf-8') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except FileNotFoundError:
-            print(f"❌ Không tìm thấy tệp: {self.source_file}")
-            sys.exit(1)
+            print(f"❌ Không tìm thấy file: {file_path}")
+            return {}
         except json.JSONDecodeError as e:
-            print(f"❌ Lỗi đọc JSON: {e}")
-            sys.exit(1)
+            print(f"❌ Lỗi đọc JSON {file_path}: {e}")
+            return {}
+    
+    def save_json_file(self, file_path: Path, data: Dict[str, Any]):
+        """Lưu file JSON với format đẹp"""
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            print(f"💾 Đã lưu: {file_path}")
+        except Exception as e:
+            print(f"❌ Lỗi lưu file {file_path}: {e}")
+    
+    def get_all_keys(self, data: Dict[str, Any], prefix: str = "") -> Set[str]:
+        """Lấy tất cả keys từ nested dictionary"""
+        keys = set()
+        for key, value in data.items():
+            full_key = f"{prefix}.{key}" if prefix else key
+            if isinstance(value, dict):
+                keys.update(self.get_all_keys(value, full_key))
+            else:
+                keys.add(full_key)
+        return keys
+    
+    def get_value_by_path(self, data: Dict[str, Any], path: str) -> Any:
+        """Lấy giá trị theo path (ví dụ: 'home.title')"""
+        keys = path.split('.')
+        current = data
+        for key in keys:
+            if isinstance(current, dict) and key in current:
+                current = current[key]
+            else:
+                return None
+        return current
+    
+    def set_value_by_path(self, data: Dict[str, Any], path: str, value: Any):
+        """Set giá trị theo path (ví dụ: 'home.title')"""
+        keys = path.split('.')
+        current = data
+        for key in keys[:-1]:
+            if key not in current:
+                current[key] = {}
+            current = current[key]
+        current[keys[-1]] = value
     
     async def translate_text(self, text: str, dest_lang: str) -> str:
         """Dịch một đoạn văn bản"""
@@ -67,108 +109,174 @@ class TranslationManager:
         else:
             return value
     
-    async def translate_file(self, source_data: Dict[str, Any], dest_lang: str) -> Dict[str, Any]:
-        """Dịch toàn bộ tệp"""
-        print(f"🌐 Bắt đầu dịch sang {TARGET_LANGUAGES[dest_lang]} ({dest_lang})...")
+    async def merge_and_translate_new_keys(self, source_data: Dict[str, Any], target_data: Dict[str, Any], dest_lang: str) -> tuple[Dict[str, Any], bool]:
+        """Merge source data vào target data, chỉ dịch và thêm key mới
         
-        translated_data = {}
-        total_keys = self._count_keys(source_data)
-        processed_keys = 0
+        Returns:
+            tuple: (merged_data, has_translated) - data đã merge và flag cho biết có dịch hay không
+        """
+        result = copy.deepcopy(target_data)
         
-        async def translate_recursive(data: Dict[str, Any], result: Dict[str, Any]):
-            nonlocal processed_keys
-            for key, value in data.items():
-                processed_keys += 1
-                print(f"📝 Đang dịch ({processed_keys}/{total_keys}): {key}")
-                result[key] = await self.translate_value(value, dest_lang)
+        # Lấy tất cả keys từ source
+        source_keys = self.get_all_keys(source_data)
         
-        await translate_recursive(source_data, translated_data)
-        print(f"✅ Hoàn thành dịch {total_keys} keys")
-        return translated_data
+        # Lấy tất cả keys từ target
+        target_keys = self.get_all_keys(target_data)
+        
+        # Tìm keys mới cần dịch và thêm
+        new_keys = source_keys - target_keys
+        
+        print(f"📊 Thống kê:")
+        print(f"  • Tổng keys trong source: {len(source_keys)}")
+        print(f"  • Keys đã có trong target: {len(target_keys)}")
+        print(f"  • Keys mới cần dịch: {len(new_keys)}")
+        
+        if not new_keys:
+            print("✅ Không có key mới nào cần dịch")
+            return result, False
+        
+        # Dịch và thêm các key mới
+        for key_path in sorted(new_keys):
+            value = self.get_value_by_path(source_data, key_path)
+            if value is not None:
+                print(f"🌐 Đang dịch: {key_path}")
+                translated_value = await self.translate_value(value, dest_lang)
+                self.set_value_by_path(result, key_path, translated_value)
+                print(f"➕ Đã dịch và thêm: {key_path}")
+        
+        return result, True
     
-    async def _count_keys(self, data: Dict[str, Any]) -> int:
-        """Đếm tổng số keys cần dịch"""
-        count = 0
-        for value in data.values():
-            if isinstance(value, dict):
-                count += await self._count_keys(value)
-            elif isinstance(value, list):
-                count += len(value)
-            else:
-                count += 1
-        return count
-    
-    async def save_translation(self, data: Dict[str, Any], dest_lang: str):
-        """Lưu bản dịch vào tệp"""
-        output_file = self.base_path / f"{dest_lang}.json"
+    async def process_language(self, lang_code: str) -> bool:
+        """Xử lý một ngôn ngữ cụ thể
         
-        try:
-            with open(output_file, 'w', encoding='utf-8') as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-            print(f"💾 Đã lưu: {output_file}")
-        except Exception as e:
-            print(f"❌ Lỗi lưu file {output_file}: {e}")
-    
-    async def translate_all(self):
-        """Dịch sang tất cả các ngôn ngữ"""
-        print("🚀 Bắt đầu quá trình dịch thuật...")
-        print(f"📂 Tệp nguồn: {self.source_file}")
-        
-        # Đọc tệp gốc
-        source_data = self.load_source_file()
-        print(f"📖 Đã đọc {len(source_data)} keys từ tệp gốc")
-        
-        # Dịch sang từng ngôn ngữ
-        for lang_code, lang_name in TARGET_LANGUAGES.items():
-            print(f"\n{'='*50}")
-            try:
-                translated_data = await self.translate_file(source_data, lang_code)
-                await self.save_translation(translated_data, lang_code)
-                print(f"🎉 Hoàn thành dịch sang {lang_name}")
-            except Exception as e:
-                print(f"❌ Lỗi dịch sang {lang_name}: {e}")
-            
-            # Delay giữa các ngôn ngữ
-            await asyncio.sleep(1)
-        
-        print(f"\n{'='*50}")
-        print("🎊 Hoàn thành tất cả bản dịch!")
-    
-    async def translate_specific_language(self, lang_code: str):
-        """Dịch sang một ngôn ngữ cụ thể"""
+        Returns:
+            bool: True nếu có dịch, False nếu không có key mới
+        """
         if lang_code not in TARGET_LANGUAGES:
             print(f"❌ Ngôn ngữ không được hỗ trợ: {lang_code}")
             print(f"📋 Các ngôn ngữ có sẵn: {', '.join(TARGET_LANGUAGES.keys())}")
+            return False
+        
+        print(f"🎯 Xử lý {TARGET_LANGUAGES[lang_code]} ({lang_code})...")
+        
+        # Load source file
+        source_data = self.load_json_file(self.source_file)
+        if not source_data:
+            return False
+        
+        # Load target file
+        target_file = self.base_path / f"{lang_code}.json"
+        target_data = self.load_json_file(target_file)
+        
+        # Merge và dịch key mới
+        merged_data, has_translated = await self.merge_and_translate_new_keys(source_data, target_data, lang_code)
+        
+        # Save
+        self.save_json_file(target_file, merged_data)
+        
+        print(f"✅ Hoàn thành xử lý {TARGET_LANGUAGES[lang_code]}!")
+        return has_translated
+    
+    async def process_all_languages(self):
+        """Xử lý tất cả các ngôn ngữ"""
+        print("🚀 Bắt đầu quá trình merge và dịch translation files...")
+        print(f"📂 File nguồn: {self.source_file}")
+        
+        # Load source file
+        source_data = self.load_json_file(self.source_file)
+        if not source_data:
+            print("❌ Không thể load file nguồn!")
             return
         
-        print(f"🎯 Dịch sang {TARGET_LANGUAGES[lang_code]} ({lang_code})...")
+        print(f"📖 Đã đọc {len(self.get_all_keys(source_data))} keys từ file nguồn")
         
-        source_data = await self.load_source_file()
-        translated_data = await self.translate_file(source_data, lang_code)
-        await self.save_translation(translated_data, lang_code)
+        # Xử lý từng ngôn ngữ
+        for lang_code, lang_name in TARGET_LANGUAGES.items():
+            print(f"\n{'='*50}")
+            try:
+                has_translated = await self.process_language(lang_code)
+                if has_translated:
+                    # Chỉ delay nếu đã thực sự dịch để tránh rate limiting
+                    await asyncio.sleep(1)
+                # Nếu không có dịch thì không cần sleep
+            except Exception as e:
+                print(f"❌ Lỗi xử lý {lang_name}: {e}")
         
-        print(f"✅ Hoàn thành dịch sang {TARGET_LANGUAGES[lang_code]}!")
+        print(f"\n{'='*50}")
+        print("🎊 Hoàn thành tất cả translation files!")
+    
+    def list_languages(self):
+        """Liệt kê các ngôn ngữ được hỗ trợ"""
+        print("📋 Các ngôn ngữ được hỗ trợ:")
+        for code, name in TARGET_LANGUAGES.items():
+            file_path = self.base_path / f"{code}.json"
+            status = "✅ Có file" if file_path.exists() else "❌ Chưa có file"
+            print(f"  • {code}: {name} - {status}")
+    
+    def check_missing_keys(self, lang_code: str):
+        """Kiểm tra các key còn thiếu trong một ngôn ngữ"""
+        if lang_code not in TARGET_LANGUAGES:
+            print(f"❌ Ngôn ngữ không được hỗ trợ: {lang_code}")
+            return
+        
+        source_data = self.load_json_file(self.source_file)
+        target_file = self.base_path / f"{lang_code}.json"
+        target_data = self.load_json_file(target_file)
+        
+        if not source_data:
+            return
+        
+        source_keys = self.get_all_keys(source_data)
+        target_keys = self.get_all_keys(target_data) if target_data else set()
+        missing_keys = source_keys - target_keys
+        
+        print(f"🔍 Kiểm tra key thiếu cho {TARGET_LANGUAGES[lang_code]} ({lang_code}):")
+        print(f"  • Tổng keys trong source: {len(source_keys)}")
+        print(f"  • Keys đã có: {len(target_keys)}")
+        print(f"  • Keys còn thiếu: {len(missing_keys)}")
+        
+        if missing_keys:
+            print(f"\n📝 Các key còn thiếu:")
+            for key in sorted(missing_keys):
+                print(f"  • {key}")
 
 async def main():
     """Hàm chính"""
-    print("🔤 Translation Script sử dụng Google Translate")
-    print("=" * 50)
+    print("🔤 Translation Manager - Merge và Dịch Key Mới")
+    print("=" * 60)
     
     manager = TranslationManager()
     
     # Kiểm tra tham số dòng lệnh
     if len(sys.argv) > 1:
-        lang_code = sys.argv[1]
-        if lang_code == "--list" or lang_code == "-l":
-            print("📋 Các ngôn ngữ được hỗ trợ:")
-            for code, name in TARGET_LANGUAGES.items():
-                print(f"  • {code}: {name}")
+        command = sys.argv[1]
+        
+        if command == "--list" or command == "-l":
+            manager.list_languages()
             return
+        
+        if command == "--check" or command == "-c":
+            if len(sys.argv) > 2:
+                lang_code = sys.argv[2]
+                manager.check_missing_keys(lang_code)
+            else:
+                print("❌ Vui lòng chỉ định mã ngôn ngữ. Ví dụ: python translate.py --check vi")
+            return
+        
+        if command in TARGET_LANGUAGES:
+            # Xử lý một ngôn ngữ cụ thể
+            await manager.process_language(command)
         else:
-            await manager.translate_specific_language(lang_code)
+            print(f"❌ Lệnh không hợp lệ: {command}")
+            print(f"📋 Sử dụng:")
+            print(f"  • Không có tham số: Xử lý tất cả ngôn ngữ")
+            print(f"  • --list (-l): Liệt kê các ngôn ngữ")
+            print(f"  • --check (-c) <lang_code>: Kiểm tra key thiếu")
+            print(f"  • <lang_code>: Xử lý một ngôn ngữ cụ thể")
+            print(f"\n📋 Các ngôn ngữ có sẵn: {', '.join(TARGET_LANGUAGES.keys())}")
     else:
-        # Dịch tất cả các ngôn ngữ
-        await manager.translate_all()
+        # Xử lý tất cả các ngôn ngữ
+        await manager.process_all_languages()
 
 if __name__ == "__main__":
     asyncio.run(main())

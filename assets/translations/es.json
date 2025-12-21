@@ -115,8 +115,17 @@
       "auto_detect_error": "No se pudo alternar automáticamente",
       "chat_settings": "Configuración de chat",
       "persist_chat_selection": "Persistir selecciones",
-      "prefer_agent_settings": "Prefiere la configuración del perfil AI"
-    }
+      "prefer_agent_settings": "Prefiere la configuración del perfil AI",
+      "debug_mode": "Modo de depuración",
+      "developer": "Revelador",
+      "display": "Mostrar",
+      "general": "General",
+      "hide_navigation_bar": "Ocultar barra de navegación",
+      "hide_status_bar": "Ocultar barra de estado",
+      "system": "Sistema",
+      "vibration_enabled": "Vibración"
+    },
+    "data_section": "Datos"
   },
   "providers": {
     "title": "Proveedores",
@@ -158,7 +167,20 @@
     "models_available": "modelos disponibles",
     "fetch": "Buscar",
     "tap_to_fetch_models": "Toca para buscar modelos",
-    "model": {}
+    "model": {
+      "context_window": "Ventana de contexto",
+      "display_name": "Nombre para mostrar",
+      "display_name_hint": "por ejemplo: Géminis Flash",
+      "icon": "Icono",
+      "icon_hint": "URL o ruta del icono",
+      "id": "IDENTIFICACIÓN",
+      "id_hint": "por ejemplo: gemini-flash",
+      "input_types": "Tipos de entrada",
+      "output_types": "Tipos de salida",
+      "reasoning": "Razonamiento"
+    },
+    "add_model": "Agregar modelo",
+    "edit_model": "Editar modelo"
   },
   "agents": {
     "title": "Perfiles de IA",
@@ -237,5 +259,165 @@
     "text": "Texto",
     "image": "Imagen",
     "audio": "Audio"
+  },
+  "about": {
+    "actions": {
+      "bug_report_opened": "Informe de error abierto",
+      "feature_request_opened": "Solicitud de función abierta",
+      "help_center_opened": "Centro de ayuda abierto",
+      "open_source_opened": "Información de código abierto abierta",
+      "privacy_policy_opened": "Política de privacidad abierta",
+      "terms_opened": "Términos de servicio abiertos"
+    },
+    "app_description": "Plataforma integral de chat de IA con soporte para múltiples proveedores",
+    "build_date": "Fecha de construcción",
+    "developers": {
+      "team_desc": "Equipo profesional apasionado por la tecnología AI.",
+      "team_role": "Equipo de desarrollo",
+      "title": "Desarrolladores"
+    },
+    "features": {
+      "ai_profiles": "Perfiles de IA",
+      "ai_profiles_desc": "Personaliza y gestiona perfiles de IA",
+      "chat": "Chat de IA",
+      "chat_desc": "Conversaciones inteligentes con modelos de IA",
+      "mcp": "Servidores MCP",
+      "mcp_desc": "Integración del protocolo de contexto del modelo",
+      "providers": "Proveedores",
+      "providers_desc": "Soporte de IA de múltiples proveedores",
+      "title": "Características clave"
+    },
+    "legal": {
+      "open_source": "Código abierto",
+      "open_source_desc": "Información de licencia de código abierto",
+      "privacy_policy": "política de privacidad",
+      "privacy_policy_desc": "Ver política de privacidad de datos",
+      "terms_of_service": "Términos de servicio",
+      "terms_of_service_desc": "Ver términos y condiciones",
+      "title": "Legal"
+    },
+    "subtitle": "Información y detalles",
+    "support": {
+      "feature_request": "Solicitud de función",
+      "feature_request_desc": "Proponer nuevas funciones.",
+      "help_center": "Centro de ayuda",
+      "help_center_desc": "Aprende a usar la aplicación",
+      "report_bug": "Informar error",
+      "report_bug_desc": "Envíanos informes de errores",
+      "title": "Apoyo"
+    },
+    "title": "Acerca de la aplicación",
+    "version": "Versión"
+  },
+  "datacontrols": {
+    "actions": {
+      "anonymize_started": "Se inició la anonimización de datos",
+      "backup_started": "Se inició la copia de seguridad de datos",
+      "cache_cleaned": "Caché limpiado",
+      "delete_all_completed": "Todos los datos eliminados",
+      "export_started": "Se inició la exportación de datos",
+      "manage_files_opened": "Administrador de archivos abierto",
+      "restore_started": "Restauración de datos iniciada"
+    },
+    "delete_all_confirm": {
+      "message": "Esta acción eliminará permanentemente todos los datos de la aplicación. ¿Estás seguro de que quieres continuar?",
+      "title": "Confirmar Eliminar Todo"
+    },
+    "management": {
+      "backup": "Datos de copia de seguridad",
+      "backup_desc": "Crear copia de seguridad de los datos de la aplicación",
+      "export": "Exportar datos",
+      "export_desc": "Exportar datos a un archivo",
+      "restore": "Restaurar datos",
+      "restore_desc": "Restaurar desde copia de seguridad",
+      "title": "Gestión de datos"
+    },
+    "overview": {
+      "subtitle": "Estadísticas e información de datos de la aplicación.",
+      "title": "Resumen de datos"
+    },
+    "privacy": {
+      "anonymize": "Anonimizar datos",
+      "anonymize_desc": "Eliminar información de identificación personal",
+      "delete_all": "Eliminar todos los datos",
+      "delete_all_desc": "Eliminar permanentemente todos los datos de la aplicación",
+      "title": "Privacidad"
+    },
+    "stats": {
+      "conversations": "Conversaciones",
+      "profiles": "Perfiles",
+      "providers": "Proveedores"
+    },
+    "storage": {
+      "clean_cache": "Limpiar caché",
+      "clean_cache_desc": "Borrar archivos de caché temporales",
+      "manage_files": "Administrar archivos",
+      "manage_files_desc": "Ver y administrar archivos guardados",
+      "title": "Controles de almacenamiento"
+    },
+    "subtitle": "Gestionar y controlar datos",
+    "title": "Controles de datos"
+  },
+  "home": {
+    "actions": {
+      "ai_profiles": "Perfiles de IA",
+      "mcp": "Servidores MCP",
+      "providers": "Proveedores",
+      "tts": "Servicios de voz"
+    },
+    "drawer": {
+      "subtitle": "Navegación de aplicaciones"
+    },
+    "no_recent_activity": "Ninguna actividad reciente",
+    "quick_actions": "Acciones Rápidas",
+    "recent_activity": "Actividad reciente",
+    "start_chat": "Empezar a chatear",
+    "subtitle": "Panel principal",
+    "title": "Hogar",
+    "welcome": {
+      "subtitle": "Plataforma integral de chat de IA",
+      "title": "Bienvenido a AI Gateway"
+    }
+  },
+  "nav": {
+    "ai_profiles": "Perfiles de IA",
+    "chat": "Charlar",
+    "mcp": "Servidores MCP",
+    "providers": "Proveedores",
+    "settings": "Ajustes",
+    "tts": "Servicios de voz"
+  },
+  "update": {
+    "actions": {
+      "download_started": "Descarga iniciada",
+      "update_check_completed": "Comprobación de actualización completada",
+      "update_skipped": "Actualización omitida"
+    },
+    "build_date": "Fecha de construcción",
+    "check_now": "Comprobar ahora",
+    "check_status": "Buscar actualizaciones",
+    "checking": "De cheques...",
+    "current_version": "Versión actual",
+    "current_version_desc": "Información de la versión actual de la aplicación",
+    "download_update": "Descargar actualización",
+    "feature_1": "Mejoras de rendimiento y velocidad.",
+    "feature_2": "Interfaz de usuario optimizada",
+    "feature_3": "Nuevas funciones y correcciones de errores",
+    "history_1_feature_1": "Lanzamiento inicial",
+    "history_1_feature_2": "Funciones básicas de chat",
+    "history_2_feature_1": "Mejoras en la interfaz de usuario",
+    "history_2_feature_2": "Optimización del rendimiento",
+    "latest_version": "Última versión",
+    "new_version_available": "Nueva versión disponible",
+    "skip_this_version": "Saltar esta versión",
+    "stable_channel": "Estable",
+    "subtitle": "Comprobar e instalar actualizaciones",
+    "title": "Actualizar",
+    "up_to_date": "A hoy",
+    "update_available": "Actualización disponible",
+    "update_channel": "Canal de actualización",
+    "update_history": "Historial de actualizaciones",
+    "version_number": "Número de versión",
+    "whats_new": "Qué hay de nuevo"
   }
 }

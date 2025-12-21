@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/app_preferences.dart';
-import 'base_repository.dart';
+import 'shared_prefs_base_repository.dart';
 
-class AppPreferencesRepository extends BaseRepository<AppPreferences> {
-  static const String _boxName = 'app_preferences';
+class AppPreferencesRepository
+    extends SharedPreferencesBaseRepository<AppPreferences> {
+  static const String _prefix = 'app_prefs';
 
   // Reactive notifier for UI/VM
   final ValueNotifier<AppPreferences> preferencesNotifier =
       ValueNotifier<AppPreferences>(AppPreferences.defaults());
 
-  AppPreferencesRepository(super.box) {
+  AppPreferencesRepository(super.prefs) {
     _loadInitial();
   }
 
@@ -26,30 +27,66 @@ class AppPreferencesRepository extends BaseRepository<AppPreferences> {
 
   static Future<AppPreferencesRepository> init() async {
     if (_instance != null) return _instance!;
-    final box = await Hive.openBox<String>(_boxName);
-    _instance = AppPreferencesRepository(box);
+    final prefs = await SharedPreferences.getInstance();
+    _instance = AppPreferencesRepository(prefs);
     return _instance!;
   }
 
   static AppPreferencesRepository get instance {
     if (_instance == null) {
-      throw Exception('AppPreferencesRepository not initialized. Call init() first.');
+      throw Exception(
+        'AppPreferencesRepository not initialized. Call init() first.',
+      );
     }
     return _instance!;
   }
 
   @override
-  String get boxName => _boxName;
+  String get prefix => _prefix;
 
-  @override
-  AppPreferences deserializeItem(String json) => AppPreferences.fromJsonString(json);
-
-  @override
-  String serializeItem(AppPreferences item) => item.toJsonString();
-
-  // Single settings object, constant id
   @override
   String getItemId(AppPreferences item) => 'app_settings';
+
+  @override
+  Map<String, dynamic> serializeToFields(AppPreferences item) {
+    return {
+      'persistChatSelection': item.persistChatSelection,
+      'hideStatusBar': item.hideStatusBar,
+      'hideNavigationBar': item.hideNavigationBar,
+      'debugMode': item.debugMode,
+      'hasInitializedIcons': item.hasInitializedIcons,
+      'vibrationSettings': {
+        'enable': item.vibrationSettings.enable,
+        'onHoldChatConversation': item.vibrationSettings.onHoldChatConversation,
+        'onNewMessage': item.vibrationSettings.onNewMessage,
+        'onGenerateToken': item.vibrationSettings.onGenerateToken,
+        'onDeleteItem': item.vibrationSettings.onDeleteItem,
+      },
+    };
+  }
+
+  @override
+  AppPreferences deserializeFromFields(String id, Map<String, dynamic> fields) {
+    final vibrationSettingsMap =
+        fields['vibrationSettings'] as Map<String, dynamic>? ?? {};
+
+    return AppPreferences(
+      persistChatSelection: fields['persistChatSelection'] as bool? ?? false,
+      hideStatusBar: fields['hideStatusBar'] as bool? ?? false,
+      hideNavigationBar: fields['hideNavigationBar'] as bool? ?? false,
+      debugMode: fields['debugMode'] as bool? ?? false,
+      hasInitializedIcons: fields['hasInitializedIcons'] as bool? ?? false,
+      vibrationSettings: VibrationSettings(
+        enable: vibrationSettingsMap['enable'] as bool? ?? false,
+        onHoldChatConversation:
+            vibrationSettingsMap['onHoldChatConversation'] as bool? ?? false,
+        onNewMessage: vibrationSettingsMap['onNewMessage'] as bool? ?? false,
+        onGenerateToken:
+            vibrationSettingsMap['onGenerateToken'] as bool? ?? false,
+        onDeleteItem: vibrationSettingsMap['onDeleteItem'] as bool? ?? false,
+      ),
+    );
+  }
 
   Future<void> updatePreferences(AppPreferences preferences) async {
     try {

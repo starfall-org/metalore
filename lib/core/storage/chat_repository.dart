@@ -1,30 +1,62 @@
 import '../models/chat/conversation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import '../models/chat/message.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import 'base_repository.dart';
+import 'shared_prefs_base_repository.dart';
 
-class ChatRepository extends BaseRepository<Conversation> {
-  static const String _boxName = 'conversations';
+class ChatRepository extends SharedPreferencesBaseRepository<Conversation> {
+  static const String _prefix = 'conv';
 
-  ChatRepository(super.box);
+  ChatRepository(super.prefs);
 
   static Future<ChatRepository> init() async {
-    final box = await Hive.openBox<String>(_boxName);
-    return ChatRepository(box);
+    final prefs = await SharedPreferences.getInstance();
+    return ChatRepository(prefs);
   }
 
   @override
-  String get boxName => _boxName;
-
-  @override
-  Conversation deserializeItem(String json) =>
-      Conversation.fromJsonString(json);
-
-  @override
-  String serializeItem(Conversation item) => item.toJsonString();
+  String get prefix => _prefix;
 
   @override
   String getItemId(Conversation item) => item.id;
+
+  @override
+  Map<String, dynamic> serializeToFields(Conversation item) {
+    return {
+      'id': item.id,
+      'title': item.title,
+      'createdAt': item.createdAt.toIso8601String(),
+      'updatedAt': item.updatedAt.toIso8601String(),
+      'messages': item.messages.map((m) => m.toJson()).toList(),
+      'tokenCount': item.tokenCount,
+      'isAgentConversation': item.isAgentConversation,
+      'providerName': item.providerName,
+      'modelName': item.modelName,
+      'enabledToolNames': item.enabledToolNames,
+    };
+  }
+
+  @override
+  Conversation deserializeFromFields(String id, Map<String, dynamic> fields) {
+    return Conversation(
+      id: fields['id'] as String,
+      title: fields['title'] as String,
+      createdAt: DateTime.parse(fields['createdAt'] as String),
+      updatedAt: DateTime.parse(fields['updatedAt'] as String),
+      messages:
+          (fields['messages'] as List?)
+              ?.map((e) => ChatMessage.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      tokenCount: fields['tokenCount'] as int?,
+      isAgentConversation: fields['isAgentConversation'] as bool? ?? false,
+      providerName: fields['providerName'] as String?,
+      modelName: fields['modelName'] as String?,
+      enabledToolNames: (fields['enabledToolNames'] as List?)
+          ?.map((e) => e.toString())
+          .toList(),
+    );
+  }
 
   @override
   List<Conversation> getItems() {

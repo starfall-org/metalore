@@ -182,6 +182,12 @@ class ChatViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Clear loading state (useful for error recovery)
+  void clearLoadingState() {
+    isLoading = false;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     _providerSubscription?.cancel();

@@ -1,5 +1,165 @@
 {
   "app_title": "AI Gateway",
+  "home": {
+    "title": "Home",
+    "subtitle": "Main Dashboard",
+    "drawer": {
+      "subtitle": "App Navigation"
+    },
+    "welcome": {
+      "title": "Welcome to AI Gateway",
+      "subtitle": "Comprehensive AI chat platform"
+    },
+    "start_chat": "Start Chatting",
+    "quick_actions": "Quick Actions",
+    "actions": {
+      "ai_profiles": "AI Profiles",
+      "providers": "Providers",
+      "mcp": "MCP Servers",
+      "tts": "Speech Services"
+    },
+    "recent_activity": "Recent Activity",
+    "no_recent_activity": "No recent activity"
+  },
+  "datacontrols": {
+    "title": "Data Controls",
+    "subtitle": "Manage and control data",
+    "overview": {
+      "title": "Data Overview",
+      "subtitle": "App data statistics and information"
+    },
+    "stats": {
+      "conversations": "Conversations",
+      "profiles": "Profiles",
+      "providers": "Providers"
+    },
+    "management": {
+      "title": "Data Management",
+      "backup": "Backup Data",
+      "backup_desc": "Create backup of app data",
+      "restore": "Restore Data",
+      "restore_desc": "Restore from backup",
+      "export": "Export Data",
+      "export_desc": "Export data to file"
+    },
+    "privacy": {
+      "title": "Privacy",
+      "anonymize": "Anonymize Data",
+      "anonymize_desc": "Remove personally identifiable information",
+      "delete_all": "Delete All Data",
+      "delete_all_desc": "Permanently delete all app data"
+    },
+    "storage": {
+      "title": "Storage Controls",
+      "clean_cache": "Clean Cache",
+      "clean_cache_desc": "Clear temporary cache files",
+      "manage_files": "Manage Files",
+      "manage_files_desc": "View and manage saved files"
+    },
+    "actions": {
+      "backup_started": "Data backup started",
+      "restore_started": "Data restore started",
+      "export_started": "Data export started",
+      "anonymize_started": "Data anonymization started",
+      "delete_all_completed": "All data deleted",
+      "cache_cleaned": "Cache cleaned",
+      "manage_files_opened": "File manager opened"
+    },
+    "delete_all_confirm": {
+      "title": "Confirm Delete All",
+      "message": "This action will permanently delete all app data. Are you sure you want to continue?"
+    }
+  },
+  "about": {
+    "title": "About App",
+    "subtitle": "Information and details",
+    "app_description": "Comprehensive AI chat platform with multi-provider support",
+    "version": "Version",
+    "build_date": "Build Date",
+    "features": {
+      "title": "Key Features",
+      "chat": "AI Chat",
+      "chat_desc": "Smart conversations with AI models",
+      "ai_profiles": "AI Profiles",
+      "ai_profiles_desc": "Customize and manage AI profiles",
+      "providers": "Providers",
+      "providers_desc": "Multi-provider AI support",
+      "mcp": "MCP Servers",
+      "mcp_desc": "Model Context Protocol integration"
+    },
+    "developers": {
+      "title": "Developers",
+      "team_role": "Development Team",
+      "team_desc": "Professional team with passion for AI technology"
+    },
+    "legal": {
+      "title": "Legal",
+      "privacy_policy": "Privacy Policy",
+      "privacy_policy_desc": "View data privacy policy",
+      "terms_of_service": "Terms of Service",
+      "terms_of_service_desc": "View terms and conditions",
+      "open_source": "Open Source",
+      "open_source_desc": "Open source license information"
+    },
+    "support": {
+      "title": "Support",
+      "report_bug": "Report Bug",
+      "report_bug_desc": "Send bug reports to us",
+      "feature_request": "Feature Request",
+      "feature_request_desc": "Propose new features",
+      "help_center": "Help Center",
+      "help_center_desc": "Learn how to use the app"
+    },
+    "actions": {
+      "privacy_policy_opened": "Privacy policy opened",
+      "terms_opened": "Terms of service opened",
+      "open_source_opened": "Open source info opened",
+      "bug_report_opened": "Bug report opened",
+      "feature_request_opened": "Feature request opened",
+      "help_center_opened": "Help center opened"
+    }
+  },
+  "update": {
+    "title": "Update",
+    "subtitle": "Check and install updates",
+    "current_version": "Current Version",
+    "current_version_desc": "Current app version information",
+    "version_number": "Version Number",
+    "build_date": "Build Date",
+    "update_channel": "Update Channel",
+    "stable_channel": "Stable",
+    "check_status": "Check for Updates",
+    "update_available": "Update available",
+    "up_to_date": "Up to date",
+    "check_now": "Check Now",
+    "checking": "Checking...",
+    "new_version_available": "New version available",
+    "latest_version": "Latest version",
+    "whats_new": "What's New",
+    "feature_1": "Performance and speed improvements",
+    "feature_2": "Optimized user interface",
+    "feature_3": "New features and bug fixes",
+    "skip_this_version": "Skip this version",
+    "download_update": "Download Update",
+    "update_history": "Update History",
+    "history_1_feature_1": "Initial release",
+    "history_1_feature_2": "Basic chat features",
+    "history_2_feature_1": "UI improvements",
+    "history_2_feature_2": "Performance optimization",
+    "actions": {
+      "update_check_completed": "Update check completed",
+      "update_skipped": "Update skipped",
+      "download_started": "Download started"
+    }
+  },
+  "nav": {
+    "chat": "Chat",
+    "ai_profiles": "AI Profiles",
+    "providers": "Providers",
+    "mcp": "MCP Servers",
+    "tts": "Speech Services",
+    "settings": "Settings"
+  },
   "chat": {
     "title": "Chat & Support",
     "start": "Start a conversation!",
@@ -69,6 +229,7 @@
     "general_section": "General",
     "features_section": "Online Features",
     "about_section": "About",
+    "data_section": "Data",
     "notifications": {
       "title": "Notifications"
     },
@@ -106,6 +267,7 @@
     },
     "preferences": {
       "auto_detect": "Auto",
+      "system": "System",
       "select_language": "Languages",
       "about": "About",
       "current_language": "Current Language",
@@ -115,7 +277,14 @@
       "auto_detect_error": "Failed to toggle auto",
       "chat_settings": "Chat Settings",
       "persist_chat_selection": "Persist selections",
-      "prefer_agent_settings": "Prefer AI Profile settings"
+      "prefer_agent_settings": "Prefer AI Profile settings",
+      "general": "General",
+      "display": "Display",
+      "developer": "Developer",
+      "vibration_enabled": "Vibration",
+      "hide_status_bar": "Hide Status Bar",
+      "hide_navigation_bar": "Hide Navigation Bar",
+      "debug_mode": "Debug Mode"
     }
   },
   "providers": {

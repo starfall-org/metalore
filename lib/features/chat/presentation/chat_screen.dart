@@ -23,7 +23,8 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> implements ChatNavigationInterface {
+class _ChatScreenState extends State<ChatScreen>
+    implements ChatNavigationInterface {
   late ChatViewModel _viewModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -41,19 +42,37 @@ class _ChatScreenState extends State<ChatScreen> implements ChatNavigationInterf
       mcpRepository: services.mcpRepository,
       ttsService: services.ttsService,
     );
-    _viewModel.initChat();
-    _viewModel.loadSelectedProfile();
-    _viewModel.refreshProviders();
+    // Call async initialization without blocking initState
+    _initializeViewModel();
+  }
+
+  // Properly initialize async operations
+  Future<void> _initializeViewModel() async {
+    try {
+      // Wait for all initialization to complete
+      await _viewModel.initChat();
+      await _viewModel.loadSelectedProfile();
+      await _viewModel.refreshProviders();
+    } catch (e) {
+      // Ensure loading state is cleared even on error
+      _viewModel.clearLoadingState();
+      if (mounted) {
+        showSnackBar('Error initializing chat: $e');
+      }
+    }
   }
 
   @override
   void showSnackBar(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
-  Future<({String content, List<String> attachments, bool resend})?> showEditMessageDialog({
+  Future<({String content, List<String> attachments, bool resend})?>
+  showEditMessageDialog({
     required String initialContent,
     required List<String> initialAttachments,
   }) async {

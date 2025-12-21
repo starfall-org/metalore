@@ -1,16 +1,13 @@
-library;
-
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/ai/default_models.dart';
-import 'base_repository.dart';
+import 'shared_prefs_base_repository.dart';
 
 /// Repository for managing default AI models configuration.
-class DefaultModelsRepository extends BaseRepository<DefaultModels> {
-  static const String _boxName = 'default_models';
+class DefaultModelsRepository
+    extends SharedPreferencesBaseRepository<DefaultModels> {
+  static const String _prefix = 'default_models';
   static const String _itemId = 'default_models_config';
 
   static DefaultModelsRepository? _instance;
@@ -18,14 +15,14 @@ class DefaultModelsRepository extends BaseRepository<DefaultModels> {
   final ValueNotifier<DefaultModels> modelsNotifier =
       ValueNotifier<DefaultModels>(DefaultModels());
 
-  DefaultModelsRepository(super.box) {
+  DefaultModelsRepository(super.prefs) {
     _loadInitial();
   }
 
   static Future<DefaultModelsRepository> init() async {
     if (_instance != null) return _instance!;
-    final box = await Hive.openBox<String>(_boxName);
-    _instance = DefaultModelsRepository(box);
+    final prefs = await SharedPreferences.getInstance();
+    _instance = DefaultModelsRepository(prefs);
     return _instance!;
   }
 
@@ -46,20 +43,27 @@ class DefaultModelsRepository extends BaseRepository<DefaultModels> {
   }
 
   @override
-  String get boxName => _boxName;
-
-  @override
-  DefaultModels deserializeItem(String json) {
-    return DefaultModels.fromJson(jsonDecode(json) as Map<String, dynamic>);
-  }
-
-  @override
-  String serializeItem(DefaultModels item) {
-    return jsonEncode(item.toJson());
-  }
+  String get prefix => _prefix;
 
   @override
   String getItemId(DefaultModels item) => _itemId;
+
+  @override
+  Map<String, dynamic> serializeToFields(DefaultModels item) {
+    return {
+      'titleGenerationModel': item.titleGenerationModel?.toJson(),
+      'chatSummarizationModel': item.chatSummarizationModel?.toJson(),
+      'supportOCRModel': item.supportOCRModel?.toJson(),
+      'embeddingModel': item.embeddingModel?.toJson(),
+      'imageGenerationModel': item.imageGenerationModel?.toJson(),
+      'chatModel': item.chatModel?.toJson(),
+    };
+  }
+
+  @override
+  DefaultModels deserializeFromFields(String id, Map<String, dynamic> fields) {
+    return DefaultModels.fromJson(fields);
+  }
 
   Future<void> updateModels(DefaultModels models) async {
     await saveItem(models);

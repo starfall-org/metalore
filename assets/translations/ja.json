@@ -115,8 +115,17 @@
       "auto_detect_error": "自動の切り替えに失敗しました",
       "chat_settings": "チャット設定",
       "persist_chat_selection": "選択内容を保持する",
-      "prefer_agent_settings": "AI プロファイル設定を優先する"
-    }
+      "prefer_agent_settings": "AI プロファイル設定を優先する",
+      "debug_mode": "デバッグモード",
+      "developer": "開発者",
+      "display": "画面",
+      "general": "一般的な",
+      "hide_navigation_bar": "ナビゲーションバーを非表示にする",
+      "hide_status_bar": "ステータスバーを非表示にする",
+      "system": "システム",
+      "vibration_enabled": "振動"
+    },
+    "data_section": "データ"
   },
   "providers": {
     "title": "プロバイダー",
@@ -158,7 +167,20 @@
     "models_available": "利用可能なモデル",
     "fetch": "フェッチ",
     "tap_to_fetch_models": "タップしてモデルを取得します",
-    "model": {}
+    "model": {
+      "context_window": "コンテキストウィンドウ",
+      "display_name": "表示名",
+      "display_name_hint": "例: ジェミニフラッシュ",
+      "icon": "アイコン",
+      "icon_hint": "アイコンの URL またはパス",
+      "id": "ID",
+      "id_hint": "例: ジェミニフラッシュ",
+      "input_types": "入力タイプ",
+      "output_types": "出力タイプ",
+      "reasoning": "推論"
+    },
+    "add_model": "モデルの追加",
+    "edit_model": "モデルの編集"
   },
   "agents": {
     "title": "AI プロファイル",
@@ -237,5 +259,165 @@
     "text": "文章",
     "image": "画像",
     "audio": "オーディオ"
+  },
+  "about": {
+    "actions": {
+      "bug_report_opened": "バグレポートがオープンされました",
+      "feature_request_opened": "機能リクエストがオープンされました",
+      "help_center_opened": "ヘルプセンターを開設しました",
+      "open_source_opened": "オープンソース情報が公開されました",
+      "privacy_policy_opened": "プライバシーポリシーを公開しました",
+      "terms_opened": "利用規約が公開されました"
+    },
+    "app_description": "マルチプロバイダーをサポートする包括的な AI チャット プラットフォーム",
+    "build_date": "ビルド日",
+    "developers": {
+      "team_desc": "AIテクノロジーに情熱を注ぐプロフェッショナルチーム",
+      "team_role": "開発チーム",
+      "title": "開発者"
+    },
+    "features": {
+      "ai_profiles": "AI プロファイル",
+      "ai_profiles_desc": "AI プロファイルのカスタマイズと管理",
+      "chat": "AIチャット",
+      "chat_desc": "AI モデルとのスマートな会話",
+      "mcp": "MCPサーバー",
+      "mcp_desc": "モデルコンテキストプロトコルの統合",
+      "providers": "プロバイダー",
+      "providers_desc": "マルチプロバイダーAIサポート",
+      "title": "主な特長"
+    },
+    "legal": {
+      "open_source": "オープンソース",
+      "open_source_desc": "オープンソースライセンス情報",
+      "privacy_policy": "プライバシーポリシー",
+      "privacy_policy_desc": "データプライバシーポリシーを見る",
+      "terms_of_service": "利用規約",
+      "terms_of_service_desc": "利用規約を見る",
+      "title": "法律上の"
+    },
+    "subtitle": "情報と詳細",
+    "support": {
+      "feature_request": "機能リクエスト",
+      "feature_request_desc": "新しい機能を提案する",
+      "help_center": "ヘルプセンター",
+      "help_center_desc": "アプリの使い方を学ぶ",
+      "report_bug": "バグを報告する",
+      "report_bug_desc": "バグレポートを私たちに送信してください",
+      "title": "サポート"
+    },
+    "title": "アプリについて",
+    "version": "バージョン"
+  },
+  "datacontrols": {
+    "actions": {
+      "anonymize_started": "データの匿名化が開始されました",
+      "backup_started": "データのバックアップを開始しました",
+      "cache_cleaned": "キャッシュが消去されました",
+      "delete_all_completed": "すべてのデータが削除されました",
+      "export_started": "データのエクスポートが開始されました",
+      "manage_files_opened": "ファイルマネージャーが開いた",
+      "restore_started": "データの復元が開始されました"
+    },
+    "delete_all_confirm": {
+      "message": "この操作により、すべてのアプリ データが完全に削除されます。続行してもよろしいですか?",
+      "title": "すべて削除の確認"
+    },
+    "management": {
+      "backup": "バックアップデータ",
+      "backup_desc": "アプリデータのバックアップを作成する",
+      "export": "データのエクスポート",
+      "export_desc": "データをファイルにエクスポート",
+      "restore": "データの復元",
+      "restore_desc": "バックアップから復元する",
+      "title": "データ管理"
+    },
+    "overview": {
+      "subtitle": "アプリデータの統計と情報",
+      "title": "データの概要"
+    },
+    "privacy": {
+      "anonymize": "データの匿名化",
+      "anonymize_desc": "個人を特定できる情報を削除する",
+      "delete_all": "すべてのデータを削除する",
+      "delete_all_desc": "すべてのアプリデータを完全に削除します",
+      "title": "プライバシー"
+    },
+    "stats": {
+      "conversations": "会話",
+      "profiles": "プロフィール",
+      "providers": "プロバイダー"
+    },
+    "storage": {
+      "clean_cache": "クリーンキャッシュ",
+      "clean_cache_desc": "一時キャッシュファイルをクリアする",
+      "manage_files": "ファイルの管理",
+      "manage_files_desc": "保存されたファイルの表示と管理",
+      "title": "ストレージ制御"
+    },
+    "subtitle": "データの管理と制御",
+    "title": "データコントロール"
+  },
+  "home": {
+    "actions": {
+      "ai_profiles": "AI プロファイル",
+      "mcp": "MCPサーバー",
+      "providers": "プロバイダー",
+      "tts": "音声サービス"
+    },
+    "drawer": {
+      "subtitle": "アプリのナビゲーション"
+    },
+    "no_recent_activity": "最近のアクティビティはありません",
+    "quick_actions": "クイックアクション",
+    "recent_activity": "最近の活動",
+    "start_chat": "チャットを開始する",
+    "subtitle": "メインダッシュボード",
+    "title": "家",
+    "welcome": {
+      "subtitle": "総合AIチャットプラットフォーム",
+      "title": "AI ゲートウェイへようこそ"
+    }
+  },
+  "nav": {
+    "ai_profiles": "AI プロファイル",
+    "chat": "チャット",
+    "mcp": "MCPサーバー",
+    "providers": "プロバイダー",
+    "settings": "設定",
+    "tts": "音声サービス"
+  },
+  "update": {
+    "actions": {
+      "download_started": "ダウンロードが開始されました",
+      "update_check_completed": "アップデートチェック完了",
+      "update_skipped": "アップデートはスキップされました"
+    },
+    "build_date": "ビルド日",
+    "check_now": "今すぐチェック",
+    "check_status": "アップデートをチェックする",
+    "checking": "チェック中...",
+    "current_version": "現在のバージョン",
+    "current_version_desc": "現在のアプリのバージョン情報",
+    "download_update": "アップデートをダウンロード",
+    "feature_1": "パフォーマンスと速度の向上",
+    "feature_2": "最適化されたユーザーインターフェース",
+    "feature_3": "新機能とバグ修正",
+    "history_1_feature_1": "初期リリース",
+    "history_1_feature_2": "基本的なチャット機能",
+    "history_2_feature_1": "UIの改善",
+    "history_2_feature_2": "パフォーマンスの最適化",
+    "latest_version": "最新バージョン",
+    "new_version_available": "新しいバージョンが利用可能になりました",
+    "skip_this_version": "このバージョンをスキップする",
+    "stable_channel": "安定した",
+    "subtitle": "アップデートを確認してインストールする",
+    "title": "アップデート",
+    "up_to_date": "最新の",
+    "update_available": "利用可能なアップデート",
+    "update_channel": "チャンネルを更新する",
+    "update_history": "更新履歴",
+    "version_number": "バージョン番号",
+    "whats_new": "新着情報"
   }
 }

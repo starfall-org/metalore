@@ -1,11 +1,171 @@
 {
   "app_title": "AI Gateway",
+  "home": {
+    "title": "Trang chủ",
+    "subtitle": "Dashboard chính",
+    "drawer": {
+      "subtitle": "Điều hướng ứng dụng"
+    },
+    "welcome": {
+      "title": "Chào mừng đến với AI Gateway",
+      "subtitle": "Nền tảng trò chuyện AI toàn diện"
+    },
+    "start_chat": "Bắt đầu trò chuyện",
+    "quick_actions": "Hành động nhanh",
+    "actions": {
+      "ai_profiles": "Hồ sơ AI",
+      "providers": "Nhà cung cấp",
+      "mcp": "Máy chủ MCP",
+      "tts": "Dịch vụ lời nói"
+    },
+    "recent_activity": "Hoạt động gần đây",
+    "no_recent_activity": "Chưa có hoạt động nào"
+  },
+  "datacontrols": {
+    "title": "Điều khiển dữ liệu",
+    "subtitle": "Quản lý và kiểm soát dữ liệu",
+    "overview": {
+      "title": "Tổng quan dữ liệu",
+      "subtitle": "Thống kê và thông tin dữ liệu ứng dụng"
+    },
+    "stats": {
+      "conversations": "Cuộc trò chuyện",
+      "profiles": "Hồ sơ",
+      "providers": "Nhà cung cấp"
+    },
+    "management": {
+      "title": "Quản lý dữ liệu",
+      "backup": "Sao lưu dữ liệu",
+      "backup_desc": "Tạo bản sao lưu dữ liệu ứng dụng",
+      "restore": "Khôi phục dữ liệu",
+      "restore_desc": "Khôi phục từ bản sao lưu",
+      "export": "Xuất dữ liệu",
+      "export_desc": "Xuất dữ liệu ra file"
+    },
+    "privacy": {
+      "title": "Quyền riêng tư",
+      "anonymize": "Ẩn danh dữ liệu",
+      "anonymize_desc": "Loại bỏ thông tin nhận dạng cá nhân",
+      "delete_all": "Xóa tất cả dữ liệu",
+      "delete_all_desc": "Xóa vĩnh viễn tất cả dữ liệu ứng dụng"
+    },
+    "storage": {
+      "title": "Điều khiển lưu trữ",
+      "clean_cache": "Dọn dẹp bộ nhớ cache",
+      "clean_cache_desc": "Xóa các file cache tạm thời",
+      "manage_files": "Quản lý file",
+      "manage_files_desc": "Xem và quản lý các file đã lưu"
+    },
+    "actions": {
+      "backup_started": "Đã bắt đầu sao lưu dữ liệu",
+      "restore_started": "Đã bắt đầu khôi phục dữ liệu",
+      "export_started": "Đã bắt đầu xuất dữ liệu",
+      "anonymize_started": "Đã bắt đầu ẩn danh dữ liệu",
+      "delete_all_completed": "Đã xóa tất cả dữ liệu",
+      "cache_cleaned": "Đã dọn dẹp bộ nhớ cache",
+      "manage_files_opened": "Đã mở quản lý file"
+    },
+    "delete_all_confirm": {
+      "title": "Xác nhận xóa tất cả",
+      "message": "Hành động này sẽ xóa vĩnh viễn tất cả dữ liệu ứng dụng. Bạn có chắc chắn muốn tiếp tục?"
+    }
+  },
+  "about": {
+    "title": "Về ứng dụng",
+    "subtitle": "Thông tin và chi tiết",
+    "app_description": "Nền tảng trò chuyện AI toàn diện với hỗ trợ đa nhà cung cấp",
+    "version": "Phiên bản",
+    "build_date": "Ngày build",
+    "features": {
+      "title": "Tính năng chính",
+      "chat": "Trò chuyện AI",
+      "chat_desc": "Trò chuyện thông minh với các mô hình AI",
+      "ai_profiles": "Hồ sơ AI",
+      "ai_profiles_desc": "Tùy chỉnh và quản lý hồ sơ AI",
+      "providers": "Nhà cung cấp",
+      "providers_desc": "Hỗ trợ đa nhà cung cấp AI",
+      "mcp": "Máy chủ MCP",
+      "mcp_desc": "Tích hợp Model Context Protocol"
+    },
+    "developers": {
+      "title": "Nhà phát triển",
+      "team_role": "Đội ngũ phát triển",
+      "team_desc": "Đội ngũ chuyên nghiệp với niềm đam mê công nghệ AI"
+    },
+    "legal": {
+      "title": "Pháp lý",
+      "privacy_policy": "Chính sách bảo mật",
+      "privacy_policy_desc": "Xem chính sách bảo mật dữ liệu",
+      "terms_of_service": "Điều khoản sử dụng",
+      "terms_of_service_desc": "Xem điều khoản và điều kiện sử dụng",
+      "open_source": "Mã nguồn mở",
+      "open_source_desc": "Thông tin về giấy phép mã nguồn mở"
+    },
+    "support": {
+      "title": "Hỗ trợ",
+      "report_bug": "Báo cáo lỗi",
+      "report_bug_desc": "Gửi báo cáo lỗi cho chúng tôi",
+      "feature_request": "Yêu cầu tính năng",
+      "feature_request_desc": "Đề xuất tính năng mới",
+      "help_center": "Trung tâm trợ giúp",
+      "help_center_desc": "Tìm hiểu cách sử dụng ứng dụng"
+    },
+    "actions": {
+      "privacy_policy_opened": "Đã mở chính sách bảo mật",
+      "terms_opened": "Đã mở điều khoản sử dụng",
+      "open_source_opened": "Đã mở thông tin mã nguồn mở",
+      "bug_report_opened": "Đã mở báo cáo lỗi",
+      "feature_request_opened": "Đã mở yêu cầu tính năng",
+      "help_center_opened": "Đã mở trung tâm trợ giúp"
+    }
+  },
+  "update": {
+    "title": "Cập nhật",
+    "subtitle": "Kiểm tra và cài đặt cập nhật",
+    "current_version": "Phiên bản hiện tại",
+    "current_version_desc": "Thông tin phiên bản ứng dụng hiện tại",
+    "version_number": "Số phiên bản",
+    "build_date": "Ngày build",
+    "update_channel": "Kênh cập nhật",
+    "stable_channel": "Ổn định",
+    "check_status": "Kiểm tra cập nhật",
+    "update_available": "Có cập nhật mới",
+    "up_to_date": "Đã cập nhật",
+    "check_now": "Kiểm tra ngay",
+    "checking": "Đang kiểm tra...",
+    "new_version_available": "Phiên bản mới có sẵn",
+    "latest_version": "Phiên bản mới nhất",
+    "whats_new": "Có gì mới",
+    "feature_1": "Cải thiện hiệu suất và tốc độ",
+    "feature_2": "Giao diện người dùng được tối ưu hóa",
+    "feature_3": "Tính năng mới và sửa lỗi",
+    "skip_this_version": "Bỏ qua phiên bản này",
+    "download_update": "Tải xuống cập nhật",
+    "update_history": "Lịch sử cập nhật",
+    "history_1_feature_1": "Phát hành phiên bản đầu tiên",
+    "history_1_feature_2": "Tính năng trò chuyện cơ bản",
+    "history_2_feature_1": "Cải thiện giao diện",
+    "history_2_feature_2": "Tối ưu hóa hiệu suất",
+    "actions": {
+      "update_check_completed": "Đã hoàn thành kiểm tra cập nhật",
+      "update_skipped": "Đã bỏ qua cập nhật",
+      "download_started": "Đã bắt đầu tải xuống"
+    }
+  },
+  "nav": {
+    "chat": "Trò chuyện",
+    "ai_profiles": "Hồ sơ AI",
+    "providers": "Nhà cung cấp",
+    "mcp": "Máy chủ MCP",
+    "tts": "Dịch vụ lời nói",
+    "settings": "Cài đặt"
+  },
   "chat": {
     "title": "Trò chuyện & Hỗ trợ",
     "start": "Bắt đầu một cuộc trò chuyện!",
-    "regenerate": "tái sinh",
+    "regenerate": "Tái sinh",
     "clear": "Xóa cuộc trò chuyện",
-    "copy": "Sao chép bảng điểm",
+    "copy": "Sao chép bản chép lời",
     "copied": "Đã sao chép bản chép lời",
     "no_user_to_regen": "Không tìm thấy tin nhắn người dùng để tạo lại",
     "unable_pick": "Không thể chọn tệp: {error}"
@@ -69,6 +229,7 @@
     "general_section": "Tổng quan",
     "features_section": "Tính năng trực tuyến",
     "about_section": "Về",
+    "data_section": "Dữ liệu",
     "notifications": {
       "title": "Thông báo"
     },
@@ -115,7 +276,15 @@
       "auto_detect_error": "Không thể chuyển đổi tự động",
       "chat_settings": "Cài đặt trò chuyện",
       "persist_chat_selection": "Lựa chọn liên tục",
-      "prefer_agent_settings": "Ưu tiên cài đặt Cấu hình AI"
+      "prefer_agent_settings": "Ưu tiên cài đặt Cấu hình AI",
+      "debug_mode": "Chế độ gỡ lỗi",
+      "developer": "Nhà phát triển",
+      "display": "Trưng bày",
+      "general": "Tổng quan",
+      "hide_navigation_bar": "Ẩn thanh điều hướng",
+      "hide_status_bar": "Ẩn thanh trạng thái",
+      "system": "Hệ thống",
+      "vibration_enabled": "Rung"
     }
   },
   "providers": {
@@ -158,7 +327,20 @@
     "models_available": "mô hình có sẵn",
     "fetch": "Tìm về",
     "tap_to_fetch_models": "Nhấn để tìm nạp mô hình",
-    "model": {}
+    "model": {
+      "context_window": "Cửa sổ ngữ cảnh",
+      "display_name": "Tên hiển thị",
+      "display_name_hint": "ví dụ: Tia chớp Song Tử",
+      "icon": "Biểu tượng",
+      "icon_hint": "Url hoặc đường dẫn biểu tượng",
+      "id": "NHẬN DẠNG",
+      "id_hint": "ví dụ: gemini-flash",
+      "input_types": "Loại đầu vào",
+      "output_types": "Các loại đầu ra",
+      "reasoning": "Lý luận"
+    },
+    "add_model": "Thêm mô hình",
+    "edit_model": "Chỉnh sửa mô hình"
   },
   "agents": {
     "title": "Hồ sơ AI",

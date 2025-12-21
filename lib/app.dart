@@ -172,7 +172,7 @@ class AIGatewayApp extends StatelessWidget {
               supportedLocales: context.supportedLocales,
               locale: context.locale,
               onGenerateRoute: generateRoute,
-              initialRoute: AppRoutes.chat,
+              initialRoute: AppRoutes.home,
             );
           },
         );

@@ -115,8 +115,17 @@
       "auto_detect_error": "Die automatische Umschaltung ist fehlgeschlagen",
       "chat_settings": "Chat-Einstellungen",
       "persist_chat_selection": "Auswahl beibehalten",
-      "prefer_agent_settings": "AI-Profileinstellungen bevorzugen"
-    }
+      "prefer_agent_settings": "AI-Profileinstellungen bevorzugen",
+      "debug_mode": "Debug-Modus",
+      "developer": "Entwickler",
+      "display": "Anzeige",
+      "general": "Allgemein",
+      "hide_navigation_bar": "Navigationsleiste ausblenden",
+      "hide_status_bar": "Statusleiste ausblenden",
+      "system": "System",
+      "vibration_enabled": "Vibration"
+    },
+    "data_section": "Daten"
   },
   "providers": {
     "title": "Anbieter",
@@ -158,7 +167,20 @@
     "models_available": "Modelle verfügbar",
     "fetch": "Bringen",
     "tap_to_fetch_models": "Tippen Sie, um Modelle abzurufen",
-    "model": {}
+    "model": {
+      "context_window": "Kontextfenster",
+      "display_name": "Anzeigename",
+      "display_name_hint": "zB: Gemini Flash",
+      "icon": "Symbol",
+      "icon_hint": "Symbol-URL oder -Pfad",
+      "id": "AUSWEIS",
+      "id_hint": "zB: gemini-flash",
+      "input_types": "Eingabetypen",
+      "output_types": "Ausgabetypen",
+      "reasoning": "Argumentation"
+    },
+    "add_model": "Modell hinzufügen",
+    "edit_model": "Modell bearbeiten"
   },
   "agents": {
     "title": "KI-Profile",
@@ -237,5 +259,165 @@
     "text": "Text",
     "image": "Bild",
     "audio": "Audio"
+  },
+  "about": {
+    "actions": {
+      "bug_report_opened": "Fehlerbericht geöffnet",
+      "feature_request_opened": "Funktionsanfrage geöffnet",
+      "help_center_opened": "Hilfecenter geöffnet",
+      "open_source_opened": "Open-Source-Informationen geöffnet",
+      "privacy_policy_opened": "Datenschutzerklärung geöffnet",
+      "terms_opened": "Nutzungsbedingungen geöffnet"
+    },
+    "app_description": "Umfassende KI-Chat-Plattform mit Multi-Provider-Unterstützung",
+    "build_date": "Erstellungsdatum",
+    "developers": {
+      "team_desc": "Professionelles Team mit Leidenschaft für KI-Technologie",
+      "team_role": "Entwicklungsteam",
+      "title": "Entwickler"
+    },
+    "features": {
+      "ai_profiles": "KI-Profile",
+      "ai_profiles_desc": "Passen Sie KI-Profile an und verwalten Sie sie",
+      "chat": "KI-Chat",
+      "chat_desc": "Intelligente Gespräche mit KI-Modellen",
+      "mcp": "MCP-Server",
+      "mcp_desc": "Integration des Modellkontextprotokolls",
+      "providers": "Anbieter",
+      "providers_desc": "KI-Unterstützung mehrerer Anbieter",
+      "title": "Hauptmerkmale"
+    },
+    "legal": {
+      "open_source": "Open Source",
+      "open_source_desc": "Informationen zur Open-Source-Lizenz",
+      "privacy_policy": "Datenschutzrichtlinie",
+      "privacy_policy_desc": "Datenschutzbestimmungen ansehen",
+      "terms_of_service": "Nutzungsbedingungen",
+      "terms_of_service_desc": "Allgemeine Geschäftsbedingungen ansehen",
+      "title": "Legal"
+    },
+    "subtitle": "Informationen und Details",
+    "support": {
+      "feature_request": "Funktionsanfrage",
+      "feature_request_desc": "Schlagen Sie neue Funktionen vor",
+      "help_center": "Hilfecenter",
+      "help_center_desc": "Erfahren Sie, wie Sie die App nutzen",
+      "report_bug": "Fehler melden",
+      "report_bug_desc": "Senden Sie Fehlerberichte an uns",
+      "title": "Unterstützung"
+    },
+    "title": "Über App",
+    "version": "Version"
+  },
+  "datacontrols": {
+    "actions": {
+      "anonymize_started": "Die Anonymisierung der Daten wurde gestartet",
+      "backup_started": "Datensicherung gestartet",
+      "cache_cleaned": "Cache gereinigt",
+      "delete_all_completed": "Alle Daten gelöscht",
+      "export_started": "Datenexport gestartet",
+      "manage_files_opened": "Dateimanager geöffnet",
+      "restore_started": "Datenwiederherstellung gestartet"
+    },
+    "delete_all_confirm": {
+      "message": "Durch diese Aktion werden alle App-Daten dauerhaft gelöscht. Sind Sie sicher, dass Sie fortfahren möchten?",
+      "title": "Bestätigen Sie „Alle löschen“."
+    },
+    "management": {
+      "backup": "Sicherungsdaten",
+      "backup_desc": "Erstellen Sie ein Backup der App-Daten",
+      "export": "Daten exportieren",
+      "export_desc": "Daten in eine Datei exportieren",
+      "restore": "Daten wiederherstellen",
+      "restore_desc": "Aus Backup wiederherstellen",
+      "title": "Datenmanagement"
+    },
+    "overview": {
+      "subtitle": "Statistiken und Informationen zu App-Daten",
+      "title": "Datenübersicht"
+    },
+    "privacy": {
+      "anonymize": "Daten anonymisieren",
+      "anonymize_desc": "Entfernen Sie personenbezogene Daten",
+      "delete_all": "Alle Daten löschen",
+      "delete_all_desc": "Alle App-Daten dauerhaft löschen",
+      "title": "Privatsphäre"
+    },
+    "stats": {
+      "conversations": "Gespräche",
+      "profiles": "Profile",
+      "providers": "Anbieter"
+    },
+    "storage": {
+      "clean_cache": "Cache leeren",
+      "clean_cache_desc": "Löschen Sie temporäre Cache-Dateien",
+      "manage_files": "Dateien verwalten",
+      "manage_files_desc": "Gespeicherte Dateien anzeigen und verwalten",
+      "title": "Speicherkontrollen"
+    },
+    "subtitle": "Daten verwalten und kontrollieren",
+    "title": "Datenkontrollen"
+  },
+  "home": {
+    "actions": {
+      "ai_profiles": "KI-Profile",
+      "mcp": "MCP-Server",
+      "providers": "Anbieter",
+      "tts": "Sprachdienste"
+    },
+    "drawer": {
+      "subtitle": "App-Navigation"
+    },
+    "no_recent_activity": "Keine aktuelle Aktivität",
+    "quick_actions": "Schnelle Aktionen",
+    "recent_activity": "Letzte Aktivität",
+    "start_chat": "Beginnen Sie mit dem Chatten",
+    "subtitle": "Haupt-Dashboard",
+    "title": "Heim",
+    "welcome": {
+      "subtitle": "Umfassende KI-Chat-Plattform",
+      "title": "Willkommen bei AI Gateway"
+    }
+  },
+  "nav": {
+    "ai_profiles": "KI-Profile",
+    "chat": "Chatten",
+    "mcp": "MCP-Server",
+    "providers": "Anbieter",
+    "settings": "Einstellungen",
+    "tts": "Sprachdienste"
+  },
+  "update": {
+    "actions": {
+      "download_started": "Download gestartet",
+      "update_check_completed": "Update-Prüfung abgeschlossen",
+      "update_skipped": "Update übersprungen"
+    },
+    "build_date": "Erstellungsdatum",
+    "check_now": "Jetzt prüfen",
+    "check_status": "Suchen Sie nach Updates",
+    "checking": "Überprüfung...",
+    "current_version": "Aktuelle Version",
+    "current_version_desc": "Aktuelle Informationen zur App-Version",
+    "download_update": "Laden Sie das Update herunter",
+    "feature_1": "Leistungs- und Geschwindigkeitsverbesserungen",
+    "feature_2": "Optimierte Benutzeroberfläche",
+    "feature_3": "Neue Funktionen und Fehlerbehebungen",
+    "history_1_feature_1": "Erstveröffentlichung",
+    "history_1_feature_2": "Grundlegende Chatfunktionen",
+    "history_2_feature_1": "Verbesserungen der Benutzeroberfläche",
+    "history_2_feature_2": "Leistungsoptimierung",
+    "latest_version": "Neueste Version",
+    "new_version_available": "Neue Version verfügbar",
+    "skip_this_version": "Überspringen Sie diese Version",
+    "stable_channel": "Stabil",
+    "subtitle": "Überprüfen und installieren Sie Updates",
+    "title": "Aktualisieren",
+    "up_to_date": "Auf dem neuesten Stand",
+    "update_available": "Update verfügbar",
+    "update_channel": "Kanal aktualisieren",
+    "update_history": "Update-Verlauf",
+    "version_number": "Versionsnummer",
+    "whats_new": "Was ist neu"
   }
 }

@@ -1,34 +1,31 @@
-import 'dart:convert';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/mcp/mcp_server.dart';
-import 'base_repository.dart';
+import 'shared_prefs_base_repository.dart';
 
-class MCPRepository extends BaseRepository<MCPServer> {
-  static const String _boxName = 'mcp_servers';
+class MCPRepository extends SharedPreferencesBaseRepository<MCPServer> {
+  static const String _prefix = 'mcp';
 
-  MCPRepository(super.box);
+  MCPRepository(super.prefs);
 
   static Future<MCPRepository> init() async {
-    final box = await Hive.openBox<String>(_boxName);
-    return MCPRepository(box);
+    final prefs = await SharedPreferences.getInstance();
+    return MCPRepository(prefs);
   }
 
   @override
-  String get boxName => _boxName;
+  String get prefix => _prefix;
 
   @override
-  MCPServer deserializeItem(String json) {
-    return MCPServer.fromJson(jsonDecode(json) as Map<String, dynamic>);
+  String getItemId(MCPServer item) => item.id;
+
+  @override
+  Map<String, dynamic> serializeToFields(MCPServer item) {
+    return item.toJson();
   }
 
   @override
-  String getItemId(MCPServer item) {
-    return item.id;
-  }
-
-  @override
-  String serializeItem(MCPServer item) {
-    return jsonEncode(item.toJson());
+  MCPServer deserializeFromFields(String id, Map<String, dynamic> fields) {
+    return MCPServer.fromJson(fields);
   }
 
   /// Get all enabled servers

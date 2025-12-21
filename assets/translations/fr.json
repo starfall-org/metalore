@@ -115,8 +115,17 @@
       "auto_detect_error": "Échec du basculement automatique",
       "chat_settings": "Paramètres de discussion",
       "persist_chat_selection": "Conserver les sélections",
-      "prefer_agent_settings": "Préférer les paramètres du profil AI"
-    }
+      "prefer_agent_settings": "Préférer les paramètres du profil AI",
+      "debug_mode": "Mode débogage",
+      "developer": "Promoteur",
+      "display": "Afficher",
+      "general": "Général",
+      "hide_navigation_bar": "Masquer la barre de navigation",
+      "hide_status_bar": "Masquer la barre d'état",
+      "system": "Système",
+      "vibration_enabled": "Vibration"
+    },
+    "data_section": "Données"
   },
   "providers": {
     "title": "Fournisseurs",
@@ -158,7 +167,20 @@
     "models_available": "modèles disponibles",
     "fetch": "Aller chercher",
     "tap_to_fetch_models": "Appuyez pour récupérer des modèles",
-    "model": {}
+    "model": {
+      "context_window": "Fenêtre contextuelle",
+      "display_name": "Nom d'affichage",
+      "display_name_hint": "par exemple : Gémeaux Flash",
+      "icon": "Icône",
+      "icon_hint": "URL ou chemin de l'icône",
+      "id": "IDENTIFIANT",
+      "id_hint": "par exemple : gemini-flash",
+      "input_types": "Types d'entrée",
+      "output_types": "Types de sortie",
+      "reasoning": "Raisonnement"
+    },
+    "add_model": "Ajouter un modèle",
+    "edit_model": "Modifier le modèle"
   },
   "agents": {
     "title": "Profils IA",
@@ -237,5 +259,165 @@
     "text": "Texte",
     "image": "Image",
     "audio": "Audio"
+  },
+  "about": {
+    "actions": {
+      "bug_report_opened": "Rapport de bug ouvert",
+      "feature_request_opened": "Demande de fonctionnalité ouverte",
+      "help_center_opened": "Centre d'aide ouvert",
+      "open_source_opened": "Informations open source ouvertes",
+      "privacy_policy_opened": "Politique de confidentialité ouverte",
+      "terms_opened": "Conditions d'utilisation ouvertes"
+    },
+    "app_description": "Plateforme de chat IA complète avec prise en charge multi-fournisseurs",
+    "build_date": "Date de construction",
+    "developers": {
+      "team_desc": "Équipe professionnelle passionnée par la technologie de l'IA",
+      "team_role": "Équipe de développement",
+      "title": "Développeurs"
+    },
+    "features": {
+      "ai_profiles": "Profils IA",
+      "ai_profiles_desc": "Personnalisez et gérez les profils IA",
+      "chat": "Chat IA",
+      "chat_desc": "Conversations intelligentes avec des modèles d'IA",
+      "mcp": "Serveurs MCP",
+      "mcp_desc": "Intégration du protocole de contexte de modèle",
+      "providers": "Fournisseurs",
+      "providers_desc": "Prise en charge de l'IA multi-fournisseurs",
+      "title": "Principales fonctionnalités"
+    },
+    "legal": {
+      "open_source": "Source ouverte",
+      "open_source_desc": "Informations sur la licence open source",
+      "privacy_policy": "politique de confidentialité",
+      "privacy_policy_desc": "Afficher la politique de confidentialité des données",
+      "terms_of_service": "Conditions d'utilisation",
+      "terms_of_service_desc": "Voir les termes et conditions",
+      "title": "Légal"
+    },
+    "subtitle": "Informations et détails",
+    "support": {
+      "feature_request": "Demande de fonctionnalité",
+      "feature_request_desc": "Proposer de nouvelles fonctionnalités",
+      "help_center": "Centre d'aide",
+      "help_center_desc": "Apprenez à utiliser l'application",
+      "report_bug": "Signaler un bug",
+      "report_bug_desc": "Envoyez-nous des rapports de bogues",
+      "title": "Soutien"
+    },
+    "title": "À propos de l'application",
+    "version": "Version"
+  },
+  "datacontrols": {
+    "actions": {
+      "anonymize_started": "L'anonymisation des données a commencé",
+      "backup_started": "Sauvegarde des données démarrée",
+      "cache_cleaned": "Cache nettoyé",
+      "delete_all_completed": "Toutes les données supprimées",
+      "export_started": "L'exportation des données a commencé",
+      "manage_files_opened": "Gestionnaire de fichiers ouvert",
+      "restore_started": "La restauration des données a commencé"
+    },
+    "delete_all_confirm": {
+      "message": "Cette action supprimera définitivement toutes les données de l'application. Êtes-vous sûr de vouloir continuer ?",
+      "title": "Confirmer Supprimer tout"
+    },
+    "management": {
+      "backup": "Sauvegarde des données",
+      "backup_desc": "Créer une sauvegarde des données de l'application",
+      "export": "Exporter des données",
+      "export_desc": "Exporter les données vers un fichier",
+      "restore": "Restaurer les données",
+      "restore_desc": "Restaurer à partir d'une sauvegarde",
+      "title": "Gestion des données"
+    },
+    "overview": {
+      "subtitle": "Statistiques et informations sur les données de l'application",
+      "title": "Aperçu des données"
+    },
+    "privacy": {
+      "anonymize": "Anonymiser les données",
+      "anonymize_desc": "Supprimer les informations personnellement identifiables",
+      "delete_all": "Supprimer toutes les données",
+      "delete_all_desc": "Supprimer définitivement toutes les données de l'application",
+      "title": "Confidentialité"
+    },
+    "stats": {
+      "conversations": "Conversations",
+      "profiles": "Profils",
+      "providers": "Fournisseurs"
+    },
+    "storage": {
+      "clean_cache": "Nettoyer le cache",
+      "clean_cache_desc": "Effacer les fichiers de cache temporaires",
+      "manage_files": "Gérer les fichiers",
+      "manage_files_desc": "Afficher et gérer les fichiers enregistrés",
+      "title": "Contrôles de stockage"
+    },
+    "subtitle": "Gérer et contrôler les données",
+    "title": "Contrôles des données"
+  },
+  "home": {
+    "actions": {
+      "ai_profiles": "Profils IA",
+      "mcp": "Serveurs MCP",
+      "providers": "Fournisseurs",
+      "tts": "Services de parole"
+    },
+    "drawer": {
+      "subtitle": "Navigation dans les applications"
+    },
+    "no_recent_activity": "Aucune activité récente",
+    "quick_actions": "Actions rapides",
+    "recent_activity": "Activité récente",
+    "start_chat": "Commencez à discuter",
+    "subtitle": "Tableau de bord principal",
+    "title": "Maison",
+    "welcome": {
+      "subtitle": "Plateforme de chat IA complète",
+      "title": "Bienvenue sur AI Gateway"
+    }
+  },
+  "nav": {
+    "ai_profiles": "Profils IA",
+    "chat": "Chat",
+    "mcp": "Serveurs MCP",
+    "providers": "Fournisseurs",
+    "settings": "Paramètres",
+    "tts": "Services de parole"
+  },
+  "update": {
+    "actions": {
+      "download_started": "Téléchargement commencé",
+      "update_check_completed": "Vérification de la mise à jour terminée",
+      "update_skipped": "Mise à jour ignorée"
+    },
+    "build_date": "Date de construction",
+    "check_now": "Vérifiez maintenant",
+    "check_status": "Vérifier les mises à jour",
+    "checking": "Vérification...",
+    "current_version": "Version actuelle",
+    "current_version_desc": "Informations sur la version actuelle de l'application",
+    "download_update": "Télécharger la mise à jour",
+    "feature_1": "Améliorations des performances et de la vitesse",
+    "feature_2": "Interface utilisateur optimisée",
+    "feature_3": "Nouvelles fonctionnalités et corrections de bugs",
+    "history_1_feature_1": "Version initiale",
+    "history_1_feature_2": "Fonctionnalités de discussion de base",
+    "history_2_feature_1": "Améliorations de l'interface utilisateur",
+    "history_2_feature_2": "Optimisation des performances",
+    "latest_version": "Dernière version",
+    "new_version_available": "Nouvelle version disponible",
+    "skip_this_version": "Ignorer cette version",
+    "stable_channel": "Écurie",
+    "subtitle": "Vérifier et installer les mises à jour",
+    "title": "Mise à jour",
+    "up_to_date": "À jour",
+    "update_available": "Mise à jour disponible",
+    "update_channel": "Mettre à jour la chaîne",
+    "update_history": "Historique des mises à jour",
+    "version_number": "Numéro de version",
+    "whats_new": "Quoi de neuf"
   }
 }
