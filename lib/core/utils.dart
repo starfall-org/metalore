@@ -78,7 +78,7 @@ Widget buildLogoIcon(dynamic item, {double size = 24}) {
     if (brand != null) {
       return SizedBox(width: size, height: size, child: buildBrandLogo(brand));
     }
-    return Icon(Icons.smart_toy_outlined, size: size);
+    return Icon(Icons.token, size: size);
   }
 
   return SizedBox(

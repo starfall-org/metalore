@@ -129,10 +129,9 @@ class Provider {
       openAIRoutes: json['openAIRoutes'] != null
           ? OpenAIRoutes.fromJson(json['openAIRoutes'])
           : const OpenAIRoutes(),
-      vertexAI: json['vertexAI'] != null || json['vertexAI'] != false,
-      azureAI: json['azureAI'] != null || json['azureAI'] != false,
-      responsesApi:
-          json['responsesApi'] != null || json['responsesApi'] != false,
+      vertexAI: json['vertexAI'] == true,
+      azureAI: json['azureAI'] == true,
+      responsesApi: json['responsesApi'] == true,
       vertexAIConfig: json['vertexAIConfig'] != null
           ? VertexAIConfig.fromJson(json['vertexAIConfig'])
           : null,

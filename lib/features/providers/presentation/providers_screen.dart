@@ -8,6 +8,7 @@ import '../../../core/widgets/resource_tile.dart';
 import '../../../core/widgets/empty_state.dart';
 import '../../../core/widgets/confirm_dialog.dart';
 import '../../../core/widgets/item_card.dart';
+import '../../../core/utils.dart';
 import 'add_provider_screen.dart';
 
 class ProvidersScreen extends StatefulWidget {
@@ -179,11 +180,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
       subtitle: 'providers.models_count'.tr(
         args: [provider.models.length.toString()],
       ),
-      leadingIcon: _getProviderIcon(
-        provider.type,
-        provider.vertexAI,
-        provider.azureAI,
-      ),
+      leadingIcon: buildLogoIcon(provider, size: 24),
       onTap: () async {
         final result = await Navigator.push(
           context,
@@ -212,11 +209,7 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
 
   Widget _buildProviderCard(Provider provider) {
     return ItemCard(
-      icon: _getProviderIcon(
-        provider.type,
-        provider.vertexAI,
-        provider.azureAI,
-      ),
+      icon: buildLogoIcon(provider, size: 24),
       title: provider.name,
       subtitle: 'providers.models_count'.tr(
         args: [provider.models.length.toString()],
@@ -263,20 +256,5 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
     }
   }
 
-  Widget _getProviderIcon(ProviderType type, bool isVertexAI, bool isAzureAI) {
-    switch (type) {
-      case ProviderType.google:
-        return isVertexAI
-            ? Image.asset('assets/images/vertexai-color.png')
-            : Image.asset('assets/images/google.png');
-      case ProviderType.openai:
-        return isAzureAI
-            ? Image.asset('assets/images/azureai-color.png')
-            : Image.asset('assets/images/openai.png');
-      case ProviderType.anthropic:
-        return Image.asset('assets/images/anthropic.png');
-      case ProviderType.ollama:
-        return Image.asset('assets/images/ollama.png');
-    }
-  }
+
 }

@@ -4,6 +4,7 @@ import '../../../core/models/ai/ai_model.dart';
 import '../../../core/models/provider.dart';
 import '../../../core/widgets/dropdown.dart';
 import '../../../core/widgets/custom_text_field.dart';
+import '../../../core/utils.dart';
 import '../widgets/add_model_drawer.dart';
 import '../widgets/fetch_models_drawer.dart';
 import '../widgets/model_card.dart';
@@ -106,10 +107,17 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                 return DropdownOption<ProviderType>(
                   value: type,
                   label: type.name,
-                  icon: _iconForProviderType(
-                    type,
-                    _viewModel.vertexAI,
-                    _viewModel.azureAI,
+                  icon: buildLogoIcon(
+                    Provider(
+                      type: type,
+                      vertexAI: type == ProviderType.google
+                          ? _viewModel.vertexAI
+                          : false,
+                      azureAI: type == ProviderType.openai
+                          ? _viewModel.azureAI
+                          : false,
+                    ),
+                    size: 24,
                   ),
                 );
               }).toList(),
@@ -261,31 +269,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
   }
 
   Widget _routeField(TextEditingController controller, String label) {
-    return CustomTextField(
-      controller: controller,
-      label: label,
-    );
-  }
-
-  Widget _iconForProviderType(
-    ProviderType type,
-    bool isVertexAI,
-    bool isAzureFoundry,
-  ) {
-    switch (type) {
-      case ProviderType.google:
-        return isVertexAI
-            ? Image.asset('assets/brand_logos/vertexai-color.png')
-            : Image.asset('assets/brand_logos/aistudio.png');
-      case ProviderType.openai:
-        return isAzureFoundry
-            ? Image.asset('assets/brand_logos/azureai-color.png')
-            : Image.asset('assets/brand_logos/openai.png');
-      case ProviderType.anthropic:
-        return Image.asset('assets/brand_logos/anthropic.png');
-      case ProviderType.ollama:
-        return Image.asset('assets/brand_logos/ollama.png');
-    }
+    return CustomTextField(controller: controller, label: label);
   }
 
   Widget _buildModelsTab() {
@@ -425,7 +409,9 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               Icon(Icons.text_fields),
                               Text(
                                 'common.text'.tr(),
-                                style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.tertiary,
+                                ),
                               ),
                             ],
                           )
@@ -436,7 +422,11 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               Icon(Icons.image_outlined),
                               Text(
                                 'common.image'.tr(),
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
                               ),
                             ],
                           )
@@ -447,7 +437,11 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               Icon(Icons.headset_outlined),
                               Text(
                                 'common.audio'.tr(),
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
                               ),
                             ],
                           )
@@ -465,7 +459,11 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               Icon(Icons.text_fields),
                               Text(
                                 'common.text'.tr(),
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
                               ),
                             ],
                           )
@@ -476,7 +474,11 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               Icon(Icons.image),
                               Text(
                                 'common.image'.tr(),
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
                               ),
                             ],
                           )
@@ -487,7 +489,11 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               Icon(Icons.music_note),
                               Text(
                                 'common.audio'.tr(),
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
                               ),
                             ],
                           )
