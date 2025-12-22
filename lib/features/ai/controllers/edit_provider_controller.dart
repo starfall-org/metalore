@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../../core/models/ai/ai_model.dart';
-import '../../../core/storage/provider_repository.dart';
-import '../../../core/models/provider.dart';
-import '../../../core/translate.dart';
+import '../../../core/data/provider_repository.dart';
+import '../../../core/models/ai/provider.dart';
 
 class AddProviderViewModel extends ChangeNotifier {
   // Form State
@@ -124,21 +122,21 @@ class AddProviderViewModel extends ChangeNotifier {
   }
 
   AIModel detectCapabilities(String modelId) {
-    List<ModelIOType> inputTypes = [ModelIOType.text];
-    List<ModelIOType> outputTypes = [ModelIOType.text];
+    List<ModelIO> inputTypes = [ModelIO.text];
+    List<ModelIO> outputTypes = [ModelIO.text];
 
     if (modelId.contains('vision') ||
         modelId.contains('gpt-4-turbo') ||
         modelId.contains('gemini-pro-vision')) {
-      inputTypes.add(ModelIOType.image);
+      inputTypes.add(ModelIO.image);
     }
 
     if (modelId.contains('dall-e')) {
-      outputTypes = [ModelIOType.image];
+      outputTypes = [ModelIO.image];
     }
 
     if (modelId.contains('tts')) {
-      outputTypes = [ModelIOType.audio];
+      outputTypes = [ModelIO.audio];
     }
 
     return AIModel(

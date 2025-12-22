@@ -5,24 +5,18 @@ enum ThinkingLevel { none, low, medium, high, auto, custom }
 class AIProfile {
   final String id;
   final String name;
-  final RequestConfig config;
+  final String? icon;
+  final AiConfig config;
   final bool profileConversations;
   final List<String?> conversationIds;
-
-  /// List of active MCP servers for this profile
   final List<ActiveMCPServer> activeMCPServers;
-
-  /// List of active built-in tools (e.g. 'google_search', 'code_execution')
   final List<String> activeBuiltInTools;
-
-  /// Optional per-profile preference override:
-  /// - null: follow global preferences
-  /// - true/false: override global preference for this profile
   final bool? persistChatSelection;
 
   AIProfile({
     required this.id,
     required this.name,
+    this.icon,
     required this.config,
     this.profileConversations = false,
     this.conversationIds = const [],
@@ -30,7 +24,7 @@ class AIProfile {
     this.activeBuiltInTools = const [],
     this.persistChatSelection,
   });
-  // Convenience getter for active MCP server IDs
+
   List<String> get activeMCPServerIds =>
       activeMCPServers.map((e) => e.id).toList();
 
@@ -38,9 +32,10 @@ class AIProfile {
     return {
       'id': id,
       'name': name,
+      'icon': icon,
       ...config.toJson(),
       'profileConversations': profileConversations,
-      'conversationIds': conversationIds,
+      'conversa tionIds': conversationIds,
       'activeMCPServers': activeMCPServers.map((e) => e.toJson()).toList(),
       'activeBuiltInTools': activeBuiltInTools,
       if (persistChatSelection != null)
@@ -52,7 +47,8 @@ class AIProfile {
     return AIProfile(
       id: json['id'] as String,
       name: json['name'] as String,
-      config: RequestConfig(
+      icon: json['icon'] as String?,
+      config: AiConfig(
         systemPrompt: json['systemPrompt'] as String? ?? '',
         enableStream: json['enableStream'] as bool? ?? true,
         topP: json['topP'] as double?,
@@ -86,7 +82,7 @@ class AIProfile {
       AIProfile.fromJson(json.decode(jsonString));
 }
 
-class RequestConfig {
+class AiConfig {
   final String systemPrompt;
   final bool enableStream;
   final double? topP;
@@ -98,7 +94,7 @@ class RequestConfig {
   final int? customThinkingTokens;
   final ThinkingLevel thinkingLevel;
 
-  RequestConfig({
+  AiConfig({
     required this.systemPrompt,
     required this.enableStream,
     this.topP,

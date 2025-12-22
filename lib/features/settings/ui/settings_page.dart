@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../../sys/routes.dart';
-import '../widgets/settings_tile.dart';
-import '../widgets/settings_section_header.dart';
-import '../widgets/settings_card.dart';
+import '../../../core/config/routes.dart';
+import '../../../shared/translate/tl.dart';
 
-import '../../../core/translate.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

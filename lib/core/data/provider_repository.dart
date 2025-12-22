@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/provider.dart';
-import 'shared_prefs_base_repository.dart';
 
 class ProviderRepository extends SharedPreferencesBaseRepository<Provider> {
   static const String _prefix = 'provider';

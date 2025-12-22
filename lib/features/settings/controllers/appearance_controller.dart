@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/models/AppearanceSetting.dart';
-import '../../../core/storage/AppearanceSetting_repository.dart';
+import '../../../shared/prefs/appearance.dart';
+import '../../../core/models/settings/appearance_setting.dart';
 
 enum ColorType {
   primary,
@@ -14,12 +14,12 @@ enum ColorType {
 }
 
 class AppearanceViewModel extends ChangeNotifier {
-  final AppearanceSettingRepository _repository;
+  final AppearanceSp _repository;
   AppearanceSetting settings;
 
   AppearanceViewModel()
-    : _repository = AppearanceSettingRepository.instance,
-      settings = AppearanceSettingRepository.instance.currentTheme;
+    : _repository = AppearanceSp.instance,
+      settings = AppearanceSp.instance.currentTheme;
 
   Future<void> updateSelection(ThemeSelection selection) async {
     // Keep themeMode in sync for non-custom selections
@@ -121,3 +121,4 @@ class AppearanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 }
+

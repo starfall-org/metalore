@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/ai_model.dart';
-import '../../presentation/add_provider_viewmodel.dart';
+import '../../../../core/models/ai/model.dart';
+import '../../../../shared/translate/tl.dart';
+import '../../../../shared/widgets/common_dropdown.dart';
+import '../../controllers/edit_provider_controller.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
-import '../../../../shared/widgets/dropdown.dart';
-
-import '../../../../core/translate.dart';
 
 class AddModelDrawer extends StatefulWidget {
   final AddProviderViewModel viewModel;
@@ -29,9 +28,9 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
   late TextEditingController _iconController;
   late TextEditingController _contextWindowController;
 
-  ModelType _selectedType = ModelType.textGeneration;
-  List<ModelIOType> _selectedInputs = [ModelIOType.text];
-  List<ModelIOType> _selectedOutputs = [ModelIOType.text];
+  ModelType _selectedType = ModelType.chat;
+  AIModelIO _selectedInputs = AIModelIO(text: true);
+  AIModelIO _selectedOutputs = AIModelIO(text: true);
   bool _reasoning = false;
 
   @override
@@ -49,8 +48,8 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
 
     if (model != null) {
       _selectedType = model.type;
-      _selectedInputs = List.from(model.input);
-      _selectedOutputs = List.from(model.output);
+      _selectedInputs = AIModelIO(text: true);
+      _selectedOutputs = AIModelIO(text: true);
       _reasoning = model.reasoning;
     }
   }
@@ -188,22 +187,46 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
-                      children: ModelIOType.values.map((type) {
-                        final isSelected = _selectedInputs.contains(type);
-                        return FilterChip(
-                          label: Text(type.name.capitalize()),
-                          selected: isSelected,
+                      children: [
+                        FilterChip(
+                          label: Text(tl('Text')),
+                          selected: _selectedInputs.text,
                           onSelected: (selected) {
                             setState(() {
-                              if (selected) {
-                                _selectedInputs.add(type);
-                              } else {
-                                _selectedInputs.remove(type);
-                              }
+                              _selectedInputs.text = selected;
                             });
                           },
-                        );
-                      }).toList(),
+                        ),
+                        FilterChip(
+                          label: Text(tl('Image')),
+                          selected: _selectedInputs.image,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedInputs.image = selected;
+                            });
+                          },
+                        ),
+                        FilterChip(
+                          label: Text(tl('Audio')),
+                          selected: _selectedInputs.audio,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedInputs.audio = selected;
+                            });
+                          },
+                        ),
+                        FilterChip(
+                          label: Text(tl('Video')),
+                          selected: _selectedInputs.video,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedInputs.video = selected;
+                            });
+                          },
+                        ),
+                      ],
+
+                      //AIModelIO.values.map((type) {
                     ),
                     const SizedBox(height: 16),
 
@@ -214,22 +237,44 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
-                      children: ModelIOType.values.map((type) {
-                        final isSelected = _selectedOutputs.contains(type);
-                        return FilterChip(
-                          label: Text(type.name.capitalize()),
-                          selected: isSelected,
+                      children: [
+                        FilterChip(
+                          label: Text(tl('Text')),
+                          selected: _selectedOutputs.text,
                           onSelected: (selected) {
                             setState(() {
-                              if (selected) {
-                                _selectedOutputs.add(type);
-                              } else {
-                                _selectedOutputs.remove(type);
-                              }
+                              _selectedOutputs.text = selected;
                             });
                           },
-                        );
-                      }).toList(),
+                        ),
+                        FilterChip(
+                          label: Text(tl('Image')),
+                          selected: _selectedOutputs.image,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedOutputs.image = selected;
+                            });
+                          },
+                        ),
+                        FilterChip(
+                          label: Text(tl('Audio')),
+                          selected: _selectedOutputs.audio,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedOutputs.audio = selected;
+                            });
+                          },
+                        ),
+                        FilterChip(
+                          label: Text(tl('Video')),
+                          selected: _selectedOutputs.video,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedOutputs.video = selected;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -267,15 +312,15 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
 
   Widget _getModelTypeIcon(ModelType type) {
     switch (type) {
-      case ModelType.textGeneration:
-        return Icon(Icons.text_snippet);
-      case ModelType.imageGeneration:
+      case ModelType.chat:
+        return Icon(Icons.chat);
+      case ModelType.image:
         return Icon(Icons.image_search);
-      case ModelType.audioGeneration:
+      case ModelType.audio:
         return Icon(Icons.music_video);
-      case ModelType.videoGeneration:
+      case ModelType.video:
         return Icon(Icons.local_movies);
-      case ModelType.embedding:
+      case ModelType.embed:
         return Icon(Icons.compress_rounded);
       case ModelType.rerank:
         return Icon(Icons.leaderboard);

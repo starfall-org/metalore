@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/ai_model.dart';
-import '../../../../core/models/provider.dart';
-import '../../../../shared/widgets/dropdown.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/utils.dart';
-import '../widgets/add_model_drawer.dart';
-import '../widgets/fetch_models_drawer.dart';
 import '../widgets/model_card.dart';
-import '../../presentation/add_provider_viewmodel.dart';
 
-import '../../../../core/translate.dart';
 
 class AddProviderScreen extends StatefulWidget {
   final Provider? provider;
@@ -51,7 +44,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
-                  onPressed: _showFetchModelsDrawer,
+                  onPressed: _showFetchModelsSheet,
                   child: const Icon(Icons.cloud_download),
                 ),
                 const SizedBox(height: 16),
@@ -343,14 +336,14 @@ class _AddProviderScreenState extends State<AddProviderScreen>
     return Container();
   }
 
-  void _showFetchModelsDrawer() {
+  void _showFetchModelsSheet() {
     _viewModel.fetchModels(context);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => FetchModelsDrawer(
+      builder: (context) => FetchModelsSheet(
         viewModel: _viewModel,
         onShowCapabilities: _showModelCapabilities,
       ),
@@ -403,7 +396,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
             Row(
               children: model.input
                   .map(
-                    (t) => t == ModelIOType.text
+                    (t) => t == ModelIO.text
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -416,7 +409,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               ),
                             ],
                           )
-                        : t == ModelIOType.image
+                        : t == ModelIO.image
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -431,7 +424,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               ),
                             ],
                           )
-                        : t == ModelIOType.audio
+                        : t == ModelIO.audio
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -453,7 +446,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
             Row(
               children: model.output
                   .map(
-                    (t) => t == ModelIOType.text
+                    (t) => t == ModelIO.text
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -468,7 +461,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               ),
                             ],
                           )
-                        : t == ModelIOType.image
+                        : t == ModelIO.image
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -483,7 +476,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                               ),
                             ],
                           )
-                        : t == ModelIOType.audio
+                        : t == ModelIO.audio
                         ? Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [

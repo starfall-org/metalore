@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'sidebar.dart';
 
 class AppSidebarRight extends StatelessWidget {
   final Widget child;

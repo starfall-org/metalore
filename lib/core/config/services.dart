@@ -1,13 +1,3 @@
-import '../core/storage/ai_profile_repository.dart';
-import '../core/storage/app_preferences_repository.dart';
-import '../core/storage/AppearanceSetting_repository.dart';
-import '../core/storage/chat_repository.dart';
-import '../core/storage/default_models_repository.dart';
-import '../core/storage/language_repository.dart';
-import '../core/storage/mcp_repository.dart';
-import '../core/storage/provider_repository.dart';
-import '../core/storage/tts_repository.dart';
-import '../features/chat/services/tts_service.dart';
 
 /// Centralized service locator for application repositories and services.
 /// Handles initialization and dependency management without external libraries.
@@ -19,7 +9,7 @@ class AppServices {
   AppServices._internal();
 
   // Repositories
-  late final AppearanceSettingRepository AppearanceSettingRepository;
+  late final AppearanceSp AppearanceSp;
   late final LanguageSp LanguageSp;
   late final PreferencesSp PreferencesSp;
   late final ChatRepository chatRepository;
@@ -36,7 +26,7 @@ class AppServices {
     // Some might depend on Hive being initialized first (handled in main)
 
     // Core settings first
-    _instance.AppearanceSettingRepository = await AppearanceSettingRepository.init();
+    _instance.AppearanceSp = await AppearanceSp.init();
     _instance.LanguageSp = await LanguageSp.init();
     _instance.PreferencesSp = await PreferencesSp.init();
 

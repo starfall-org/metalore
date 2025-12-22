@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/models/ai/ai_model.dart';
-import 'attachment_options_drawer.dart';
 
-import '../../../core/translate.dart';
 
 class ChatInputArea extends StatelessWidget {
   final TextEditingController controller;

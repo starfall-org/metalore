@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import '../../../shared/widgets/dialog.dart';
-import '../../../shared/widgets/custom_text_field.dart';
 import 'dart:io';
 
-import '../../../core/translate.dart';
 
 class EditMessageResult {
   final String content;

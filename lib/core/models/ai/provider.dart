@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'ai/ai_model.dart';
+
 
 enum ProviderType {
   openai("OpenAI"),
@@ -15,8 +15,8 @@ enum ProviderType {
 class Provider {
   final String name;
   final ProviderType type;
-  final String apiKey;
-  final String logoUrl;
+  final String? apiKey;
+  final String? icon;
   final String baseUrl;
   final OpenAIRoutes openAIRoutes;
   final bool vertexAI;
@@ -30,10 +30,10 @@ class Provider {
   Provider({
     required this.type,
     String? name,
-    this.apiKey = '',
-    this.logoUrl = '',
+    this.apiKey,
+    this.icon,
     String? baseUrl,
-    this.openAIRoutes = const OpenAIRoutes(),
+    required this.openAIRoutes,
     this.vertexAI = false,
     this.azureAI = false,
     this.responsesApi = false,
@@ -42,6 +42,7 @@ class Provider {
     this.headers = const {},
     this.models = const [],
   }) : name = name ?? _defaultName(type),
+
        baseUrl = baseUrl ?? _defaultBaseUrl(type);
 
   static String _defaultName(ProviderType type) {
@@ -83,7 +84,7 @@ class Provider {
     return {
       'type': type.name,
       'name': name,
-      'logoUrl': logoUrl,
+      'icon': icon,
       'apiKey': apiKey,
       'baseUrl': baseUrl,
       'headers': headers,
@@ -123,7 +124,7 @@ class Provider {
     return Provider(
       type: ProviderType.values.firstWhere((e) => e.name == json['type']),
       name: json['name'] as String?,
-      logoUrl: (json['logoUrl'] as String?) ?? '',
+      icon: (json['icon'] as String?) ?? '',
       apiKey: (json['apiKey'] as String?) ?? '',
       baseUrl: json['baseUrl'] as String?,
       openAIRoutes: json['openAIRoutes'] != null

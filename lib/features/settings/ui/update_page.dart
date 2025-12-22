@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/translate.dart';
+
+import '../../../shared/translate/tl.dart';
 
 /// Màn hình cập nhật ứng dụng
-class UpdateScreen extends StatefulWidget {
-  const UpdateScreen({super.key});
+class UpdatePage extends StatefulWidget {
+  const UpdatePage({super.key});
 
   @override
-  State<UpdateScreen> createState() => _UpdateScreenState();
+  State<UpdatePage> createState() => _UpdatePageState();
 }
 
-class _UpdateScreenState extends State<UpdateScreen> {
+class _UpdatePageState extends State<UpdatePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isCheckingForUpdates = false;
   bool _hasUpdate = false;
@@ -62,11 +63,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
           ),
         ],
       ),
-      body: SafeArea(
-        top: false,
-        bottom: true,
-        child: _buildBody(),
-      ),
+      body: SafeArea(top: false, bottom: true, child: _buildBody()),
     );
   }
 

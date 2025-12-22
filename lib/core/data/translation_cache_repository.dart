@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'shared_prefs_base_repository.dart';
 
 class TranslationCacheEntry {
   final String originalText;

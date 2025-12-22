@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/mcp/mcp_server.dart';
-import 'shared_prefs_base_repository.dart';
 
 class MCPRepository extends SharedPreferencesBaseRepository<MCPServer> {
   static const String _prefix = 'mcp';

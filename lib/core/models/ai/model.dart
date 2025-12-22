@@ -1,22 +1,13 @@
-enum ModelType {
-  textGeneration,
-  imageGeneration,
-  audioGeneration,
-  videoGeneration,
-  embedding,
-  rerank,
-}
-
-enum ModelIOType { text, video, image, audio }
+enum ModelType { chat, image, video, audio, embed, rerank }
 
 class AIModel {
   final String name;
   final String displayName;
   final String? icon;
   final ModelType type;
-  final List<ModelIOType> input;
-  final List<ModelIOType> output;
-  final ModelBuiltInTools? builtInTools;
+  final AIModelIO? input;
+  final AIModelIO? output;
+  final BuiltInTools? builtInTools;
   final bool reasoning;
   final int? contextWindow;
   final int? parameters;
@@ -25,9 +16,9 @@ class AIModel {
     required this.name,
     required this.displayName,
     this.icon,
-    this.type = ModelType.textGeneration,
-    this.input = const [ModelIOType.text],
-    this.output = const [ModelIOType.text],
+    this.type = ModelType.chat,
+    this.input,
+    this.output,
     this.builtInTools,
     this.reasoning = false,
     this.contextWindow,
@@ -40,8 +31,8 @@ class AIModel {
       'displayName': displayName,
       if (icon != null) 'icon': icon,
       'type': type.name,
-      'input': input.map((e) => e.name).toList(),
-      'output': output.map((e) => e.name).toList(),
+      'input': input?.toJson(),
+      'output': output?.toJson(),
       if (builtInTools != null) 'builtInTools': builtInTools!.toJson(),
       'reasoning': reasoning,
       'contextWindow': contextWindow,
@@ -57,31 +48,41 @@ class AIModel {
         json['displayName'] as String? ?? name.replaceAll('-', ' ');
 
     // Infer ModelType from name/id as providers don't return our internal enum values
-    ModelType type = ModelType.textGeneration;
+    ModelType type = ModelType.chat;
     final lowerName = name.toLowerCase();
-    ModelBuiltInTools? builtInTools;
+    BuiltInTools? builtInTools;
     if (lowerName.contains('gemini')) {
-      builtInTools = ModelBuiltInTools(
+      builtInTools = BuiltInTools(
         urlContext: true,
         googleSearch: false,
         codeExecution: false,
       );
     }
 
+    AIModelIO? input;
+    AIModelIO? output;
+
     if (lowerName.contains('embed')) {
-      type = ModelType.embedding;
-    } else if (lowerName.contains('dall-e') ||
-        lowerName.contains('gen-img') ||
-        lowerName.contains('image')) {
-      type = ModelType.imageGeneration;
+      type = ModelType.embed;
+    } else if (lowerName.contains('sdxl') ||
+        lowerName.contains('flux') ||
+        lowerName.contains('image') ||
+        lowerName.contains('nano-banana')) {
+      type = ModelType.image;
+      input = AIModelIO(text: true, image: true);
+      output = AIModelIO(image: true);
     } else if (lowerName.contains('tts') ||
         lowerName.contains('audio') ||
         lowerName.contains('whisper')) {
-      type = ModelType.audioGeneration;
+      type = ModelType.audio;
+      input = AIModelIO(text: true, audio: true);
+      output = AIModelIO(audio: true, text: true);
     } else if (lowerName.contains('video') ||
         lowerName.contains('sora') ||
         lowerName.contains('veo')) {
-      type = ModelType.videoGeneration;
+      type = ModelType.video;
+      input = AIModelIO(text: true, video: true);
+      output = AIModelIO(video: true);
     } else if (lowerName.contains('rerank')) {
       type = ModelType.rerank;
     }
@@ -102,32 +103,44 @@ class AIModel {
       reasoning = json['reasoning'];
     } else if (lowerName.contains('reason') ||
         lowerName.contains('think') ||
-        lowerName.contains('chain')) {
+        lowerName.contains('reason')) {
       reasoning = true;
     }
 
-    // Determine default IO based on type if not provided
-    List<ModelIOType> defaultInput = [ModelIOType.text];
-    List<ModelIOType> defaultOutput = [ModelIOType.text];
-
     switch (type) {
-      case ModelType.imageGeneration:
-        defaultOutput = [ModelIOType.text, ModelIOType.image];
-        break;
-      case ModelType.videoGeneration:
-        defaultOutput = [ModelIOType.text, ModelIOType.video];
-        break;
-      case ModelType.audioGeneration:
-        defaultOutput = [ModelIOType.text, ModelIOType.audio];
-        break;
-      case ModelType.textGeneration:
-      default:
-        // Check for multimodal capability
-        if (lowerName.contains('vision') ||
-            lowerName.contains('gpt-4o') ||
-            lowerName.contains('gemini-1.5')) {
-          defaultInput = [ModelIOType.text, ModelIOType.image];
+      case ModelType.image:
+        if (!input!.text) {
+          input.text = true;
         }
+        if (!output!.image) {
+          output.image = true;
+        }
+        break;
+      case ModelType.video:
+        if (!input!.text) {
+          input.text = true;
+        }
+        if (!output!.video) {
+          output.video = true;
+        }
+        break;
+      case ModelType.audio:
+        if (!input!.text) {
+          input.text = true;
+        }
+        if (!output!.audio) {
+          output.audio = true;
+        }
+        break;
+      case ModelType.chat:
+        if (!input!.text) {
+          input.text = true;
+        }
+        if (!output!.text) {
+          output.text = true;
+        }
+        break;
+      default:
         break;
     }
 
@@ -136,10 +149,8 @@ class AIModel {
       displayName: displayName,
       icon: json['icon'] as String?,
       type: type,
-      input: json['input'] != null ? parseIOList(json['input']) : defaultInput,
-      output: json['output'] != null
-          ? parseIOList(json['output'])
-          : defaultOutput,
+      input: input,
+      output: output,
       builtInTools: builtInTools,
       reasoning: reasoning,
       contextWindow: contextWindow,
@@ -157,33 +168,58 @@ int? safeInt(dynamic val) {
 }
 
 // Safe parsing for input/output lists
-List<ModelIOType> parseIOList(dynamic list) {
+AIModelIO parseIOList(dynamic list) {
   if (list is List) {
-    return list
-        .map(
-          (e) => ModelIOType.values.firstWhere(
-            (v) => v.name == e.toString(),
-            orElse: () => ModelIOType.text,
-          ),
-        )
-        .toList();
+    return AIModelIO(
+      text: list.contains('text'),
+      image: list.contains('image'),
+      video: list.contains('video'),
+      audio: list.contains('audio'),
+    );
   }
-  return [ModelIOType.text];
+  return AIModelIO();
 }
 
-class ModelBuiltInTools {
+class AIModelIO {
+  bool text;
+  bool image;
+  bool video;
+  bool audio;
+
+  AIModelIO({
+    this.text = true,
+    this.image = false,
+    this.video = false,
+    this.audio = false,
+  });
+
+  factory AIModelIO.fromJson(Map<String, dynamic> json) {
+    return AIModelIO(
+      text: json['text'] as bool,
+      image: json['image'] as bool,
+      video: json['video'] as bool,
+      audio: json['audio'] as bool,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'text': text, 'image': image, 'video': video, 'audio': audio};
+  }
+}
+
+class BuiltInTools {
   final bool urlContext;
   final bool googleSearch;
   final bool codeExecution;
 
-  ModelBuiltInTools({
+  BuiltInTools({
     this.urlContext = false,
     this.googleSearch = false,
     this.codeExecution = false,
   });
 
-  factory ModelBuiltInTools.fromJson(Map<String, dynamic> json) {
-    return ModelBuiltInTools(
+  factory BuiltInTools.fromJson(Map<String, dynamic> json) {
+    return BuiltInTools(
       urlContext: json['urlContext'] as bool,
       googleSearch: json['googleSearch'] as bool,
       codeExecution: json['codeExecution'] as bool,

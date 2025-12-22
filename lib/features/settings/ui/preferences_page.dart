@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/models/app_preferences.dart';
-import '../../../core/storage/language_repository.dart';
-import '../../../core/storage/app_preferences_repository.dart';
-import '../../../core/translate.dart';
-import '../widgets/settings_section_header.dart';
-import '../widgets/settings_tile.dart';
-import '../widgets/settings_card.dart';
+import '../../../core/data/translation_cache_repository.dart';
+import '../../../core/data/translation_cache_repository.dart';
+import '../../../core/models/settings/preferences_setting.dart';
+import '../../../shared/prefs/language.dart';
+import '../../../shared/prefs/preferences.dart';
+import '../../../shared/translate/tl.dart';
 
 // TODO: move logic to viewmodel
-class PreferencesScreen extends StatefulWidget {
-  const PreferencesScreen({super.key});
+class PreferencesPage extends StatefulWidget {
+  const PreferencesPage({super.key});
 
   @override
-  State<PreferencesScreen> createState() => _PreferencesScreenState();
+  State<PreferencesPage> createState() => _PreferencesPageState();
 }
 
-class _PreferencesScreenState extends State<PreferencesScreen> {
+class _PreferencesPageState extends State<PreferencesPage> {
   late LanguageSp _LanguageSp;
   bool _autoDetectLanguage = true;
   String _selectedLanguage = 'auto';
@@ -75,14 +74,13 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
     bool? hideNavigationBar,
     bool? debugMode,
   }) async {
-    final newPrefs = PreferencesSp.instance.currentPreferences
-        .copyWith(
-          persistChatSelection: persistChatSelection,
-          vibrationSettings: vibrationSettings,
-          hideStatusBar: hideStatusBar,
-          hideNavigationBar: hideNavigationBar,
-          debugMode: debugMode,
-        );
+    final newPrefs = PreferencesSp.instance.currentPreferences.copyWith(
+      persistChatSelection: persistChatSelection,
+      vibrationSettings: vibrationSettings,
+      hideStatusBar: hideStatusBar,
+      hideNavigationBar: hideNavigationBar,
+      debugMode: debugMode,
+    );
 
     setState(() {
       if (persistChatSelection != null) {
@@ -119,10 +117,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
           languageCode = parts[0];
         }
 
-        await _LanguageSp.setLanguage(
-          languageCode,
-          countryCode: countryCode,
-        );
+        await _LanguageSp.setLanguage(languageCode, countryCode: countryCode);
       }
 
       if (mounted) {
@@ -186,96 +181,96 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         bottom: true,
         child: ListView(
           children: [
-          // General settings
-          SettingsSectionHeader('General'),
-          const SizedBox(height: 12),
-          SettingsCard(
-            child: Column(
-              children: [
-                SettingsTile(
-                  icon: Icons.save_outlined,
-                  title: 'Persist selections',
-                  trailing: Switch(
-                    value: _persistChatSelection,
-                    onChanged: (val) =>
-                        _updatePreferencesSetting(persistChatSelection: val),
+            // General settings
+            SettingsSectionHeader('General'),
+            const SizedBox(height: 12),
+            SettingsCard(
+              child: Column(
+                children: [
+                  SettingsTile(
+                    icon: Icons.save_outlined,
+                    title: 'Persist selections',
+                    trailing: Switch(
+                      value: _persistChatSelection,
+                      onChanged: (val) =>
+                          _updatePreferencesSetting(persistChatSelection: val),
+                    ),
                   ),
-                ),
-                const Divider(height: 1, indent: 56, endIndent: 16),
-                SettingsTile(
-                  icon: Icons.vibration_outlined,
-                  title: 'Vibration',
-                  trailing: Switch(
-                    value: _vibrationSettings.enable,
-                    onChanged: (val) => _updatePreferencesSetting(
-                      vibrationSettings: _vibrationSettings.copyWith(
-                        enable: val,
+                  const Divider(height: 1, indent: 56, endIndent: 16),
+                  SettingsTile(
+                    icon: Icons.vibration_outlined,
+                    title: 'Vibration',
+                    trailing: Switch(
+                      value: _vibrationSettings.enable,
+                      onChanged: (val) => _updatePreferencesSetting(
+                        vibrationSettings: _vibrationSettings.copyWith(
+                          enable: val,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          // Display settings
-          const SizedBox(height: 24),
-          SettingsSectionHeader('Display'),
-          const SizedBox(height: 12),
-          SettingsCard(
-            child: Column(
-              children: [
-                SettingsTile(
-                  icon: Icons.fullscreen_outlined,
-                  title: 'Hide Status Bar',
-                  trailing: Switch(
-                    value: _hideStatusBar,
-                    onChanged: (val) =>
-                        _updatePreferencesSetting(hideStatusBar: val),
-                  ),
-                ),
-                const Divider(height: 1, indent: 56, endIndent: 16),
-                SettingsTile(
-                  icon: Icons.keyboard_hide_outlined,
-                  title: 'Hide Navigation Bar',
-                  trailing: Switch(
-                    value: _hideNavigationBar,
-                    onChanged: (val) =>
-                        _updatePreferencesSetting(hideNavigationBar: val),
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Developer settings
-          const SizedBox(height: 24),
-          SettingsSectionHeader('Developer'),
-          const SizedBox(height: 12),
-          SettingsCard(
-            child: SettingsTile(
-              icon: Icons.bug_report_outlined,
-              title: 'Debug Mode',
-              trailing: Switch(
-                value: _debugMode,
-                onChanged: (val) => _updatePreferencesSetting(debugMode: val),
+                ],
               ),
             ),
-          ),
 
-          // Language section
-          const SizedBox(height: 24),
-          SettingsSectionHeader('Languages'),
-          const SizedBox(height: 12),
-          SettingsCard(
-            child: SettingsTile(
-              icon: Icons.language_outlined,
-              title: 'Current Language',
-              subtitle: _getCurrentLanguageName(),
-              onTap: () => _showLanguagePicker(),
+            // Display settings
+            const SizedBox(height: 24),
+            SettingsSectionHeader('Display'),
+            const SizedBox(height: 12),
+            SettingsCard(
+              child: Column(
+                children: [
+                  SettingsTile(
+                    icon: Icons.fullscreen_outlined,
+                    title: 'Hide Status Bar',
+                    trailing: Switch(
+                      value: _hideStatusBar,
+                      onChanged: (val) =>
+                          _updatePreferencesSetting(hideStatusBar: val),
+                    ),
+                  ),
+                  const Divider(height: 1, indent: 56, endIndent: 16),
+                  SettingsTile(
+                    icon: Icons.keyboard_hide_outlined,
+                    title: 'Hide Navigation Bar',
+                    trailing: Switch(
+                      value: _hideNavigationBar,
+                      onChanged: (val) =>
+                          _updatePreferencesSetting(hideNavigationBar: val),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+
+            // Developer settings
+            const SizedBox(height: 24),
+            SettingsSectionHeader('Developer'),
+            const SizedBox(height: 12),
+            SettingsCard(
+              child: SettingsTile(
+                icon: Icons.bug_report_outlined,
+                title: 'Debug Mode',
+                trailing: Switch(
+                  value: _debugMode,
+                  onChanged: (val) => _updatePreferencesSetting(debugMode: val),
+                ),
+              ),
+            ),
+
+            // Language section
+            const SizedBox(height: 24),
+            SettingsSectionHeader('Languages'),
+            const SizedBox(height: 12),
+            SettingsCard(
+              child: SettingsTile(
+                icon: Icons.language_outlined,
+                title: 'Current Language',
+                subtitle: _getCurrentLanguageName(),
+                onTap: () => _showLanguagePicker(),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,4 +1,4 @@
-part of 'chat_viewmodel.dart';
+part of '../chat_controller.dart';
 
 extension ChatViewModelEditActions on ChatViewModel {
   Future<void> copyMessage(BuildContext context, ChatMessage message) async {

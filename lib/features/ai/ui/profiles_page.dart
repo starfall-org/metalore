@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../core/storage/ai_profile_repository.dart';
-import '../../../core/models/ai/ai_profile.dart';
+import '../../../core/data/ai_profile_store.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
-import 'add_profile_screen.dart';
-import '../ai/presentation/view_profile_screen.dart';
 
-import '../../../core/translate.dart';
 
 class AIProfilesScreen extends StatefulWidget {
   const AIProfilesScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/translate.dart';
+import '../../../shared/translate/tl.dart';
 
 /// Màn hình điều khiển dữ liệu cho phép quản lý và kiểm soát dữ liệu ứng dụng
 class DataControlsScreen extends StatefulWidget {

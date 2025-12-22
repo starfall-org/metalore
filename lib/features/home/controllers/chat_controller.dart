@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
-
-import '../../../core/models/ai/ai_profile.dart';
-import '../../../core/models/ai/ai_model.dart';
-import '../../../core/models/chat/message.dart';
-import '../services/chat_service.dart';
-import '../../../core/models/chat/conversation.dart';
-import '../../../core/storage/ai_profile_repository.dart';
-import '../../../core/storage/chat_repository.dart';
-import '../../../core/storage/provider_repository.dart';
-import '../../../core/models/provider.dart';
-import '../../../core/storage/app_preferences_repository.dart';
-import '../../../core/storage/mcp_repository.dart';
-import '../../../core/models/mcp/mcp_server.dart';
-import '../services/tts_service.dart';
-import '../../../core/translate.dart';
-import '../widgets/edit_message_dialog.dart';
-import 'chat_navigation_interface.dart';
-
 import 'package:uuid/uuid.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 
+import '../../../core/models/chat/message.dart';
+import '../../../shared/translate/tl.dart';
+import '../../../core/data/ai_profile_store.dart';
+import '../../../core/data/chat_store.dart';
+import '../../../core/data/mcp_repository.dart';
+import '../../../core/data/provider_repository.dart';
+import '../../../core/models/ai/model.dart';
+import '../../../core/models/ai/profile.dart';
+import '../../../core/models/ai/provider.dart';
+import '../../../core/models/chat/conversation.dart';
+import '../../../core/models/mcp/mcp_server.dart';
+import '../../../shared/prefs/preferences.dart';
+import '../services/chat_service.dart';
+import '../services/tts_service.dart';
+import '../ui/widgets/edit_message_sheet.dart';
 import '../utils/chat_logic_utils.dart';
 
-part 'chat_viewmodel_actions.dart';
-part 'chat_message_actions.dart';
-part 'chat_attachment_actions.dart';
-part 'chat_operations.dart';
-part 'chat_edit_actions.dart';
-part 'chat_ui_actions.dart';
+part 'chat_controller_parts/chat_viewmodel_actions.dart';
+part 'chat_controller_parts/chat_message_actions.dart';
+part 'chat_controller_parts/chat_attachment_actions.dart';
+part 'chat_controller_parts/chat_operations.dart';
+part 'chat_controller_parts/chat_edit_actions.dart';
+part 'chat_controller_parts/chat_ui_actions.dart';
 
 class ChatViewModel extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,7 +37,7 @@ class ChatViewModel extends ChangeNotifier {
   final ChatRepository chatRepository;
   final AIProfileRepository aiProfileRepository;
   final ProviderRepository providerRepository;
-  final PreferencesSp PreferencesSp;
+  final PreferencesSp preferencesSp;
   final MCPRepository mcpRepository;
   final TTSService ttsService;
 
@@ -79,7 +76,7 @@ class ChatViewModel extends ChangeNotifier {
     required this.chatRepository,
     required this.aiProfileRepository,
     required this.providerRepository,
-    required this.PreferencesSp,
+    required this.preferencesSp,
     required this.mcpRepository,
     required this.ttsService,
   }) {

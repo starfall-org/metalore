@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/AppearanceSetting.dart';
-import 'shared_prefs_base_repository.dart';
 
-class AppearanceSettingSp
-    extends SharedPreferencesBase<AppearanceSetting> {
+class AppearanceSp extends SharedPreferencesBase<AppearanceSetting> {
   static const String _prefix = 'appearance';
 
   // Expose a notifier for valid reactive UI updates
@@ -12,7 +9,7 @@ class AppearanceSettingSp
     AppearanceSetting.defaults(),
   );
 
-  AppearanceSettingRepository(super.prefs) {
+  void AppearanceSp(super.prefs) {
     _loadInitialTheme();
     // Auto-refresh notifier on any storage change (no restart needed)
     changes.listen((_) {
@@ -32,22 +29,20 @@ class AppearanceSettingSp
     }
   }
 
-  static AppearanceSettingRepository? _instance;
+  static AppearanceSp? _instance;
 
-  static Future<AppearanceSettingRepository> init() async {
+  static Future<AppearanceSp> init() async {
     if (_instance != null) {
       return _instance!;
     }
     final prefs = await SharedPreferences.getInstance();
-    _instance = AppearanceSettingRepository(prefs);
+    _instance = AppearanceSp(prefs);
     return _instance!;
   }
 
-  static AppearanceSettingRepository get instance {
+  static AppearanceSp get instance {
     if (_instance == null) {
-      throw Exception(
-        'AppearanceSettingRepository not initialized. Call init() first.',
-      );
+      throw Exception('AppearanceSp not initialized. Call init() first.');
     }
     return _instance!;
   }
@@ -83,7 +78,10 @@ class AppearanceSettingSp
   }
 
   @override
-  AppearanceSetting deserializeFromFields(String id, Map<String, dynamic> fields) {
+  AppearanceSetting deserializeFromFields(
+    String id,
+    Map<String, dynamic> fields,
+  ) {
     final int? themeModeIndex = fields['themeMode'] as int?;
     final int? selectionIndex = fields['selection'] as int?;
     final int? secondaryBgIndex = fields['secondaryBackgroundMode'] as int?;

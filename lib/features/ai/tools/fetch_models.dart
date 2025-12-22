@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../core/models/ai/ai_model.dart';
 
 Future<List<AIModel>> fetchModels(
   String url,

@@ -1,7 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/language_preferences.dart';
-import 'shared_prefs_base_repository.dart';
 
 class LanguageSp
     extends SharedPreferencesBase<LanguageSetting> {

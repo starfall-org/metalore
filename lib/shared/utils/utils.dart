@@ -6,11 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
-import '../../sys/app_services.dart';
-import '../../core/models/ai/ai_profile.dart';
-import '../../core/models/ai/ai_model.dart';
 import '../../core/models/mcp/mcp_server.dart';
-import '../../core/models/provider.dart';
 
 void initIcons() {
   final hasInitialized = AppServices

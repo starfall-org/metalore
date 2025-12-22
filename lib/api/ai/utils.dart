@@ -1,5 +1,4 @@
 import 'dart:convert';
-import '../../core/models/ai/ai_dto.dart';
 
 /// General helpers
 String encodeDataUrl({required String mimeType, required String base64Data}) {

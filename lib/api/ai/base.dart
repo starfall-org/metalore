@@ -1,5 +1,3 @@
-import '../../core/models/ai/ai_model.dart';
-import '../../core/models/ai/ai_dto.dart';
 
 export '../../core/models/ai/ai_dto.dart';
 

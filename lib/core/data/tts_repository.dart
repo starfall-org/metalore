@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../models/speech_service.dart';
-import 'shared_prefs_base_repository.dart';
 
 class TTSRepository extends SharedPreferencesBaseRepository<SpeechService> {
   static const String _prefix = 'tts';

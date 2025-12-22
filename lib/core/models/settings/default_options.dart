@@ -1,23 +1,39 @@
-import 'ai_model.dart';
-
-
 class DefaultOptions {
   final DefaultModels defaultModels;
-  final AIProfile profile;
+  final String defaultProfileId;
+
+  const DefaultOptions({
+    required this.defaultModels,
+    required this.defaultProfileId,
+  });
+
+  factory DefaultOptions.fromJson(Map<String, dynamic> json) {
+    return DefaultOptions(
+      defaultModels: DefaultModels.fromJson(json['defaultModels']),
+      defaultProfileId: json['defaultProfileId'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'defaultModels': defaultModels.toJson(),
+      'defaultProfileId': defaultProfileId,
+    };
+  }
 }
 
 class DefaultModels {
-  final AIModel? titleGenerationModel; // text generation model
-  final AIModel? chatSummarizationModel; // text generation model
-  final AIModel? translationModel; // text generation model
-  final AIModel? supportOCRModel; // text generation (OCR) model
-  final AIModel? embeddingModel; // embedding model
-  final AIModel? imageGenerationModel; // image generation model
-  final AIModel?
+  final DefaultModel? titleGenerationModel; // text generation model
+  final DefaultModel? chatSummarizationModel; // text generation model
+  final DefaultModel? translationModel; // text generation model
+  final DefaultModel? supportOCRModel; // text generation (OCR) model
+  final DefaultModel? embeddingModel; // embedding model
+  final DefaultModel? imageGenerationModel; // image generation model
+  final DefaultModel?
   chatModel; // text generation/image generation/video generation model
-  final AIModel? audioGenerationModel; // audio generation model
-  final AIModel? videoGenerationModel; // video generation model
-  final AIModel? rerankModel; // rerank model
+  final DefaultModel? audioGenerationModel; // audio generation model
+  final DefaultModel? videoGenerationModel; // video generation model
+  final DefaultModel? rerankModel; // rerank model
 
   DefaultModels({
     this.titleGenerationModel,
@@ -33,16 +49,16 @@ class DefaultModels {
   });
 
   DefaultModels copyWith({
-    AIModel? titleGenerationModel,
-    AIModel? chatSummarizationModel,
-    AIModel? translationModel,
-    AIModel? supportOCRModel,
-    AIModel? embeddingModel,
-    AIModel? imageGenerationModel,
-    AIModel? chatModel,
-    AIModel? audioGenerationModel,
-    AIModel? videoGenerationModel,
-    AIModel? rerankModel,
+    DefaultModel? titleGenerationModel,
+    DefaultModel? chatSummarizationModel,
+    DefaultModel? translationModel,
+    DefaultModel? supportOCRModel,
+    DefaultModel? embeddingModel,
+    DefaultModel? imageGenerationModel,
+    DefaultModel? chatModel,
+    DefaultModel? audioGenerationModel,
+    DefaultModel? videoGenerationModel,
+    DefaultModel? rerankModel,
   }) {
     return DefaultModels(
       titleGenerationModel: titleGenerationModel ?? this.titleGenerationModel,
@@ -61,34 +77,34 @@ class DefaultModels {
   factory DefaultModels.fromJson(Map<String, dynamic> json) {
     return DefaultModels(
       titleGenerationModel: json['titleGenerationModel'] != null
-          ? AIModel.fromJson(json['titleGenerationModel'])
+          ? DefaultModel.fromJson(json['titleGenerationModel'])
           : null,
       chatSummarizationModel: json['chatSummarizationModel'] != null
-          ? AIModel.fromJson(json['chatSummarizationModel'])
+          ? DefaultModel.fromJson(json['chatSummarizationModel'])
           : null,
       translationModel: json['translationModel'] != null
-          ? AIModel.fromJson(json['translationModel'])
+          ? DefaultModel.fromJson(json['translationModel'])
           : null,
       supportOCRModel: json['supportOCRModel'] != null
-          ? AIModel.fromJson(json['supportOCRModel'])
+          ? DefaultModel.fromJson(json['supportOCRModel'])
           : null,
       embeddingModel: json['embeddingModel'] != null
-          ? AIModel.fromJson(json['embeddingModel'])
+          ? DefaultModel.fromJson(json['embeddingModel'])
           : null,
       imageGenerationModel: json['imageGenerationModel'] != null
-          ? AIModel.fromJson(json['imageGenerationModel'])
+          ? DefaultModel.fromJson(json['imageGenerationModel'])
           : null,
       chatModel: json['chatModel'] != null
-          ? AIModel.fromJson(json['chatModel'])
+          ? DefaultModel.fromJson(json['chatModel'])
           : null,
       audioGenerationModel: json['audioGenerationModel'] != null
-          ? AIModel.fromJson(json['audioGenerationModel'])
+          ? DefaultModel.fromJson(json['audioGenerationModel'])
           : null,
       videoGenerationModel: json['videoGenerationModel'] != null
-          ? AIModel.fromJson(json['videoGenerationModel'])
+          ? DefaultModel.fromJson(json['videoGenerationModel'])
           : null,
       rerankModel: json['rerankModel'] != null
-          ? AIModel.fromJson(json['rerankModel'])
+          ? DefaultModel.fromJson(json['rerankModel'])
           : null,
     );
   }
@@ -109,4 +125,20 @@ class DefaultModels {
   }
 }
 
+class DefaultModel {
+  final String modelName;
+  final String providerName;
 
+  DefaultModel({required this.modelName, required this.providerName});
+
+  factory DefaultModel.fromJson(Map<String, dynamic> json) {
+    return DefaultModel(
+      modelName: json['modelName'] as String,
+      providerName: json['providerName'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'modelName': modelName, 'providerName': providerName};
+  }
+}

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'settings_card.dart';
+import '../../../../shared/translate/tl.dart';
 
-import '../../../core/translate.dart';
 
 class SuperDarkModeCard extends StatelessWidget {
   final bool value;

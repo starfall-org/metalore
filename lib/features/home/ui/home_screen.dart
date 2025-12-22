@@ -1,23 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../shared/widgets/empty_state.dart';
-import '../../chat/chat_screen.dart';
-import '../../ai/ui/ai_profiles_screen.dart';
-import '../../ai/ui/providers_screen.dart';
-import '../../settings/presentation/settings_screen.dart';
-import '../../chat/speech_sevice_screen.dart';
 
-import '../../../core/translate.dart';
 
 /// Màn hình chủ hiển thị dashboard chính của ứng dụng
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -66,11 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       drawer: _buildDrawer(),
-      body: SafeArea(
-        top: false,
-        bottom: true,
-        child: _buildBody(),
-      ),
+      body: SafeArea(top: false, bottom: true, child: _buildBody()),
     );
   }
 
@@ -338,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToChat() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => const ChatScreen()),
+      MaterialPageRoute(builder: (context) => const ChatPage()),
     );
   }
 
@@ -352,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToProviders() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ProvidersScreen()),
+      MaterialPageRoute(builder: (context) => const AiProvidersPage()),
     );
   }
 
@@ -366,14 +356,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToTTS() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const TTSScreen()),
+      MaterialPageRoute(builder: (context) => const SpeechServicesPage()),
     );
   }
 
   void _navigateToSettings() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+      MaterialPageRoute(builder: (context) => const SettingsPage()),
     );
   }
 }

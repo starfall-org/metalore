@@ -1,29 +1,47 @@
 import 'dart:convert';
 
-import 'provider.dart';
+enum ServiceType { system, provider }
 
-enum TTSServiceType { system, provider }
+class SpeechService {
+  final String id;
+  final String name;
+  final String? icon;
 
-class SpeechService{
   final TextToSpeech tts;
   final SpeechToText stt;
 
   const SpeechService({
-    
+    required this.id,
+    required this.name,
+    this.icon,
+    required this.tts,
+    required this.stt,
+  });
 
+  Map<String, dynamic> toJson() {
+    return {'tts': tts.toJson(), 'stt': stt.toJson()};
+  }
 
-  })
+  factory SpeechService.fromJson(Map<String, dynamic> json) {
+    return SpeechService(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      icon: json['icon'] as String?,
+      tts: TextToSpeech.fromJson(json['tts']),
+      stt: SpeechToText.fromJson(json['stt']),
+    );
+  }
 }
 
 class TextToSpeech {
   final String id;
   final String icon;
   final String name;
-  final TTSServiceType type;
-  final Provider? provider;
+  final ServiceType type;
+  final String? provider;
   final String? model;
   final String? voiceId;
-  final Map<String, dynamic> settings;
+  final Map<dynamic, dynamic> settings;
 
   const TextToSpeech({
     required this.id,
@@ -42,7 +60,7 @@ class TextToSpeech {
       'icon': icon,
       'name': name,
       'type': type.name,
-      'provider': provider?.name, // Serialize enum name
+      'provider': provider,
       'model': model,
       'voiceId': voiceId,
       'settings': settings,
@@ -54,15 +72,11 @@ class TextToSpeech {
       id: json['id'] as String,
       icon: json['icon'] as String,
       name: json['name'] as String,
-      type: TTSServiceType.values.firstWhere(
+      type: ServiceType.values.firstWhere(
         (e) => e.name == json['type'],
-        orElse: () => TTSServiceType.system,
+        orElse: () => ServiceType.system,
       ),
-      provider: json['provider'] != null
-          ? Provider.getTypeByName(json['provider']) != null
-                ? Provider(type: Provider.getTypeByName(json['provider'])!)
-                : null
-          : null,
+      provider: json['provider'] as String?,
       model: json['model'] as String?,
       voiceId: json['voiceId'] as String?,
       settings: json['settings'] as Map<String, dynamic>? ?? {},
@@ -79,16 +93,15 @@ class TextToSpeech {
   }
 }
 
-
-class SpeechToText{
+class SpeechToText {
   final String id;
   final String icon;
   final String name;
-  final TTSServiceType type;
-  final Provider? provider;
+  final ServiceType type;
+  final String? provider;
   final String? model;
   final String? voiceId;
-  final Map<String, dynamic> settings;
+  final Map<dynamic, dynamic> settings;
 
   const SpeechToText({
     required this.id,
@@ -107,7 +120,7 @@ class SpeechToText{
       'icon': icon,
       'name': name,
       'type': type.name,
-      'provider': provider?.name, // Serialize enum name
+      'provider': provider,
       'model': model,
       'voiceId': voiceId,
       'settings': settings,
@@ -119,19 +132,14 @@ class SpeechToText{
       id: json['id'] as String,
       icon: json['icon'] as String,
       name: json['name'] as String,
-      type: TTSServiceType.values.firstWhere(
+      type: ServiceType.values.firstWhere(
         (e) => e.name == json['type'],
-        orElse: () => TTSServiceType.system,
+        orElse: () => ServiceType.system,
       ),
-      provider: json['provider'] != null
-          ? Provider.getTypeByName(json['provider']) != null
-                ? Provider(type: Provider.getTypeByName(json['provider'])!)
-                : null
-          : null,
+      provider: json['provider'] as String?,
       model: json['model'] as String?,
       voiceId: json['voiceId'] as String?,
       settings: json['settings'] as Map<String, dynamic>? ?? {},
     );
   }
 }
-  

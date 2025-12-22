@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../sys/theme_extensions.dart';
 
 enum SidebarPosition { left, right }
 

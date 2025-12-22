@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/translate.dart';
 
 enum ItemCardLayout { grid, list }
 

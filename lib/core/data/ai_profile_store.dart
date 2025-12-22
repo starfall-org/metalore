@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import '../models/ai/ai_profile.dart';
-import 'shared_prefs_base_repository.dart';
 
 class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
   static const String _prefix = 'profile';
@@ -31,7 +29,7 @@ class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
       'activeMCPServers': item.activeMCPServers.map((e) => e.toJson()).toList(),
       'activeBuiltInTools': item.activeBuiltInTools,
       'persistChatSelection': item.persistChatSelection,
-      // RequestConfig fields
+      // AiConfig fields
       'config': {
         'systemPrompt': item.config.systemPrompt,
         'enableStream': item.config.enableStream,
@@ -65,7 +63,7 @@ class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
       activeBuiltInTools:
           (fields['activeBuiltInTools'] as List?)?.cast<String>() ?? const [],
       persistChatSelection: fields['persistChatSelection'] as bool?,
-      config: RequestConfig(
+      config: AiConfig(
         systemPrompt: configMap['systemPrompt'] as String? ?? '',
         enableStream: configMap['enableStream'] as bool? ?? true,
         topP: configMap['topP'] as double?,
@@ -148,7 +146,7 @@ class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
   // --- Selection helpers ---
 
   String? getSelectedProfileId() => prefs.getString(_selectedKey);
-  
+
   Future<void> setSelectedProfileId(String id) async {
     await prefs.setString(_selectedKey, id);
     // Notify listeners so selected profile updates propagate live
@@ -184,7 +182,7 @@ class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
     return AIProfile(
       id: const Uuid().v4(),
       name: 'Basic Profile',
-      config: RequestConfig(systemPrompt: '', enableStream: true),
+      config: AiConfig(systemPrompt: '', enableStream: true),
     );
   }
 }

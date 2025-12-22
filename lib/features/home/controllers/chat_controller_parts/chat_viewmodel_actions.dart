@@ -1,4 +1,4 @@
-part of 'chat_viewmodel.dart';
+part of '../chat_controller.dart';
 
 extension ChatViewModelActions on ChatViewModel {
   Future<List<String>> _snapshotEnabledToolNames(AIProfile profile) async {

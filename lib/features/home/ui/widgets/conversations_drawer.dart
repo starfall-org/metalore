@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../core/models/chat/conversation.dart';
-import '../../../core/models/ai/ai_model.dart';
-import '../../../sys/routes.dart';
-import '../../../shared/utils/utils.dart';
-import '../../ai/ui/ai_profiles_screen.dart';
-import '../../../core/storage/chat_repository.dart';
+import '../../../../core/config/routes.dart';
+import '../../../../core/data/chat_store.dart';
+import '../../../../core/models/ai/model.dart';
+import '../../../../core/models/chat/conversation.dart';
+import '../../../../shared/translate/tl.dart';
+import '../../../../shared/utils/utils.dart';
+import '../../../ai/ui/profiles_page.dart';
 
-import '../../../core/translate.dart';
 
 class ChatDrawer extends StatefulWidget {
   final Function(String) onSessionSelected;

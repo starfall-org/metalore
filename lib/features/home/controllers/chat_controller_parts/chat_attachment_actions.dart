@@ -1,4 +1,4 @@
-part of 'chat_viewmodel.dart';
+part of '../chat_controller.dart';
 
 extension ChatViewModelAttachmentActions on ChatViewModel {
   Future<void> pickAttachments(BuildContext context) async {

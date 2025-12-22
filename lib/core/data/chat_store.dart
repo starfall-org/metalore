@@ -3,7 +3,6 @@ import '../models/chat/conversation.dart';
 import '../models/chat/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-import 'shared_prefs_base_repository.dart';
 
 class ChatRepository extends SharedPreferencesBaseRepository<Conversation> {
   static const String _prefix = 'conv';

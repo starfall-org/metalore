@@ -1,4 +1,4 @@
-part of 'chat_viewmodel.dart';
+part of '../chat_controller.dart';
 
 extension ChatViewModelMessageActions on ChatViewModel {
   Future<void> handleSubmitted(String text, BuildContext context) async {
@@ -78,7 +78,7 @@ extension ChatViewModelMessageActions on ChatViewModel {
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
-              config: RequestConfig(systemPrompt: '', enableStream: true),
+              config: AiConfig(systemPrompt: '', enableStream: true),
             );
         final names = await _snapshotEnabledToolNames(profile);
         currentSession = currentSession!.copyWith(
@@ -102,7 +102,7 @@ extension ChatViewModelMessageActions on ChatViewModel {
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
-              config: RequestConfig(systemPrompt: '', enableStream: true),
+              config: AiConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -210,7 +210,7 @@ extension ChatViewModelMessageActions on ChatViewModel {
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
-              config: RequestConfig(systemPrompt: '', enableStream: true),
+              config: AiConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -297,7 +297,7 @@ extension ChatViewModelMessageActions on ChatViewModel {
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
-              config: RequestConfig(systemPrompt: '', enableStream: true),
+              config: AiConfig(systemPrompt: '', enableStream: true),
             );
         final names = await _snapshotEnabledToolNames(profile);
         currentSession = currentSession!.copyWith(
@@ -319,7 +319,7 @@ extension ChatViewModelMessageActions on ChatViewModel {
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
-              config: RequestConfig(systemPrompt: '', enableStream: true),
+              config: AiConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,
@@ -421,7 +421,7 @@ extension ChatViewModelMessageActions on ChatViewModel {
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
-              config: RequestConfig(systemPrompt: '', enableStream: true),
+              config: AiConfig(systemPrompt: '', enableStream: true),
             ),
         providerName: providerName,
         modelName: modelName,

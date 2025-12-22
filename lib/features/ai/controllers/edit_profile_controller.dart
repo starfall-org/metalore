@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/storage/ai_profile_repository.dart';
-import '../../../../core/storage/mcp_repository.dart';
-import '../../../../core/models/ai/ai_profile.dart';
-import '../../../../core/models/mcp/mcp_server.dart';
 
-import '../../../../core/translate.dart';
+import '../../../core/models/ai/profile.dart';
+import '../../../shared/translate/tl.dart';
 
 /// Options for chat persistence: On, Off, and Disable
 /// - On: Enable chat persistence
@@ -102,7 +99,7 @@ class AddAgentViewModel extends ChangeNotifier {
     final newProfile = AIProfile(
       id: existingProfile?.id ?? const Uuid().v4(),
       name: nameController.text,
-      config: RequestConfig(
+      config: AiConfig(
         systemPrompt: promptController.text,
         enableStream: enableStream,
         topP: isTopPEnabled ? topPValue : null,

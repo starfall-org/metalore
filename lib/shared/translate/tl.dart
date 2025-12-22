@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
 
-import '../shared/utils/storage/language_repository.dart';
-import '../shared/utils/storage/translation_cache_repository.dart';
-import '../shared/utils/services/translation_service.dart';
 
 /// Dịch text từ English sang ngôn ngữ được cài đặt trong language preferences
 /// Input is always English

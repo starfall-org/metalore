@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import '../viewmodel/chat_viewmodel.dart';
-import '../../../core/models/ai/ai_profile.dart';
-import '../../../core/models/mcp/mcp_server.dart';
 
-import '../../../core/translate.dart';
 
 class MenuDrawer extends StatefulWidget {
   final ChatViewModel viewModel;

@@ -1,25 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../../core/storage/provider_repository.dart';
-import '../../../core/models/provider.dart';
+import '../../../core/data/provider_repository.dart';
+import '../../../core/models/ai/provider.dart';
+import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/resource_tile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
 import '../../../shared/utils/utils.dart';
-import 'sub/add_provider_screen.dart';
 
-import '../../../core/translate.dart';
-
-class ProvidersScreen extends StatefulWidget {
-  const ProvidersScreen({super.key});
+class AiProvidersPage extends StatefulWidget {
+  const AiProvidersPage({super.key});
 
   @override
-  State<ProvidersScreen> createState() => _ProvidersScreenState();
+  State<AiProvidersPage> createState() => _AiProvidersPageState();
 }
 
-class _ProvidersScreenState extends State<ProvidersScreen> {
+class _AiProvidersPageState extends State<AiProvidersPage> {
   List<Provider> _providers = [];
   bool _isLoading = true;
   bool _isGridView = false;
@@ -135,42 +133,41 @@ class _ProvidersScreenState extends State<ProvidersScreen> {
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : _providers.isEmpty
-                ? EmptyState(
-                    message: 'No providers found',
-                    actionLabel: 'Add Provider',
-                    onAction: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AddProviderScreen(),
-                        ),
-                      );
-                      if (result == true) {
-                        _loadProviders();
-                      }
-                    },
-                  )
-                : _isGridView
-                    ? GridView.builder(
-                        padding: const EdgeInsets.all(16),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: 1.5,
-                        ),
-                        itemCount: _providers.length,
-                        itemBuilder: (context, index) =>
-                            _buildProviderCard(_providers[index]),
-                      )
-                    : ListView.builder(
-                        // Changed to Builder for better perf
-                        itemCount: _providers.length,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemBuilder: (context, index) =>
-                            _buildProviderTile(_providers[index]),
-                      ),
+            ? EmptyState(
+                message: 'No providers found',
+                actionLabel: 'Add Provider',
+                onAction: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AddProviderScreen(),
+                    ),
+                  );
+                  if (result == true) {
+                    _loadProviders();
+                  }
+                },
+              )
+            : _isGridView
+            ? GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.5,
+                ),
+                itemCount: _providers.length,
+                itemBuilder: (context, index) =>
+                    _buildProviderCard(_providers[index]),
+              )
+            : ListView.builder(
+                // Changed to Builder for better perf
+                itemCount: _providers.length,
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemBuilder: (context, index) =>
+                    _buildProviderTile(_providers[index]),
+              ),
       ),
     );
   }

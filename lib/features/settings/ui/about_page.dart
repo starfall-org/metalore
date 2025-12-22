@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/translate.dart';
 
 /// Màn hình thông tin về ứng dụng
-class AboutScreen extends StatefulWidget {
-  const AboutScreen({super.key});
+class AboutPage extends StatefulWidget {
+  const AboutPage({super.key});
 
   @override
-  State<AboutScreen> createState() => _AboutScreenState();
+  State<AboutPage> createState() => _AboutPageState();
 }
 
-class _AboutScreenState extends State<AboutScreen> {
+class _AboutPageState extends State<AboutPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -49,11 +48,7 @@ class _AboutScreenState extends State<AboutScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0.5,
       ),
-      body: SafeArea(
-        top: false,
-        bottom: true,
-        child: _buildBody(),
-      ),
+      body: SafeArea(top: false, bottom: true, child: _buildBody()),
     );
   }
 

@@ -2,9 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../../../core/models/ai/ai_model.dart';
-import '../../../core/models/ai/ai_dto.dart';
-import '../../../core/models/provider.dart';
 
 class GoogleAIStudio {
   final String _defaultModel;
@@ -276,8 +273,8 @@ class GoogleAIStudio {
         name: 'gemini-pro',
         displayName: 'Gemini Pro',
         type: ModelType.textGeneration,
-        input: [ModelIOType.text, ModelIOType.image],
-        output: [ModelIOType.text],
+        input: [ModelIO.text, ModelIO.image],
+        output: [ModelIO.text],
         reasoning: true,
         contextWindow: 2097152,
       ),
@@ -285,8 +282,8 @@ class GoogleAIStudio {
         name: 'gemini-flash',
         displayName: 'Gemini Flash',
         type: ModelType.textGeneration,
-        input: [ModelIOType.text, ModelIOType.image],
-        output: [ModelIOType.text],
+        input: [ModelIO.text, ModelIO.image],
+        output: [ModelIO.text],
         reasoning: false,
         contextWindow: 1048576,
       ),

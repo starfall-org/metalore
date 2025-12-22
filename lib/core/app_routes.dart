@@ -1,54 +1,42 @@
 import 'package:flutter/material.dart';
-// Use foundation.dart for debugPrint
-import '../features/ai/ui/add_profile_screen.dart';
-import '../features/ai/ui/ai_profiles_screen.dart';
-import '../features/chat/chat_screen.dart';
-import '../features/ai/ui/sub/add_provider_screen.dart';
-import '../features/ai/ui/providers_screen.dart';
-import '../features/settings/presentation/settings_screen.dart';
-import '../features/settings/presentation/appearance_screen.dart';
-import '../features/settings/presentation/preferences_screen.dart';
-import '../features/chat/speech_sevice_screen.dart';
-import '../features/home/presentation/home_screen.dart';
-import '../features/settings/datacontrols/presentation/datacontrols_screen.dart';
-import '../features/settings/about/presentation/about_screen.dart';
-import '../features/update/presentation/update_screen.dart';
+
+import '../features/home/ui/chat_screen.dart';
+import '../features/home/ui/home_screen.dart';
+import '../features/settings/ui/about_page.dart';
+import '../features/settings/ui/appearance_page.dart';
+import '../features/settings/ui/preferences_page.dart';
+import '../features/settings/ui/settings_page.dart';
+import '../features/settings/ui/update_page.dart';
 import '../shared/translate/tl.dart';
-import 'config/routes.dart';
 
 /// Generate a route based on the route name.
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case AppRoutes.home:
-      return MaterialPageRoute(builder: (_) => const HomeScreen());
+      return MaterialPageRoute(builder: (_) => const HomePage());
     case AppRoutes.chat:
-      return MaterialPageRoute(builder: (_) => const ChatScreen());
-    case AppRoutes.aiProfiles:
-      return MaterialPageRoute(builder: (_) => const AIProfilesScreen());
+      return MaterialPageRoute(builder: (_) => const ChatPage());
+
     case AppRoutes.settings:
-      return MaterialPageRoute(builder: (_) => const SettingsScreen());
-    case AppRoutes.providers:
-      return MaterialPageRoute(builder: (_) => const ProvidersScreen());
+      return MaterialPageRoute(builder: (_) => const SettingsPage());
+
     case AppRoutes.appearance:
-      return MaterialPageRoute(builder: (_) => const AppearanceSettingcreen());
-    case AppRoutes.tts:
-      return MaterialPageRoute(builder: (_) => const TTSScreen());
+      return MaterialPageRoute(builder: (_) => const AppearancePage());
+
     case AppRoutes.preferences:
-      return MaterialPageRoute(builder: (_) => const PreferencesScreen());
-    case AppRoutes.datacontrols:
-      return MaterialPageRoute(builder: (_) => const DataControlsScreen());
+      return MaterialPageRoute(builder: (_) => const PreferencesPage());
+
     case AppRoutes.about:
-      return MaterialPageRoute(builder: (_) => const AboutScreen());
+      return MaterialPageRoute(builder: (_) => const AboutPage());
     case AppRoutes.update:
-      return MaterialPageRoute(builder: (_) => const UpdateScreen());
-    case AppRoutes.providersAddOrEdit:
-      return MaterialPageRoute(builder: (_) => const AddProviderScreen());
-    case AppRoutes.aiProfilesAddOrEdit:
-      return MaterialPageRoute(builder: (_) => const AddProfileScreen());
+      return MaterialPageRoute(builder: (_) => const UpdatePage());
+    case AppRoutes.aiProviders:
+      return MaterialPageRoute(builder: (_) => const AiProvidersPage());
+
     default:
       // Log the undefined route for debugging
       debugPrint(
-        'Undefined route: ${settings.name}. Returning error screen instead of ChatScreen.',
+        'Undefined route: ${settings.name}. Returning error screen instead of ChatPage.',
       );
       return MaterialPageRoute(
         builder: (context) => Scaffold(

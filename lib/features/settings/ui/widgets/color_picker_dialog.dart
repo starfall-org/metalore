@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/translate.dart';
+import '../../../../shared/translate/tl.dart';
 
 class ColorPickerDialog extends StatelessWidget {
   final Color currentColor;

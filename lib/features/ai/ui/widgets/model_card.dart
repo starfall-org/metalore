@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/ai_model.dart';
+import '../../../../core/models/ai/model.dart';
 import '../../../../shared/utils/utils.dart';
 import '../../../../shared/widgets/item_card.dart';
 
@@ -52,18 +52,18 @@ class ModelCard extends StatelessWidget {
 
   Widget _getModelTypeLabel() {
     switch (model.type) {
-      case ModelType.textGeneration:
+      case ModelType.chat:
         if (model.reasoning == true) {
           return Icon(Icons.chat);
         }
         return Icon(Icons.chat_bubble);
-      case ModelType.imageGeneration:
+      case ModelType.image:
         return Icon(Icons.image_search);
-      case ModelType.audioGeneration:
+      case ModelType.audio:
         return Icon(Icons.music_video);
-      case ModelType.videoGeneration:
+      case ModelType.video:
         return Icon(Icons.local_movies);
-      case ModelType.embedding:
+      case ModelType.embed:
         return Icon(Icons.compress_rounded);
       case ModelType.rerank:
         return Icon(Icons.leaderboard);
@@ -74,43 +74,43 @@ class ModelCard extends StatelessWidget {
     final List<Widget> tags = [];
 
     // Input tags
-    if (model.input.isNotEmpty) {
-      final inputList = model.input.map((e) => _getIOIcon(e)).toList();
-      tags.add(
-        _buildTag(
-          context,
-          Row(mainAxisSize: MainAxisSize.min, children: inputList),
-          Theme.of(context).colorScheme.tertiary,
-        ),
-      );
+    if (model.input != null) {
+      final inputIcons = _getIOIcons(model.input!);
+      if (inputIcons.isNotEmpty) {
+        tags.add(
+          _buildTag(
+            context,
+            Row(mainAxisSize: MainAxisSize.min, children: inputIcons),
+            Theme.of(context).colorScheme.tertiary,
+          ),
+        );
+      }
     }
 
     // Output tags
-    if (model.output.isNotEmpty) {
-      final outputList = model.output.map((e) => _getIOIcon(e)).toList();
-      tags.add(
-        _buildTag(
-          context,
-          Row(mainAxisSize: MainAxisSize.min, children: outputList),
-          Theme.of(context).colorScheme.secondary,
-        ),
-      );
+    if (model.output != null) {
+      final outputIcons = _getIOIcons(model.output!);
+      if (outputIcons.isNotEmpty) {
+        tags.add(
+          _buildTag(
+            context,
+            Row(mainAxisSize: MainAxisSize.min, children: outputIcons),
+            Theme.of(context).colorScheme.secondary,
+          ),
+        );
+      }
     }
 
     return tags;
   }
 
-  Icon _getIOIcon(ModelIOType type) {
-    switch (type) {
-      case ModelIOType.text:
-        return Icon(Icons.text_fields);
-      case ModelIOType.image:
-        return Icon(Icons.image_outlined);
-      case ModelIOType.audio:
-        return Icon(Icons.music_note);
-      case ModelIOType.video:
-        return Icon(Icons.movie);
-    }
+  List<Icon> _getIOIcons(AIModelIO io) {
+    final List<Icon> icons = [];
+    if (io.text) icons.add(const Icon(Icons.text_fields, size: 16));
+    if (io.image) icons.add(const Icon(Icons.image_outlined, size: 16));
+    if (io.audio) icons.add(const Icon(Icons.music_note, size: 16));
+    if (io.video) icons.add(const Icon(Icons.movie, size: 16));
+    return icons;
   }
 
   String _formatParameters(int params) {

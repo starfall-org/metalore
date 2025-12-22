@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../base.dart';
-import '../ai_utils.dart';
-import '../../../core/models/ai/ai_model.dart';
 
 class OpenAI extends AIBaseApi {
   final String responsesPath;

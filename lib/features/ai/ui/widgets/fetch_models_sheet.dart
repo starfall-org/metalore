@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/ai_model.dart';
-import '../../presentation/add_provider_viewmodel.dart';
-import '../../../settings/widgets/settings_card.dart';
-import 'model_card.dart';
+import '../../../../core/models/ai/model.dart';
+import '../../../../shared/translate/tl.dart';
+import '../../../settings/ui/widgets/settings_card.dart';
+import '../../controllers/edit_provider_controller.dart';
 
-import '../../../../core/translate.dart';
-
-class FetchModelsDrawer extends StatelessWidget {
+class FetchModelsSheet extends StatelessWidget {
   final AddProviderViewModel viewModel;
   final Function(AIModel) onShowCapabilities;
 
-  const FetchModelsDrawer({
+  const FetchModelsSheet({
     super.key,
     required this.viewModel,
     required this.onShowCapabilities,
@@ -148,7 +146,7 @@ class FetchModelsDrawer extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final model = availableModels[index];
                             final isSelected = selectedModels.any(
-                              (m) => m.name == model.name,
+                              (AIModel m) => m.name == model.name,
                             );
 
                             return ModelCard(

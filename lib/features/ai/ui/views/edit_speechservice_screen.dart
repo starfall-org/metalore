@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-import '../../../core/models/ai/ai_model.dart';
-import '../../../core/models/provider.dart';
-import '../../../core/storage/provider_repository.dart';
-import '../../../core/storage/tts_repository.dart';
-import '../../../core/models/speech_service.dart';
-import '../../../shared/widgets/dropdown.dart';
-import '../../../shared/widgets/custom_text_field.dart';
 
-import '../../../core/translate.dart';
+import '../../../../core/data/provider_repository.dart';
+import '../../../../core/data/tts_repository.dart';
+import '../../../../core/models/ai/model.dart';
+import '../../../../core/models/ai/provider.dart';
+import '../../../../core/models/ai/speechservice.dart';
+import '../../../../shared/translate/tl.dart';
+import '../../../../shared/widgets/common_dropdown.dart';
+import '../../../../shared/widgets/custom_text_field.dart';
 
 class AddTTSProfileScreen extends StatefulWidget {
   const AddTTSProfileScreen({super.key});
@@ -19,7 +19,7 @@ class AddTTSProfileScreen extends StatefulWidget {
 
 class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
   final _nameController = TextEditingController();
-  TTSServiceType _selectedType = TTSServiceType.system;
+  ServiceType _selectedType = ServiceType.system;
 
   // Provider TTS
   List<Provider> _availableProviders = [];
@@ -44,9 +44,7 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
     setState(() {
       // Filter providers that have TTS capability
       _availableProviders = providers
-          .where(
-            (p) => p.models.any((m) => m.output.contains(ModelIOType.audio)),
-          )
+          .where((p) => p.models.any((m) => m.output.contains(AIModelIO.audio)))
           .toList();
     });
   }
@@ -60,9 +58,9 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
     await Future.delayed(const Duration(seconds: 1));
 
     List<String> voices = [];
-    if (_selectedType == TTSServiceType.system) {
+    if (_selectedType == ServiceType.system) {
       voices = ['en-US-x-sfg#male_1-local', 'en-US-x-sfg#female_1-local'];
-    } else if (_selectedType == TTSServiceType.provider) {
+    } else if (_selectedType == ServiceType.provider) {
       voices = ['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'];
     }
 
@@ -81,8 +79,7 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
       return;
     }
 
-    if (_selectedType == TTSServiceType.provider &&
-        _selectedProviderId == null) {
+    if (_selectedType == ServiceType.provider && _selectedProviderId == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(tl('Please select a provider'))));
@@ -92,7 +89,7 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
     final repository = await TTSRepository.init();
 
     Provider? selectedProvider;
-    if (_selectedType == TTSServiceType.provider) {
+    if (_selectedType == ServiceType.provider) {
       selectedProvider = _availableProviders.firstWhere(
         (p) => p.name == _selectedProviderId,
       );
@@ -130,17 +127,20 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            CustomTextField(controller: _nameController, label: tl('Profile Name')),
+            CustomTextField(
+              controller: _nameController,
+              label: tl('Profile Name'),
+            ),
             const SizedBox(height: 16),
-            CommonDropdown<TTSServiceType>(
+            CommonDropdown<ServiceType>(
               value: _selectedType,
               labelText: tl('Service Type'),
-              options: TTSServiceType.values.map((type) {
-                return DropdownOption<TTSServiceType>(
+              options: ServiceType.values.map((type) {
+                return DropdownOption<ServiceType>(
                   value: type,
                   label: type.name.toUpperCase(),
                   icon: Icon(
-                    type == TTSServiceType.system ? Icons.settings : Icons.cloud,
+                    type == ServiceType.system ? Icons.settings : Icons.cloud,
                   ),
                 );
               }).toList(),
@@ -155,7 +155,7 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
               },
             ),
             const SizedBox(height: 16),
-            if (_selectedType == TTSServiceType.provider) ...[
+            if (_selectedType == ServiceType.provider) ...[
               CommonDropdown<String>(
                 value: _selectedProviderId,
                 labelText: tl('Provider'),
@@ -181,7 +181,7 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
               ),
               const SizedBox(height: 16),
             ],
-    
+
             Row(
               children: [
                 Expanded(

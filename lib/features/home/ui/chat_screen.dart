@@ -1,30 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../ai/ui/ai_profiles_screen.dart';
-import 'widgets/chat_drawer.dart';
-import 'widgets/menu_drawer.dart';
-import 'widgets/chat_input_area.dart';
-import 'widgets/chat_message_list.dart';
-import 'widgets/models_drawer.dart';
-import 'widgets/edit_message_dialog.dart';
-import 'viewmodel/chat_viewmodel.dart';
-import 'viewmodel/chat_navigation_interface.dart';
-import '../../shared/widgets/sidebar_right.dart';
-import '../../shared/widgets/empty_state.dart';
-import '../../sys/app_services.dart';
 import 'dart:io';
 
-import '../../core/translate.dart';
 
 /// Màn hình chat chính cho ứng dụng
-class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+class ChatPage extends StatefulWidget {
+  const ChatPage({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
-class _ChatScreenState extends State<ChatScreen>
+class _ChatPageState extends State<ChatPage>
     implements ChatNavigationInterface {
   late ChatViewModel _viewModel;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();

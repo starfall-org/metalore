@@ -1,23 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
-import '../../../core/models/AppearanceSetting.dart';
-import '../viewmodel/appearance_viewmodel.dart';
-import '../widgets/settings_section_header.dart';
-import '../widgets/settings_card.dart';
-import '../widgets/color_picker_dialog.dart';
-import '../widgets/super_dark_mode_card.dart';
 
-import '../../../core/translate.dart';
 
-class AppearanceSettingcreen extends StatefulWidget {
-  const AppearanceSettingcreen({super.key});
+class AppearancePage extends StatefulWidget {
+  const AppearancePage({super.key});
 
   @override
-  State<AppearanceSettingcreen> createState() => _AppearanceSettingcreenState();
+  State<AppearancePage> createState() => _AppearancePageState();
 }
 
-class _AppearanceSettingcreenState extends State<AppearanceSettingcreen> {
+class _AppearancePageState extends State<AppearancePage> {
   late AppearanceViewModel _viewModel;
 
   @override
@@ -61,106 +54,106 @@ class _AppearanceSettingcreenState extends State<AppearanceSettingcreen> {
         bottom: true,
         child: ListView(
           padding: const EdgeInsets.all(16),
-        children: [
-          // Theme selection: system, light, dark, custom
-          SettingsSectionHeader('Theme Mode'),
-          const SizedBox(height: 12),
-          _buildThemeSegmented(),
+          children: [
+            // Theme selection: system, light, dark, custom
+            SettingsSectionHeader('Theme Mode'),
+            const SizedBox(height: 12),
+            _buildThemeSegmented(),
 
-          // Super Dark Mode
-          const SizedBox(height: 16),
-          SuperDarkModeCard(
-            value: settings.superDarkMode,
-            onChanged: (val) => _viewModel.togglePureDark(val),
-          ),
-
-          const SizedBox(height: 24),
-
-          // Material You toggle
-          SettingsSectionHeader('settings.appearance.material_you'),
-          DynamicColorBuilder(
-            builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
-              final bool supported =
-                  (lightDynamic != null || darkDynamic != null);
-              return SettingsCard(
-                child: SwitchListTile(
-                  title: Text(tl('Dynamic Colors')),
-                  subtitle: supported
-                      ? Text(tl('Use system dynamic colors'))
-                      : null,
-                  value: settings.dynamicColor,
-                  onChanged: supported
-                      ? (val) => _viewModel.toggleMaterialYou(val)
-                      : null,
-                ),
-              );
-            },
-          ),
-
-          // Secondary Background Mode
-          const SizedBox(height: 12),
-          SettingsSectionHeader('Secondary Background Color'),
-          const SizedBox(height: 12),
-          _buildSecondaryBgSegmented(),
-
-          const SizedBox(height: 24),
-
-          // Color customization is only visible in Custom mode and disabled when Material You is enabled
-          SettingsSectionHeader('settings.appearance.colors'),
-          const SizedBox(height: 12),
-
-          SettingsCard(
-            child: Column(
-              children: [
-                _buildColorTile(
-                  label: 'Primary Color',
-                  colorType: ColorType.primary,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'Secondary Color',
-                  colorType: ColorType.secondary,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'settings.appearance.background_color',
-                  colorType: ColorType.background,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'settings.appearance.surface_color',
-                  colorType: ColorType.surface,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'settings.appearance.text_color',
-                  colorType: ColorType.text,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'settings.appearance.darkmode_text_color',
-                  colorType: ColorType.darkmodeText,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'settings.appearance.text_hint_color',
-                  colorType: ColorType.textHint,
-                ),
-                const Divider(height: 1),
-                _buildColorTile(
-                  label: 'settings.appearance.darkmode_text_hint_color',
-                  colorType: ColorType.darkmodeTextHint,
-                ),
-              ],
+            // Super Dark Mode
+            const SizedBox(height: 16),
+            SuperDarkModeCard(
+              value: settings.superDarkMode,
+              onChanged: (val) => _viewModel.togglePureDark(val),
             ),
-          ),
-          const SizedBox(height: 24),
 
-          _buildPreview(isDark: isDark, settings: settings),
-       ],
-     ),
-     ),
-   );
+            const SizedBox(height: 24),
+
+            // Material You toggle
+            SettingsSectionHeader('settings.appearance.material_you'),
+            DynamicColorBuilder(
+              builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+                final bool supported =
+                    (lightDynamic != null || darkDynamic != null);
+                return SettingsCard(
+                  child: SwitchListTile(
+                    title: Text(tl('Dynamic Colors')),
+                    subtitle: supported
+                        ? Text(tl('Use system dynamic colors'))
+                        : null,
+                    value: settings.dynamicColor,
+                    onChanged: supported
+                        ? (val) => _viewModel.toggleMaterialYou(val)
+                        : null,
+                  ),
+                );
+              },
+            ),
+
+            // Secondary Background Mode
+            const SizedBox(height: 12),
+            SettingsSectionHeader('Secondary Background Color'),
+            const SizedBox(height: 12),
+            _buildSecondaryBgSegmented(),
+
+            const SizedBox(height: 24),
+
+            // Color customization is only visible in Custom mode and disabled when Material You is enabled
+            SettingsSectionHeader('settings.appearance.colors'),
+            const SizedBox(height: 12),
+
+            SettingsCard(
+              child: Column(
+                children: [
+                  _buildColorTile(
+                    label: 'Primary Color',
+                    colorType: ColorType.primary,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'Secondary Color',
+                    colorType: ColorType.secondary,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'settings.appearance.background_color',
+                    colorType: ColorType.background,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'settings.appearance.surface_color',
+                    colorType: ColorType.surface,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'settings.appearance.text_color',
+                    colorType: ColorType.text,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'settings.appearance.darkmode_text_color',
+                    colorType: ColorType.darkmodeText,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'settings.appearance.text_hint_color',
+                    colorType: ColorType.textHint,
+                  ),
+                  const Divider(height: 1),
+                  _buildColorTile(
+                    label: 'settings.appearance.darkmode_text_hint_color',
+                    colorType: ColorType.darkmodeTextHint,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            _buildPreview(isDark: isDark, settings: settings),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildThemeSegmented() {
@@ -268,7 +261,10 @@ class _AppearanceSettingcreenState extends State<AppearanceSettingcreen> {
     );
   }
 
-  Widget _buildPreview({required bool isDark, required AppearanceSetting settings}) {
+  Widget _buildPreview({
+    required bool isDark,
+    required AppearanceSetting settings,
+  }) {
     final primary = Color(settings.primaryColor);
     final onSurface = isDark ? Colors.white : Colors.black;
     final surface = isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF5F5F7);

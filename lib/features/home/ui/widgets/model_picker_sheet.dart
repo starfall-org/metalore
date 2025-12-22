@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/models/provider.dart';
 
-import '../../../core/translate.dart';
 
 class ModelsDrawer extends StatelessWidget {
   final List<Provider> providers;

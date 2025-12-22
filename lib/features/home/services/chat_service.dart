@@ -1,17 +1,8 @@
-import '../../../core/storage/provider_repository.dart';
-import '../../../core/models/ai/ai_profile.dart';
+import '../../../core/data/provider_repository.dart';
 import '../../../core/models/chat/message.dart';
-import '../../../core/models/provider.dart';
-import '../../../core/models/ai/ai_dto.dart';
-import '../../../core/models/ai/ai_model.dart';
-import '../../../core/storage/mcp_repository.dart';
+import '../../../core/data/mcp_repository.dart';
 import '../../../core/models/mcp/mcp_server.dart';
 import '../../../api/ai/openai/openai.dart';
-import '../../../api/ai/anthropic.dart';
-import '../../../api/ai/ollama.dart';
-import '../../../api/ai/google/aistudio.dart';
-import '../../../api/ai/google/vertexai.dart';
-import '../../../api/mcp/mcp_service.dart';
 
 class ChatService {
   // Thu thập MCP tools ưu tiên cache; cập nhật khi dùng.

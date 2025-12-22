@@ -1,4 +1,4 @@
-part of 'chat_viewmodel.dart';
+part of '../chat_controller.dart';
 
 extension ChatViewModelUIActions on ChatViewModel {
   void scrollToBottom() {

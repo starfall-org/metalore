@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/ai/default_models.dart';
-import 'shared_prefs_base_repository.dart';
 
 /// Repository for managing default AI models configuration.
 class DefaultOptionsRepository

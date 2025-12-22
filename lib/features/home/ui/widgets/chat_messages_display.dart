@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/models/chat/message.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
-import '../../../sys/theme_extensions.dart';
 import 'dart:io';
 
-import '../../../core/translate.dart';
 
 class ChatMessageList extends StatelessWidget {
   final List<ChatMessage> messages;

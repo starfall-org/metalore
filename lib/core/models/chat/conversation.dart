@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'message.dart';
 
 class Conversation {
   final String id;

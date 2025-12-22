@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'empty_state.dart';
 
-import '../../core/translate.dart';
 
 /// A utility widget that handles common screen states:
 /// - Loading: Shows a progress indicator

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../core/storage/tts_repository.dart';
-import '../../core/models/speech_service.dart';
-import 'sub_screens/add_tts_profile_screen.dart';
 
-import '../../core/translate.dart';
+import '../../../core/data/tts_repository.dart';
+import '../../../core/models/ai/speechservice.dart';
+import '../../../shared/translate/tl.dart';
 
-class TTSScreen extends StatefulWidget {
-  const TTSScreen({super.key});
+class SpeechServicesPage extends StatefulWidget {
+  const SpeechServicesPage({super.key});
 
   @override
-  State<TTSScreen> createState() => _TTSScreenState();
+  State<SpeechServicesPage> createState() => _SpeechServicesPageState();
 }
 
-class _TTSScreenState extends State<TTSScreen> {
+class _SpeechServicesPageState extends State<SpeechServicesPage> {
   List<SpeechService> _profiles = [];
   bool _isLoading = true;
   late TTSRepository _repository;
@@ -65,21 +64,20 @@ class _TTSScreenState extends State<TTSScreen> {
         child: _isLoading
             ? Center(child: CircularProgressIndicator())
             : _profiles.isEmpty
-                ? Center(child: Text(tl('No TTS profiles configured')))
-                : ListView.separated(
-                    itemCount: _profiles.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1),
-                    itemBuilder: (context, index) =>
-                        _buildProfileTile(_profiles[index]),
-                  ),
+            ? Center(child: Text(tl('No TTS profiles configured')))
+            : ListView.separated(
+                itemCount: _profiles.length,
+                separatorBuilder: (context, index) => const Divider(height: 1),
+                itemBuilder: (context, index) =>
+                    _buildProfileTile(_profiles[index]),
+              ),
       ),
     );
   }
 
   Widget _buildProfileTile(SpeechService profile) {
     return Dismissible(
-      key: Key(profile.id),
+      key: Key(profile),
       background: Container(
         color: Theme.of(context).colorScheme.error,
         alignment: Alignment.centerRight,
@@ -114,11 +112,11 @@ class _TTSScreenState extends State<TTSScreen> {
     );
   }
 
-  IconData _getServiceIcon(TTSServiceType type) {
+  IconData _getServiceIcon(ServiceType type) {
     switch (type) {
-      case TTSServiceType.system:
+      case ServiceType.system:
         return Icons.settings_voice;
-      case TTSServiceType.provider:
+      case ServiceType.provider:
         return Icons.cloud;
     }
   }

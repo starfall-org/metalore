@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/models/ai/ai_profile.dart';
-import '../../../../../core/storage/ai_profile_repository.dart';
-import '../../../sub_screens/add_profile_screen.dart';
-
-import '../../../../../core/translate.dart';
+import '../../../../core/models/ai/profile.dart';
+import '../../../../core/data/ai_profile_store.dart';
+import '../../../../shared/translate/tl.dart';
+import '../views/edit_profile_screen.dart';
 
 class ViewProfileScreen extends StatelessWidget {
   final AIProfile profile;
@@ -42,184 +41,184 @@ class ViewProfileScreen extends StatelessWidget {
           top: false,
           bottom: true,
           child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with Avatar and Name
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer,
-                  child: Text(
-                    profile.name.isNotEmpty
-                        ? profile.name[0].toUpperCase()
-                        : 'A',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header with Avatar and Name
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    child: Text(
+                      profile.name.isNotEmpty
+                          ? profile.name[0].toUpperCase()
+                          : 'A',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        profile.name,
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        tl('ID: ${profile.id.substring(0, 8)}...'),
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ],
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profile.name,
+                          style: Theme.of(context).textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          tl('ID: ${profile.id.substring(0, 8)}...'),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+
+              // System Prompt Section
+              _buildSectionHeader(
+                context,
+                'System Prompt',
+                Icons.psychology_outlined,
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outlineVariant,
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 32),
-
-            // System Prompt Section
-            _buildSectionHeader(
-              context,
-              'System Prompt',
-              Icons.psychology_outlined,
-            ),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.outlineVariant,
+                child: Text(
+                  profile.config.systemPrompt.isNotEmpty
+                      ? profile.config.systemPrompt
+                      : 'No system prompt configured.',
+                  style: const TextStyle(height: 1.5),
                 ),
               ),
-              child: Text(
-                profile.config.systemPrompt.isNotEmpty
-                    ? profile.config.systemPrompt
-                    : 'No system prompt configured.',
-                style: const TextStyle(height: 1.5),
-              ),
-            ),
-            const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-            // Parameters Grid
-            _buildSectionHeader(context, 'Parameters', Icons.tune),
-            const SizedBox(height: 16),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 2.5,
-              children: [
-                _buildInfoCard(
-                  context,
-                  'Temperature',
-                  profile.config.temperature?.toString() ?? 'Default',
-                ),
-                _buildInfoCard(
-                  context,
-                  'Top P',
-                  profile.config.topP?.toString() ?? 'Default',
-                ),
-                _buildInfoCard(
-                  context,
-                  'Top K',
-                  profile.config.topK?.toString() ?? 'Default',
-                ),
-                _buildInfoCard(
-                  context,
-                  'Stream',
-                  profile.config.enableStream ? 'ON' : 'OFF',
-                ),
-                _buildInfoCard(
-                  context,
-                  'Context Window',
-                  profile.config.contextWindow.toString(),
-                ),
-                _buildInfoCard(
-                  context,
-                  'Max Tokens',
-                  profile.config.maxTokens.toString(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            _buildInfoCard(
-              context,
-              'Conversation Length',
-              profile.config.conversationLength.toString(),
-            ),
-
-            const SizedBox(height: 32),
-
-            // Persistence
-            if (profile.persistChatSelection != null) ...[
-              _buildSectionHeader(
-                context,
-                'agents.persist_section_title',
-                Icons.save_outlined,
-              ),
-              const SizedBox(height: 12),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  profile.persistChatSelection!
-                      ? Icons.check_circle
-                      : Icons.cancel,
-                  color: profile.persistChatSelection!
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.error,
-                ),
-                title: Text(
-                  profile.persistChatSelection!
-                      ? 'agents.persist_force_on'
-                      : 'agents.persist_force_off',
-                ),
+              // Parameters Grid
+              _buildSectionHeader(context, 'Parameters', Icons.tune),
+              const SizedBox(height: 16),
+              GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 2.5,
+                children: [
+                  _buildInfoCard(
+                    context,
+                    'Temperature',
+                    profile.config.temperature?.toString() ?? 'Default',
+                  ),
+                  _buildInfoCard(
+                    context,
+                    'Top P',
+                    profile.config.topP?.toString() ?? 'Default',
+                  ),
+                  _buildInfoCard(
+                    context,
+                    'Top K',
+                    profile.config.topK?.toString() ?? 'Default',
+                  ),
+                  _buildInfoCard(
+                    context,
+                    'Stream',
+                    profile.config.enableStream ? 'ON' : 'OFF',
+                  ),
+                  _buildInfoCard(
+                    context,
+                    'Context Window',
+                    profile.config.contextWindow.toString(),
+                  ),
+                  _buildInfoCard(
+                    context,
+                    'Max Tokens',
+                    profile.config.maxTokens.toString(),
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
-            ],
-
-            // MCP Servers
-            if (profile.activeMCPServerIds.isNotEmpty) ...[
-              _buildSectionHeader(
+              _buildInfoCard(
                 context,
-                'agents.active_mcp_servers',
-                Icons.hub_outlined,
+                'Conversation Length',
+                profile.config.conversationLength.toString(),
               ),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: profile.activeMCPServerIds
-                    .map(
-                      (id) => Chip(
-                        label: Text(
-                          id.substring(0, 8),
-                        ), // Ideally show server name
-                        backgroundColor: Theme.of(
-                          context,
-                        ).colorScheme.secondaryContainer,
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
 
-            const SizedBox(height: 48),
-          ],
+              const SizedBox(height: 32),
+
+              // Persistence
+              if (profile.persistChatSelection != null) ...[
+                _buildSectionHeader(
+                  context,
+                  'agents.persist_section_title',
+                  Icons.save_outlined,
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    profile.persistChatSelection!
+                        ? Icons.check_circle
+                        : Icons.cancel,
+                    color: profile.persistChatSelection!
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.error,
+                  ),
+                  title: Text(
+                    profile.persistChatSelection!
+                        ? 'agents.persist_force_on'
+                        : 'agents.persist_force_off',
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
+              // MCP Servers
+              if (profile.activeMCPServerIds.isNotEmpty) ...[
+                _buildSectionHeader(
+                  context,
+                  'agents.active_mcp_servers',
+                  Icons.hub_outlined,
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: profile.activeMCPServerIds
+                      .map(
+                        (id) => Chip(
+                          label: Text(
+                            id.substring(0, 8),
+                          ), // Ideally show server name
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.secondaryContainer,
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+
+              const SizedBox(height: 48),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }
