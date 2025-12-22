@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'core/config/services.dart';
 import 'firebase_options.dart';
-import 'core/di/app_services.dart';
-import 'core/utils.dart';
+import 'shared/utils/utils.dart';
 import 'app.dart';
 
 Future<void> main() async {
