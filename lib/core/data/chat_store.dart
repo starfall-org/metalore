@@ -1,17 +1,16 @@
 import 'dart:async';
 import '../models/chat/conversation.dart';
 import '../models/chat/message.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'base.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatRepository extends SharedPreferencesBaseRepository<Conversation> {
   static const String _prefix = 'conv';
 
-  ChatRepository(super.prefs);
+  ChatRepository();
 
   static Future<ChatRepository> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    return ChatRepository(prefs);
+    return ChatRepository();
   }
 
   @override

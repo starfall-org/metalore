@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/empty_state.dart';
+import '../../ai/ui/profiles_page.dart';
+import '../../ai/ui/providers_page.dart';
+import '../../ai/ui/speechsevices_page.dart';
+import '../../settings/ui/settings_page.dart';
+import 'chat_screen.dart';
 
 
 /// Màn hình chủ hiển thị dashboard chính của ứng dụng

@@ -1,5 +1,8 @@
 import 'package:uuid/uuid.dart';
 
+import 'mcp_core.dart';
+import 'mcp_http.dart';
+
 export 'mcp_core.dart';
 export 'mcp_http.dart';
 

@@ -6,20 +6,19 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
+import '../../core/config/services.dart';
+import '../../core/models/ai/model.dart';
+import '../../core/models/ai/profile.dart';
+import '../../core/models/ai/provider.dart';
 import '../../core/models/mcp/mcp_server.dart';
 
 void initIcons() {
-  final hasInitialized = AppServices
-      .instance
-      .PreferencesSp
-      .currentPreferences
-      .hasInitializedIcons;
+  final hasInitialized =
+      AppServices.instance.preferencesSp.currentPreferences.hasInitializedIcons;
   if (!hasInitialized) {
     // Run in background, don't await
     _cacheAllIcons().then((_) async {
-      await AppServices.instance.PreferencesSp.setInitializedIcons(
-        true,
-      );
+      await AppServices.instance.preferencesSp.setInitializedIcons(true);
     });
   }
 }
@@ -43,9 +42,9 @@ Future<void> _cacheAllIcons() async {
 
 Widget buildLogoIcon(dynamic item, {double size = 24}) {
   if (item is Provider) {
-    if (item.logoUrl.isNotEmpty) {
+    if (item.icon?.isNotEmpty ?? false) {
       return Image.network(
-        item.logoUrl,
+        item.icon!,
         width: size,
         height: size,
         errorBuilder: (context, error, stackTrace) => SizedBox(

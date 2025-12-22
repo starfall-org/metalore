@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/provider_repository.dart';
+import '../../../core/data/ai_provider_store.dart';
 import '../../../core/models/ai/provider.dart';
 import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/resource_tile.dart';
@@ -9,6 +9,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
 import '../../../shared/utils/utils.dart';
+import 'views/edit_provider_screen.dart';
 
 class AiProvidersPage extends StatefulWidget {
   const AiProvidersPage({super.key});

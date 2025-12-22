@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/tts_repository.dart';
+import '../../../core/data/speechservice_store.dart';
 import '../../../core/models/ai/speechservice.dart';
 import '../../../shared/translate/tl.dart';
+import 'views/edit_speechservice_screen.dart';
 
 class SpeechServicesPage extends StatefulWidget {
   const SpeechServicesPage({super.key});
@@ -77,7 +78,7 @@ class _SpeechServicesPageState extends State<SpeechServicesPage> {
 
   Widget _buildProfileTile(SpeechService profile) {
     return Dismissible(
-      key: Key(profile),
+      key: ValueKey(profile.id),
       background: Container(
         color: Theme.of(context).colorScheme.error,
         alignment: Alignment.centerRight,
@@ -95,12 +96,12 @@ class _SpeechServicesPageState extends State<SpeechServicesPage> {
         leading: CircleAvatar(
           backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
           child: Icon(
-            _getServiceIcon(profile.type),
+            _getServiceIcon(profile.tts.type),
             color: Theme.of(context).colorScheme.onSecondaryContainer,
           ),
         ),
         title: Text(profile.name),
-        subtitle: Text(profile.type.name.toUpperCase()),
+        subtitle: Text(profile.tts.type.name.toUpperCase()),
         trailing: Icon(
           Icons.chevron_right,
           color: Theme.of(context).disabledColor,

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../core/config/routes.dart';
 import '../../../shared/translate/tl.dart';
+import 'widgets/settings_card.dart';
+import 'widgets/settings_section_header.dart';
+import 'widgets/settings_tile.dart';
 
 
 class SettingsPage extends StatelessWidget {
@@ -33,7 +36,7 @@ class SettingsPage extends StatelessWidget {
                     icon: Icons.api,
                     title: 'Providers',
                     onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.providers),
+                        Navigator.pushNamed(context, AppRoutes.aiProviders),
                   ),
                   const Divider(height: 1, indent: 56, endIndent: 16),
                   SettingsTile(
@@ -60,13 +63,13 @@ class SettingsPage extends StatelessWidget {
                   SettingsTile(
                     icon: Icons.speaker_notes,
                     title: 'Speech Services',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.tts),
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.aiSpeechServices),
                   ),
                   const Divider(height: 1, indent: 56, endIndent: 16),
                   SettingsTile(
                     icon: Icons.extension_outlined,
                     title: 'MCP Servers',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.mcp),
+                    onTap: () => Navigator.pushNamed(context, AppRoutes.mcpServers),
                   ),
                   const Divider(height: 1, indent: 56, endIndent: 16),
                   SettingsTile(
@@ -106,7 +109,7 @@ class SettingsPage extends StatelessWidget {
                     icon: Icons.storage,
                     title: 'Data Controls',
                     onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.datacontrols),
+                        Navigator.pushNamed(context, AppRoutes.userData),
                   ),
                 ],
               ),

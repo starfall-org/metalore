@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
+import '../../../core/models/settings/appearance_setting.dart';
+import '../../../shared/translate/tl.dart';
+import '../controllers/appearance_controller.dart';
+import 'widgets/settings_section_header.dart';
+import 'widgets/settings_card.dart';
+import 'widgets/superdarkmode_card.dart';
+import 'widgets/color_picker_dialog.dart';
+
 
 
 class AppearancePage extends StatefulWidget {

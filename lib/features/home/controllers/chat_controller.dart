@@ -8,8 +8,8 @@ import '../../../core/models/chat/message.dart';
 import '../../../shared/translate/tl.dart';
 import '../../../core/data/ai_profile_store.dart';
 import '../../../core/data/chat_store.dart';
-import '../../../core/data/mcp_repository.dart';
-import '../../../core/data/provider_repository.dart';
+import '../../../core/data/mcpserver_store.dart';
+import '../../../core/data/ai_provider_store.dart';
 import '../../../core/models/ai/model.dart';
 import '../../../core/models/ai/profile.dart';
 import '../../../core/models/ai/provider.dart';
@@ -20,6 +20,7 @@ import '../services/chat_service.dart';
 import '../services/tts_service.dart';
 import '../ui/widgets/edit_message_sheet.dart';
 import '../utils/chat_logic_utils.dart';
+import 'chat_controller_parts/chat_navigation_interface.dart';
 
 part 'chat_controller_parts/chat_viewmodel_actions.dart';
 part 'chat_controller_parts/chat_message_actions.dart';
@@ -131,7 +132,7 @@ class ChatViewModel extends ChangeNotifier {
   }
 
   bool shouldPersistSelections() {
-    final prefs = PreferencesSp.currentPreferences;
+    final prefs = preferencesSp.currentPreferences;
     // If preferAgentSettings is on and profile has an override, use it
     if (selectedProfile?.persistChatSelection != null) {
       return selectedProfile!.persistChatSelection!;

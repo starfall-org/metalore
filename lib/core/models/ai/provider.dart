@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'model.dart';
+
 
 enum ProviderType {
   openai("OpenAI"),

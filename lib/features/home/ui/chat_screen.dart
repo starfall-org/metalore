@@ -2,6 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'dart:io';
 
+import '../../../core/config/services.dart';
+import '../../../shared/translate/tl.dart';
+import '../../../shared/widgets/empty_state.dart';
+import '../../../shared/widgets/right_drawer.dart';
+import '../../ai/ui/profiles_page.dart';
+import '../controllers/chat_controller.dart';
+import '../controllers/chat_controller_parts/chat_navigation_interface.dart';
+import 'widgets/chat_messages_display.dart';
+import 'widgets/conversations_drawer.dart';
+import 'widgets/edit_message_sheet.dart';
+import 'widgets/model_picker_sheet.dart';
+import 'widgets/quick_actions_sheet.dart';
+import 'widgets/user_input_area.dart';
+
 
 /// Màn hình chat chính cho ứng dụng
 class ChatPage extends StatefulWidget {
@@ -26,9 +40,9 @@ class _ChatPageState extends State<ChatPage>
       chatRepository: services.chatRepository,
       aiProfileRepository: services.aiProfileRepository,
       providerRepository: services.providerRepository,
-      PreferencesSp: services.PreferencesSp,
+      preferencesSp: services.preferencesSp,
       mcpRepository: services.mcpRepository,
-      ttsService: services.ttsService,
+      ttsService: services.ttsService, 
     );
     // Call async initialization without blocking initState
     _initializeViewModel();
@@ -298,7 +312,7 @@ class _ChatPageState extends State<ChatPage>
 
   // Mở drawer chọn model AI
   void _openModelPicker(BuildContext context) {
-    ModelsDrawer.show(
+    ModelsPickerSheet.show(
       context,
       providers: _viewModel.providers,
       providerCollapsed: _viewModel.providerCollapsed,

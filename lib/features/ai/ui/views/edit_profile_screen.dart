@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/models/ai/profile.dart';
+import '../../../../shared/translate/tl.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
+import '../../../settings/ui/widgets/settings_card.dart';
+import '../../controllers/edit_profile_controller.dart';
+import '../widgets/view_profile_dialog.dart';
 
 class AddProfileScreen extends StatefulWidget {
   final AIProfile? profile;

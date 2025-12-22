@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 
+import '../../../core/data/ai_profile_store.dart';
+import '../../../core/data/mcpserver_store.dart';
 import '../../../core/models/ai/profile.dart';
+import '../../../core/models/mcp/mcp_server.dart';
 import '../../../shared/translate/tl.dart';
 
 /// Options for chat persistence: On, Off, and Disable

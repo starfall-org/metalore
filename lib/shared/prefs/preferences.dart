@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/models/settings/preferences_setting.dart';
+import 'shared_prefs_base.dart';
 
-class PreferencesSp
-    extends SharedPreferencesBase<PreferencesSetting> {
+class PreferencesSp extends SharedPreferencesBase<PreferencesSetting> {
   static const String _prefix = 'app_prefs';
 
   // Reactive notifier for UI/VM
@@ -42,9 +42,7 @@ class PreferencesSp
 
   static PreferencesSp get instance {
     if (_instance == null) {
-      throw Exception(
-        'PreferencesSp not initialized. Call init() first.',
-      );
+      throw Exception('PreferencesSp not initialized. Call init() first.');
     }
     return _instance!;
   }
@@ -74,7 +72,10 @@ class PreferencesSp
   }
 
   @override
-  PreferencesSetting deserializeFromFields(String id, Map<String, dynamic> fields) {
+  PreferencesSetting deserializeFromFields(
+    String id,
+    Map<String, dynamic> fields,
+  ) {
     final vibrationSettingsMap =
         fields['vibrationSettings'] as Map<String, dynamic>? ?? {};
 

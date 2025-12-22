@@ -3,6 +3,7 @@ import '../../../../core/models/ai/model.dart';
 import '../../../../shared/translate/tl.dart';
 import '../../../settings/ui/widgets/settings_card.dart';
 import '../../controllers/edit_provider_controller.dart';
+import 'model_card.dart';
 
 class FetchModelsSheet extends StatelessWidget {
   final AddProviderViewModel viewModel;

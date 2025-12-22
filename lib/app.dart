@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
+import 'core/app_routes.dart';
+import 'core/config/routes.dart';
+import 'core/config/theme.dart';
+import 'core/models/settings/appearance_setting.dart';
+import 'shared/prefs/appearance.dart';
+
 class AIGatewayApp extends StatelessWidget {
   const AIGatewayApp({super.key});
 

@@ -29,8 +29,8 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
   late TextEditingController _contextWindowController;
 
   ModelType _selectedType = ModelType.chat;
-  AIModelIO _selectedInputs = AIModelIO(text: true);
-  AIModelIO _selectedOutputs = AIModelIO(text: true);
+  AIModelIO _selectedInputs = AIModelIO(text: true, image: false, audio: false);
+  AIModelIO _selectedOutputs = AIModelIO(text: true, image: false, audio: false);
   bool _reasoning = false;
 
   @override
@@ -48,8 +48,8 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
 
     if (model != null) {
       _selectedType = model.type;
-      _selectedInputs = AIModelIO(text: true);
-      _selectedOutputs = AIModelIO(text: true);
+      _selectedInputs = model.input ?? AIModelIO(text: true, image: false, audio: false);
+      _selectedOutputs = model.output ?? AIModelIO(text: true, image: false, audio: false);
       _reasoning = model.reasoning;
     }
   }
@@ -99,7 +99,7 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
             child: Row(
               children: [
                 Text(
-                  widget.modelToEdit != null ? 'Add Model' : 'Edit Model',
+                  widget.modelToEdit != null ? 'Edit Model' : 'Add Model',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const Spacer(),
@@ -193,7 +193,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedInputs.text,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedInputs.text = selected;
+                              if (selected) {
+                                _selectedInputs.text = true;
+                              } else {
+                                _selectedInputs.text = false;
+                              }
                             });
                           },
                         ),
@@ -202,7 +206,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedInputs.image,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedInputs.image = selected;
+                              if (selected) {
+                                _selectedInputs.image = true;
+                              } else {
+                                _selectedInputs.image = false;
+                              }
                             });
                           },
                         ),
@@ -211,7 +219,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedInputs.audio,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedInputs.audio = selected;
+                              if (selected) {
+                                _selectedInputs.audio = true;
+                              } else {
+                                _selectedInputs.audio = false;
+                              }
                             });
                           },
                         ),
@@ -220,7 +232,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedInputs.video,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedInputs.video = selected;
+                              if (selected) {
+                                _selectedInputs.video = true;
+                              } else {
+                                _selectedInputs.video = false;
+                              }
                             });
                           },
                         ),
@@ -243,7 +259,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedOutputs.text,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedOutputs.text = selected;
+                              if (selected) {
+                                _selectedOutputs.text = true;
+                              } else {
+                                _selectedOutputs.text = false;
+                              }
                             });
                           },
                         ),
@@ -252,7 +272,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedOutputs.image,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedOutputs.image = selected;
+                              if (selected) {
+                                _selectedOutputs.image = true;
+                              } else {
+                                _selectedOutputs.image = false;
+                              }
                             });
                           },
                         ),
@@ -261,7 +285,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedOutputs.audio,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedOutputs.audio = selected;
+                              if (selected) {
+                                _selectedOutputs.audio = true;
+                              } else {
+                                _selectedOutputs.audio = false;
+                              }
                             });
                           },
                         ),
@@ -270,7 +298,11 @@ class _AddModelDrawerState extends State<AddModelDrawer> {
                           selected: _selectedOutputs.video,
                           onSelected: (selected) {
                             setState(() {
-                              _selectedOutputs.video = selected;
+                              if (selected) {
+                                _selectedOutputs.video = true;
+                              } else {
+                                _selectedOutputs.video = false;
+                              }
                             });
                           },
                         ),

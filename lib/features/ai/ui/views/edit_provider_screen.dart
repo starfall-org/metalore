@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../../core/models/ai/model.dart';
+import '../../../../core/models/ai/provider.dart';
+import '../../../../shared/translate/tl.dart';
+import '../../../../shared/widgets/common_dropdown.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/utils.dart';
+import '../../controllers/edit_provider_controller.dart';
+import '../widgets/edit_model_sheet.dart';
+import '../widgets/fetch_models_sheet.dart';
 import '../widgets/model_card.dart';
-
 
 class AddProviderScreen extends StatefulWidget {
   final Provider? provider;
@@ -110,6 +116,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                       azureAI: type == ProviderType.openai
                           ? _viewModel.azureAI
                           : false,
+                      openAIRoutes: const OpenAIRoutes(),
                     ),
                     size: 24,
                   ),
@@ -393,108 +400,130 @@ class _AddProviderScreenState extends State<AddProviderScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: model.input
-                  .map(
-                    (t) => t == ModelIO.text
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.text_fields),
-                              Text(
-                                tl('Text'),
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                ),
-                              ),
-                            ],
-                          )
-                        : t == ModelIO.image
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.image_outlined),
-                              Text(
-                                tl('Image'),
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
-                                ),
-                              ),
-                            ],
-                          )
-                        : t == ModelIO.audio
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.headset_outlined),
-                              Text(
-                                tl('Audio'),
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Icon(Icons.movie_outlined),
-                  )
-                  .toList(),
-            ),
-            Row(
-              children: model.output
-                  .map(
-                    (t) => t == ModelIO.text
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.text_fields),
-                              Text(
-                                tl('Text'),
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
-                                ),
-                              ),
-                            ],
-                          )
-                        : t == ModelIO.image
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.image),
-                              Text(
-                                tl('Image'),
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
-                                ),
-                              ),
-                            ],
-                          )
-                        : t == ModelIO.audio
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.music_note),
-                              Text(
-                                tl('Audio'),
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
-                                ),
-                              ),
-                            ],
-                          )
-                        : Icon(Icons.movie),
-                  )
-                  .toList(),
-            ),
+            if (model.input != null)
+              Wrap(
+                spacing: 8,
+                children: [
+                  if (model.input!.text)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.text_fields),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Text'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (model.input!.image)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.image_outlined),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Image'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (model.input!.audio)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.headset_outlined),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Audio'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (model.input!.video)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.movie_outlined),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Video'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            if (model.output != null)
+              Wrap(
+                spacing: 8,
+                children: [
+                  if (model.output!.text)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.text_fields),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Text'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (model.output!.image)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.image),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Image'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (model.output!.audio)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.music_note),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Audio'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (model.output!.video)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.movie),
+                        const SizedBox(width: 4),
+                        Text(
+                          tl('Video'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
           ],
         ),
         actions: [

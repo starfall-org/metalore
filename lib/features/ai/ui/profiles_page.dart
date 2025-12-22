@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../core/data/ai_profile_store.dart';
+import '../../../core/models/ai/profile.dart';
+import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
+import 'views/edit_profile_screen.dart';
+import 'widgets/view_profile_dialog.dart';
 
 
 class AIProfilesScreen extends StatefulWidget {

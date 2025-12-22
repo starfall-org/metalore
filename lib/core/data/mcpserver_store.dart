@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'base.dart';
 import '../models/mcp/mcp_server.dart';
 
 class MCPRepository extends SharedPreferencesBaseRepository<MCPServer> {
   static const String _prefix = 'mcp';
 
-  MCPRepository(super.prefs);
+  MCPRepository();
 
   static Future<MCPRepository> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    return MCPRepository(prefs);
+    return MCPRepository();
   }
 
   @override

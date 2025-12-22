@@ -1,6 +1,15 @@
-import '../../../core/data/provider_repository.dart';
+import '../../../api/ai/anthropic/anthropic.dart';
+import '../../../api/ai/googleai/aistudio.dart';
+import '../../../api/ai/googleai/vertexai.dart';
+import '../../../api/ai/ollama/ollama.dart';
+import '../../../api/mcp/mcp_client.dart';
+import '../../../core/data/ai_provider_store.dart';
+import '../../../core/models/ai/api.dart';
+import '../../../core/models/ai/model.dart';
+import '../../../core/models/ai/profile.dart';
+import '../../../core/models/ai/provider.dart';
 import '../../../core/models/chat/message.dart';
-import '../../../core/data/mcp_repository.dart';
+import '../../../core/data/mcpserver_store.dart';
 import '../../../core/models/mcp/mcp_server.dart';
 import '../../../api/ai/openai/openai.dart';
 
@@ -251,7 +260,7 @@ class ChatService {
         final routes = provider.openAIRoutes;
         final service = OpenAI(
           baseUrl: provider.baseUrl,
-          apiKey: provider.apiKey,
+          apiKey: provider.apiKey!,
           chatPath: routes.chatCompletion,
           modelsPath: routes.modelsRouteOrUrl,
           headers: provider.headers,
@@ -294,7 +303,7 @@ class ChatService {
       case ProviderType.anthropic:
         final service = Anthropic(
           baseUrl: provider.baseUrl,
-          apiKey: provider.apiKey,
+          apiKey: provider.apiKey!,
           headers: provider.headers,
         );
 
@@ -325,7 +334,7 @@ class ChatService {
       case ProviderType.ollama:
         final service = Ollama(
           baseUrl: provider.baseUrl,
-          apiKey: provider.apiKey,
+          apiKey: provider.apiKey!,
           headers: provider.headers,
         );
 

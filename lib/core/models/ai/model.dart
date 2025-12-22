@@ -1,3 +1,5 @@
+//WARNING: Do not modify this file
+
 enum ModelType { chat, image, video, audio, embed, rerank }
 
 class AIModel {

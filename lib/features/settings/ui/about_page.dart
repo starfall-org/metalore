@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../shared/translate/tl.dart';
+
 
 /// Màn hình thông tin về ứng dụng
 class AboutPage extends StatefulWidget {

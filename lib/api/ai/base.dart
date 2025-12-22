@@ -1,5 +1,8 @@
+import '../../core/models/ai/api.dart';
+import '../../core/models/ai/model.dart';
+export '../../core/models/ai/api.dart';
+export '../../core/models/ai/model.dart';
 
-export '../../core/models/ai/ai_dto.dart';
 
 abstract class AIBaseApi {
   final String apiKey;

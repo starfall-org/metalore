@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../../core/data/provider_repository.dart';
+import '../../../core/data/ai_provider_store.dart';
+import '../../../core/models/ai/model.dart';
 import '../../../core/models/ai/provider.dart';
+import '../../../shared/translate/tl.dart';
 
 class AddProviderViewModel extends ChangeNotifier {
   // Form State
@@ -55,7 +57,7 @@ class AddProviderViewModel extends ChangeNotifier {
     if (provider != null) {
       _selectedType = provider.type;
       _nameController.text = provider.name;
-      _apiKeyController.text = provider.apiKey;
+      _apiKeyController.text = provider.apiKey ?? '';
       _baseUrlController.text = (provider.baseUrl.isNotEmpty == true)
           ? provider.baseUrl
           : getDefaultBaseUrl();
@@ -87,7 +89,6 @@ class AddProviderViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
-    super.dispose();
     _nameController.dispose();
     _apiKeyController.dispose();
     _baseUrlController.dispose();
@@ -122,28 +123,33 @@ class AddProviderViewModel extends ChangeNotifier {
   }
 
   AIModel detectCapabilities(String modelId) {
-    List<ModelIO> inputTypes = [ModelIO.text];
-    List<ModelIO> outputTypes = [ModelIO.text];
+    // Mặc định: text input/output; bổ sung theo heuristic
+    AIModelIO input = AIModelIO(text: true, image: false, audio: false);
+    AIModelIO output = AIModelIO(text: true, image: false, audio: false);
 
-    if (modelId.contains('vision') ||
-        modelId.contains('gpt-4-turbo') ||
-        modelId.contains('gemini-pro-vision')) {
-      inputTypes.add(ModelIO.image);
+    final lower = modelId.toLowerCase();
+
+    if (lower.contains('vision') ||
+        lower.contains('gpt-4-turbo') ||
+        lower.contains('gemini-pro-vision')) {
+      input = AIModelIO(image: true, text: false, audio: false);
     }
 
-    if (modelId.contains('dall-e')) {
-      outputTypes = [ModelIO.image];
+    if (lower.contains('dall-e')) {
+      // Model sinh ảnh: chỉ image output
+      output = AIModelIO(image: true, text: false, audio: false);
     }
 
-    if (modelId.contains('tts')) {
-      outputTypes = [ModelIO.audio];
+    if (lower.contains('tts')) {
+      // TTS models: chỉ audio output
+      output = AIModelIO(audio: true, text: false, image: false);
     }
 
     return AIModel(
       name: modelId,
       displayName: modelId,
-      input: inputTypes,
-      output: outputTypes,
+      input: input,
+      output: output,
     );
   }
 
@@ -214,7 +220,15 @@ class AddProviderViewModel extends ChangeNotifier {
               .map((model) => model['id'] as String)
               .toList();
         } else if (jsonData['models'] != null && jsonData['models'] is List) {
-          models = (jsonData['models'] as List);
+          // Normalize to a list of model id/name strings for different providers
+          models = (jsonData['models'] as List).map((m) {
+            if (m is String) return m;
+            if (m is Map) {
+              if (m['id'] != null) return m['id'].toString();
+              if (m['name'] != null) return m['name'].toString();
+            }
+            return m.toString();
+          }).toList();
         } else if (jsonData['models'] == null &&
             jsonData['model'] == null &&
             jsonData['tags'] != null &&

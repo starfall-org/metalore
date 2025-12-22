@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/translation_cache_repository.dart';
-import '../../../core/data/translation_cache_repository.dart';
 import '../../../core/models/settings/preferences_setting.dart';
 import '../../../shared/prefs/language.dart';
 import '../../../shared/prefs/preferences.dart';
 import '../../../shared/translate/tl.dart';
+import 'widgets/settings_card.dart';
+import 'widgets/settings_section_header.dart';
+import 'widgets/settings_tile.dart';
 
 // TODO: move logic to viewmodel
 class PreferencesPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class PreferencesPage extends StatefulWidget {
 }
 
 class _PreferencesPageState extends State<PreferencesPage> {
-  late LanguageSp _LanguageSp;
+  late LanguageSp _languageSp;
   bool _autoDetectLanguage = true;
   String _selectedLanguage = 'auto';
 
@@ -43,13 +44,13 @@ class _PreferencesPageState extends State<PreferencesPage> {
   @override
   void initState() {
     super.initState();
-    _LanguageSp = LanguageSp.instance;
+    _languageSp = LanguageSp.instance;
     _loadPreferences();
     _loadPreferencesSetting();
   }
 
   void _loadPreferences() {
-    final preferences = _LanguageSp.currentPreferences;
+    final preferences = _languageSp.currentPreferences;
     setState(() {
       _autoDetectLanguage = preferences.autoDetectLanguage;
       _selectedLanguage = preferences.languageCode;
@@ -108,7 +109,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
       });
 
       if (languageCode == 'auto') {
-        await _LanguageSp.setAutoDetect(true);
+        await _languageSp.setAutoDetect(true);
       } else {
         String? countryCode;
         if (languageCode.contains('_')) {
@@ -117,7 +118,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
           languageCode = parts[0];
         }
 
-        await _LanguageSp.setLanguage(languageCode, countryCode: countryCode);
+        await _languageSp.setLanguage(languageCode, countryCode: countryCode);
       }
 
       if (mounted) {
@@ -143,7 +144,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
   }
 
   void _restartApp() {
-    final preferences = _LanguageSp.currentPreferences;
+    final preferences = _languageSp.currentPreferences;
     Locale newLocale;
 
     if (preferences.autoDetectLanguage || preferences.languageCode == 'auto') {

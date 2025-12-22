@@ -1,15 +1,16 @@
 import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'base.dart';
+
+import '../models/ai/provider.dart';
 
 
 class ProviderRepository extends SharedPreferencesBaseRepository<Provider> {
   static const String _prefix = 'provider';
 
-  ProviderRepository(super.prefs);
+  ProviderRepository();
 
   static Future<ProviderRepository> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    return ProviderRepository(prefs);
+    return ProviderRepository();
   }
 
   @override

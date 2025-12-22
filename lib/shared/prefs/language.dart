@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LanguageSp
-    extends SharedPreferencesBase<LanguageSetting> {
+import '../../core/models/settings/language_setting.dart';
+import 'shared_prefs_base.dart';
+
+class LanguageSp extends SharedPreferencesBase<LanguageSetting> {
   static const String _prefix = 'language';
 
   // Expose a notifier for reactive UI updates

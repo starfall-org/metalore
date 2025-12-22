@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../base.dart';
+import '../utils.dart';
 
 /// Azure OpenAI Service
 /// Tương thích với OpenAI API nhưng sử dụng Azure endpoints

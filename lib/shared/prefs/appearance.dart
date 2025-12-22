@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/models/settings/appearance_setting.dart';
+import 'shared_prefs_base.dart';
+
 class AppearanceSp extends SharedPreferencesBase<AppearanceSetting> {
   static const String _prefix = 'appearance';
 
@@ -9,7 +12,7 @@ class AppearanceSp extends SharedPreferencesBase<AppearanceSetting> {
     AppearanceSetting.defaults(),
   );
 
-  void AppearanceSp(super.prefs) {
+  AppearanceSp(super.prefs) {
     _loadInitialTheme();
     // Auto-refresh notifier on any storage change (no restart needed)
     changes.listen((_) {

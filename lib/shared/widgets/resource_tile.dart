@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'item_card.dart';
+
 class ResourceTile extends StatelessWidget {
   final String title;
   final String? subtitle;

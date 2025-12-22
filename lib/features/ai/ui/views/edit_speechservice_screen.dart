@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/data/provider_repository.dart';
-import '../../../../core/data/tts_repository.dart';
-import '../../../../core/models/ai/model.dart';
+import '../../../../core/data/ai_provider_store.dart';
+import '../../../../core/data/speechservice_store.dart';
 import '../../../../core/models/ai/provider.dart';
 import '../../../../core/models/ai/speechservice.dart';
 import '../../../../shared/translate/tl.dart';
@@ -44,7 +43,7 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
     setState(() {
       // Filter providers that have TTS capability
       _availableProviders = providers
-          .where((p) => p.models.any((m) => m.output.contains(AIModelIO.audio)))
+          .where((p) => p.models.any((m) => m.output?.audio ?? false))
           .toList();
     });
   }
@@ -88,20 +87,42 @@ class _AddTTSProfileScreenState extends State<AddTTSProfileScreen> {
 
     final repository = await TTSRepository.init();
 
-    Provider? selectedProvider;
     if (_selectedType == ServiceType.provider) {
-      selectedProvider = _availableProviders.firstWhere(
-        (p) => p.name == _selectedProviderId,
-      );
     }
+
+    // Build TTS/STT objects according to current models
+    final tts = TextToSpeech(
+      id: const Uuid().v4(),
+      icon: 'assets/brand_icons.json',
+      name: _selectedType == ServiceType.system
+          ? 'System TTS'
+          : (_selectedProviderId ?? 'Provider TTS'),
+      type: _selectedType,
+      provider: _selectedType == ServiceType.provider
+          ? _selectedProviderId
+          : null,
+      model: null,
+      voiceId: _selectedVoiceId,
+      settings: const {},
+    );
+
+    final stt = SpeechToText(
+      id: const Uuid().v4(),
+      icon: 'assets/brand_icons.json',
+      name: 'System STT',
+      type: ServiceType.system,
+      provider: null,
+      model: null,
+      voiceId: null,
+      settings: const {},
+    );
 
     final profile = SpeechService(
       id: const Uuid().v4(),
       icon: 'assets/brand_icons.json', // Default icon path or logic
       name: _nameController.text,
-      type: _selectedType,
-      provider: selectedProvider,
-      voiceId: _selectedVoiceId,
+      tts: tts,
+      stt: stt,
     );
 
     await repository.addProfile(profile);

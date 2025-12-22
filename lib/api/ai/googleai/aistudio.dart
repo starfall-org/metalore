@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import '../../../core/models/ai/provider.dart';
+import '../base.dart';
 
 class GoogleAIStudio {
   final String _defaultModel;
@@ -272,18 +273,18 @@ class GoogleAIStudio {
       AIModel(
         name: 'gemini-pro',
         displayName: 'Gemini Pro',
-        type: ModelType.textGeneration,
-        input: [ModelIO.text, ModelIO.image],
-        output: [ModelIO.text],
+        type: ModelType.chat,
+        input: AIModelIO(text: true, image: true),
+        output: AIModelIO(text: true),
         reasoning: true,
         contextWindow: 2097152,
       ),
       AIModel(
         name: 'gemini-flash',
         displayName: 'Gemini Flash',
-        type: ModelType.textGeneration,
-        input: [ModelIO.text, ModelIO.image],
-        output: [ModelIO.text],
+        type: ModelType.chat,
+        input: AIModelIO(text: true, image: true),
+        output: AIModelIO(text: true),
         reasoning: false,
         contextWindow: 1048576,
       ),

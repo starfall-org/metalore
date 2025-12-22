@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'base.dart';
+
+import '../models/settings/default_options.dart';
 
 
 /// Repository for managing default AI models configuration.
@@ -11,9 +13,14 @@ class DefaultOptionsRepository
   static DefaultOptionsRepository? _instance;
 
   final ValueNotifier<DefaultOptions> modelsNotifier =
-      ValueNotifier<DefaultOptions>(DefaultOptions());
+      ValueNotifier<DefaultOptions>(
+        DefaultOptions(
+          defaultModels: DefaultModels(),
+          defaultProfileId: '',
+        ),
+      );
 
-  DefaultOptionsRepository(super.prefs) {
+  DefaultOptionsRepository() {
     _loadInitial();
     // Auto-refresh notifier on any storage change (no restart needed)
     changes.listen((_) {
@@ -21,15 +28,17 @@ class DefaultOptionsRepository
       if (item != null) {
         modelsNotifier.value = item;
       } else {
-        modelsNotifier.value = DefaultOptions();
+        modelsNotifier.value = DefaultOptions(
+          defaultModels: DefaultModels(),
+          defaultProfileId: '',
+        );
       }
     });
   }
 
   static Future<DefaultOptionsRepository> init() async {
     if (_instance != null) return _instance!;
-    final prefs = await SharedPreferences.getInstance();
-    _instance = DefaultOptionsRepository(prefs);
+    _instance = DefaultOptionsRepository();
     return _instance!;
   }
 
@@ -57,16 +66,10 @@ class DefaultOptionsRepository
 
   @override
   Map<String, dynamic> serializeToFields(DefaultOptions item) {
+    // Store as a single nested document; base repository handles nested maps.
     return {
-      'titleGenerationModel': item.titleGenerationModel?.toJson(),
-      'chatSummarizationModel': item.chatSummarizationModel?.toJson(),
-      'supportOCRModel': item.supportOCRModel?.toJson(),
-      'embeddingModel': item.embeddingModel?.toJson(),
-      'imageGenerationModel': item.imageGenerationModel?.toJson(),
-      'chatModel': item.chatModel?.toJson(),
-      'audioGenerationModel': item.audioGenerationModel?.toJson(),
-      'videoGenerationModel': item.videoGenerationModel?.toJson(),
-      'rerankModel': item.rerankModel?.toJson(),
+      'defaultModels': item.defaultModels.toJson(),
+      'defaultProfileId': item.defaultProfileId,
     };
   }
 

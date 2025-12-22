@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../features/ai/ui/providers_page.dart';
 import '../features/home/ui/chat_screen.dart';
 import '../features/home/ui/home_screen.dart';
 import '../features/settings/ui/about_page.dart';
@@ -8,6 +9,7 @@ import '../features/settings/ui/preferences_page.dart';
 import '../features/settings/ui/settings_page.dart';
 import '../features/settings/ui/update_page.dart';
 import '../shared/translate/tl.dart';
+import 'config/routes.dart';
 
 /// Generate a route based on the route name.
 Route<dynamic> generateRoute(RouteSettings settings) {

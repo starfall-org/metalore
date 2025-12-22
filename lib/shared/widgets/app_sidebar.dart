@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/config/theme.dart';
+
 enum SidebarPosition { left, right }
 
 class AppSidebar extends StatelessWidget {

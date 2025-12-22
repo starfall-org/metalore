@@ -1,16 +1,18 @@
 import 'dart:async';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+import 'base.dart';
+import '../models/ai/profile.dart';
 
 class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
   static const String _prefix = 'profile';
   static const String _selectedKey = 'ai_profile_settings:selected_id';
 
-  AIProfileRepository(super.prefs);
+  AIProfileRepository();
 
   static Future<AIProfileRepository> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    return AIProfileRepository(prefs);
+    return AIProfileRepository();
   }
 
   @override
@@ -135,7 +137,11 @@ class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
       final allIds = getItemIds();
 
       if (allIds.isEmpty) {
-        await prefs.remove(_selectedKey);
+        final boxName = 'repo_$_prefix';
+        final box = Hive.isBoxOpen(boxName)
+            ? Hive.box(boxName)
+            : await Hive.openBox(boxName);
+        await box.delete(_selectedKey);
       } else {
         // Select the first available
         await setSelectedProfileId(allIds.first);
@@ -145,10 +151,19 @@ class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
 
   // --- Selection helpers ---
 
-  String? getSelectedProfileId() => prefs.getString(_selectedKey);
+  String? getSelectedProfileId() {
+    final boxName = 'repo_$_prefix';
+    if (!Hive.isBoxOpen(boxName)) return null;
+    final box = Hive.box(boxName);
+    return box.get(_selectedKey) as String?;
+  }
 
   Future<void> setSelectedProfileId(String id) async {
-    await prefs.setString(_selectedKey, id);
+    final boxName = 'repo_$_prefix';
+    final box = Hive.isBoxOpen(boxName)
+        ? Hive.box(boxName)
+        : await Hive.openBox(boxName);
+    await box.put(_selectedKey, id);
     // Notify listeners so selected profile updates propagate live
     changeNotifier.value++;
   }

@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
+import '../base.dart';
+import '../utils.dart';
 
 class Ollama extends AIBaseApi {
   final String chatPath;

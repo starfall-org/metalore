@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/models/ai/provider.dart';
+import '../../../../shared/translate/tl.dart';
 
-class ModelsDrawer extends StatelessWidget {
+
+class ModelsPickerSheet extends StatelessWidget {
   final List<Provider> providers;
   final Map<String, bool> providerCollapsed;
   final String? selectedProviderName;
@@ -9,7 +12,7 @@ class ModelsDrawer extends StatelessWidget {
   final Function(String providerName, bool collapsed) onToggleProvider;
   final Function(String providerName, String modelName) onSelectModel;
 
-  const ModelsDrawer({
+  const ModelsPickerSheet({
     super.key,
     required this.providers,
     required this.providerCollapsed,
@@ -166,7 +169,7 @@ class ModelsDrawer extends StatelessWidget {
       ),
       builder: (ctx) => SizedBox(
         height: MediaQuery.of(context).size.height * 0.6,
-        child: ModelsDrawer(
+        child: ModelsPickerSheet(
           providers: providers,
           providerCollapsed: providerCollapsed,
           selectedProviderName: selectedProviderName,

@@ -1,3 +1,4 @@
+import '../../../core/models/ai/provider.dart';
 import '../../../core/models/chat/conversation.dart';
 
 class ChatLogicUtils {
