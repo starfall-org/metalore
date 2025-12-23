@@ -73,8 +73,6 @@ class _AboutPageState extends State<AboutPage> {
         children: [
           _buildAppInfoCard(),
           const SizedBox(height: 24),
-          _buildFeaturesSection(),
-          const SizedBox(height: 24),
           _buildDevelopersSection(),
           const SizedBox(height: 24),
           _buildLegalSection(),
@@ -111,7 +109,7 @@ class _AboutPageState extends State<AboutPage> {
             ),
             const SizedBox(height: 8),
             Text(
-              tl('Comprehensive AI chat platform with multi-provider support'),
+              tl('Multi-provider LLM client.'),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).textTheme.bodySmall?.color,
               ),
@@ -143,64 +141,6 @@ class _AboutPageState extends State<AboutPage> {
           ),
         ),
       ],
-    );
-  }
-
-  /// Xây dựng phần tính năng
-  Widget _buildFeaturesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          tl('Key Features'),
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16),
-        Card(
-          child: Column(
-            children: [
-              _buildFeatureItem(
-                icon: Icons.chat_bubble_outline,
-                title: 'AI Chat',
-                description: 'Smart conversations with AI models',
-              ),
-              const Divider(height: 1),
-              _buildFeatureItem(
-                icon: Icons.person_outline,
-                title: 'AI Profiles',
-                description: 'Customize and manage AI profiles',
-              ),
-              const Divider(height: 1),
-              _buildFeatureItem(
-                icon: Icons.cloud_outlined,
-                title: 'AI Providers',
-                description: 'Multi-provider AI support',
-              ),
-              const Divider(height: 1),
-              _buildFeatureItem(
-                icon: Icons.extension_outlined,
-                title: 'MCP Servers',
-                description: 'Model Context Protocol integration',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Xây dựng item tính năng
-  Widget _buildFeatureItem({
-    required IconData icon,
-    required String title,
-    required String description,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-      title: Text(title),
-      subtitle: Text(description),
     );
   }
 

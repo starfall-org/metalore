@@ -9,8 +9,6 @@ import 'widgets/settings_card.dart';
 import 'widgets/superdarkmode_card.dart';
 import 'widgets/color_picker_dialog.dart';
 
-
-
 class AppearancePage extends StatefulWidget {
   const AppearancePage({super.key});
 
@@ -64,7 +62,7 @@ class _AppearancePageState extends State<AppearancePage> {
           padding: const EdgeInsets.all(16),
           children: [
             // Theme selection: system, light, dark, custom
-            SettingsSectionHeader('Theme Mode'),
+            SettingsSectionHeader(tl('Mode')),
             const SizedBox(height: 12),
             _buildThemeSegmented(),
 
@@ -77,8 +75,14 @@ class _AppearancePageState extends State<AppearancePage> {
 
             const SizedBox(height: 24),
 
+            // Secondary Background Mode
+            const SizedBox(height: 12),
+            SettingsSectionHeader('Borders'),
+            const SizedBox(height: 12),
+            _buildSecondaryBgSegmented(),
+
             // Material You toggle
-            SettingsSectionHeader('settings.appearance.material_you'),
+            SettingsSectionHeader(tl('Colors')),
             DynamicColorBuilder(
               builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
                 final bool supported =
@@ -98,14 +102,6 @@ class _AppearancePageState extends State<AppearancePage> {
               },
             ),
 
-            // Secondary Background Mode
-            const SizedBox(height: 12),
-            SettingsSectionHeader('Secondary Background Color'),
-            const SizedBox(height: 12),
-            _buildSecondaryBgSegmented(),
-
-            const SizedBox(height: 24),
-
             // Color customization is only visible in Custom mode and disabled when Material You is enabled
             SettingsSectionHeader('settings.appearance.colors'),
             const SizedBox(height: 12),
@@ -114,42 +110,50 @@ class _AppearancePageState extends State<AppearancePage> {
               child: Column(
                 children: [
                   _buildColorTile(
-                    label: 'Primary Color',
+                    label: tl('Primary Color'),
                     colorType: ColorType.primary,
                   ),
                   const Divider(height: 1),
                   _buildColorTile(
-                    label: 'Secondary Color',
+                    label: tl('Secondary Color'),
                     colorType: ColorType.secondary,
                   ),
                   const Divider(height: 1),
-                  _buildColorTile(
-                    label: 'settings.appearance.background_color',
-                    colorType: ColorType.background,
-                  ),
+                  _viewModel.settings.selection == ThemeSelection.custom
+                      ? _buildColorTile(
+                          label: tl('Background Color'),
+                          colorType: ColorType.background,
+                        )
+                      : AbsorbPointer(
+                          child: _buildColorTile(
+                            label: tl('Background Color'),
+                            colorType: ColorType.background,
+                          ),
+                        ),
+
                   const Divider(height: 1),
                   _buildColorTile(
-                    label: 'settings.appearance.surface_color',
+                    label: tl('Surface Color'),
                     colorType: ColorType.surface,
                   ),
                   const Divider(height: 1),
                   _buildColorTile(
-                    label: 'settings.appearance.text_color',
+                    label: tl('Text Color'),
                     colorType: ColorType.text,
                   ),
                   const Divider(height: 1),
                   _buildColorTile(
-                    label: 'settings.appearance.darkmode_text_color',
+                    label: tl('Darkmode Text Color'),
                     colorType: ColorType.darkmodeText,
                   ),
                   const Divider(height: 1),
                   _buildColorTile(
-                    label: 'settings.appearance.text_hint_color',
+                    label: tl('Text Hint Color'),
                     colorType: ColorType.textHint,
                   ),
                   const Divider(height: 1),
                   _buildColorTile(
-                    label: 'settings.appearance.darkmode_text_hint_color',
+                    label: tl('Darkmode Text Hint Color'),
                     colorType: ColorType.darkmodeTextHint,
                   ),
                 ],
@@ -206,7 +210,7 @@ class _AppearancePageState extends State<AppearancePage> {
         segments: [
           ButtonSegment(
             value: SecondaryBackgroundMode.on,
-            label: const Icon(Icons.layers_outlined),
+            label: const Icon(Icons.border_outer_outlined),
             tooltip: tl('Dual'),
           ),
           ButtonSegment(
@@ -216,7 +220,7 @@ class _AppearancePageState extends State<AppearancePage> {
           ),
           ButtonSegment(
             value: SecondaryBackgroundMode.off,
-            label: const Icon(Icons.layers_clear_outlined),
+            label: const Icon(Icons.border_clear_outlined),
             tooltip: tl('Single'),
           ),
         ],

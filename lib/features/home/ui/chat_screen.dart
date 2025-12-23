@@ -4,18 +4,18 @@ import 'dart:io';
 
 import '../../../core/config/services.dart';
 import '../../../shared/translate/tl.dart';
+import '../../../shared/widgets/app_dialog.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../../../shared/widgets/right_drawer.dart';
-import '../../ai/ui/profiles_page.dart';
 import '../controllers/chat_controller.dart';
 import '../controllers/chat_controller_parts/chat_navigation_interface.dart';
+import 'views/menu_view.dart';
 import 'widgets/chat_messages_display.dart';
 import 'widgets/conversations_drawer.dart';
 import 'widgets/edit_message_sheet.dart';
 import 'widgets/model_picker_sheet.dart';
 import 'widgets/quick_actions_sheet.dart';
 import 'widgets/user_input_area.dart';
-
 
 /// Màn hình chat chính cho ứng dụng
 class ChatPage extends StatefulWidget {
@@ -42,7 +42,7 @@ class _ChatPageState extends State<ChatPage>
       providerRepository: services.providerRepository,
       preferencesSp: services.preferencesSp,
       mcpRepository: services.mcpRepository,
-      ttsService: services.ttsService, 
+      ttsService: services.ttsService,
     );
     // Call async initialization without blocking initState
     _initializeViewModel();
@@ -67,9 +67,7 @@ class _ChatPageState extends State<ChatPage>
   @override
   void showSnackBar(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    context.showInfoSnackBar(message);
   }
 
   @override
@@ -139,7 +137,7 @@ class _ChatPageState extends State<ChatPage>
           appBar: AppBar(
             leading: IconButton(
               icon: Icon(
-                Icons.menu,
+                Icons.history,
                 color: Theme.of(
                   context,
                 ).iconTheme.color?.withValues(alpha: 0.7),
@@ -150,7 +148,7 @@ class _ChatPageState extends State<ChatPage>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tl('Chat & Support'),
+                  _viewModel.currentSession?.title ?? 'New Chat',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.titleLarge?.color,
                     fontSize: 16,
@@ -158,7 +156,7 @@ class _ChatPageState extends State<ChatPage>
                   ),
                 ),
                 Text(
-                  _viewModel.selectedProfile?.name ?? 'Default',
+                  _viewModel.selectedModelName ?? '',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 12,
@@ -169,11 +167,7 @@ class _ChatPageState extends State<ChatPage>
             ),
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             elevation: 0.5,
-            actions: [
-              _buildToolsButton(),
-              _buildAgentAvatar(),
-              _buildPopupMenu(),
-            ],
+            actions: [_buildAgentAvatar(context)],
           ),
           // Drawer bên trái chứa danh sách cuộc trò chuyện
           drawer: ChatDrawer(
@@ -192,7 +186,7 @@ class _ChatPageState extends State<ChatPage>
             selectedModelName: _viewModel.selectedModelName,
           ),
           // Drawer bên phải hiển thị tệp đính kèm
-          endDrawer: _buildEndDrawer(context),
+          endDrawer: MenuView(),
           body: Column(
             children: [
               // Danh sách tin nhắn
@@ -235,16 +229,10 @@ class _ChatPageState extends State<ChatPage>
   }
 
   // Xây dựng avatar của agent được chọn trong thanh AppBar
-  Widget _buildAgentAvatar() {
+  Widget _buildAgentAvatar(BuildContext context) {
     return InkWell(
-      onTap: () async {
-        final result = await Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const AIProfilesScreen()),
-        );
-        if (result == true) {
-          _viewModel.loadSelectedProfile();
-        }
+      onTap: () {
+        Scaffold.of(context).openEndDrawer();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -266,34 +254,6 @@ class _ChatPageState extends State<ChatPage>
           ),
         ),
       ),
-    );
-  }
-
-  // Xây dựng menu popup với các tùy chọn cho cuộc trò chuyện
-  Widget _buildPopupMenu() {
-    return PopupMenuButton<String>(
-      icon: Icon(
-        Icons.more_vert,
-        color: Theme.of(context).iconTheme.color?.withValues(alpha: 0.7),
-      ),
-      onSelected: (value) {
-        switch (value) {
-          case 'regen':
-            _viewModel.regenerateLast(context);
-            break;
-          case 'clear':
-            _viewModel.clearChat();
-            break;
-          case 'copy':
-            _viewModel.copyTranscript(context);
-            break;
-        }
-      },
-      itemBuilder: (context) => [
-        PopupMenuItem(value: 'regen', child: Text(tl('Regenerate'))),
-        PopupMenuItem(value: 'clear', child: Text(tl('Clear chat'))),
-        PopupMenuItem(value: 'copy', child: Text(tl('Copy transcript'))),
-      ],
     );
   }
 
@@ -342,18 +302,20 @@ class _ChatPageState extends State<ChatPage>
       onCopy: (m) => _viewModel.copyMessage(context, m),
       onEdit: (m) => _viewModel.openEditMessageDialog(context, m),
       onDelete: (m) => _viewModel.deleteMessage(m),
-      onOpenAttachmentsSidebar: (files) =>
-          _viewModel.openAttachmentsSidebar(files),
+      onOpenAttachmentsSidebar: (files) => {
+        _viewModel.openAttachmentsSidebar(files),
+        _buildAttachmentViewDialog(context),
+      },
       onRegenerate: () => _viewModel.regenerateLast(context),
       onRead: (m) => _viewModel.ttsService.speak(m.content),
     );
   }
 
   // Xây dựng drawer bên phải hiển thị danh sách tệp đính kèm
-  Widget _buildEndDrawer(BuildContext context) {
-    return AppSidebarRight(
-      width: 320,
-      child: SafeArea(
+  Widget _buildAttachmentViewDialog(BuildContext context) {
+    return AppDialog(
+      title: Text(tl('Attachments')),
+      content: SafeArea(
         child: Column(
           children: [
             // Header của drawer đính kèm

@@ -8,7 +8,7 @@ import '../../../shared/widgets/resource_tile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
-import '../../../shared/utils/utils.dart';
+import '../../../shared/utils/icon_builder.dart';
 import 'views/edit_provider_screen.dart';
 
 class AiProvidersPage extends StatefulWidget {
@@ -135,8 +135,8 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
             ? Center(child: CircularProgressIndicator())
             : _providers.isEmpty
             ? EmptyState(
-                message: 'No providers found',
-                actionLabel: 'Add Provider',
+                message: tl('No providers found'),
+                actionLabel: tl('Add Provider'),
                 onAction: () async {
                   final result = await Navigator.push(
                     context,
@@ -177,7 +177,7 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
     return ResourceTile(
       title: provider.name,
       subtitle: '${provider.models.length} models',
-      leadingIcon: buildLogoIcon(provider, size: 24),
+      leadingIcon: buildIcon(provider.name),
       onTap: () async {
         final result = await Navigator.push(
           context,
@@ -206,9 +206,9 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
 
   Widget _buildProviderCard(Provider provider) {
     return ItemCard(
-      icon: buildLogoIcon(provider, size: 24),
+      icon: buildIcon(provider.name),
       title: provider.name,
-      subtitle: '${provider.models.length} models',
+      subtitle: tl('${provider.type.name} Compatible'),
       onTap: () async {
         final result = await Navigator.push(
           context,
@@ -238,9 +238,9 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
   Future<void> _confirmDelete(Provider provider) async {
     final confirm = await ConfirmDialog.show(
       context,
-      title: 'Delete',
-      content: 'Are you sure you want to delete ${provider.name}?',
-      confirmLabel: 'Delete',
+      title: tl('Delete'),
+      content: tl('Are you sure you want to delete ${provider.name}'),
+      confirmLabel: tl('Delete'),
       isDestructive: true,
     );
 

@@ -13,7 +13,7 @@ enum ThemeSelection { system, light, dark, custom }
 enum SecondaryBackgroundMode { off, auto, on }
 
 class AppearanceSetting {
-  final ThemeMode themeMode; // actual brightness control used by MaterialApp
+  ThemeMode themeMode; // actual brightness control used by MaterialApp
   final ThemeSelection selection; // UI selection: system/light/dark/custom
   final int primaryColor; // ARGB int value
   final int secondaryColor; // ARGB int value
@@ -24,16 +24,15 @@ class AppearanceSetting {
   final int textHintColor; // ARGB int value
   final int darkmodeTextHintColor; // ARGB int value
   final bool superDarkMode; // true => use pure black background for dark theme
-  final bool
-  dynamicColor; // true => use dynamic color (Material You) if supported
+  final bool dynamicColor; // true => use dynamic color  if supported
   final String fontFamily;
   final int chatFontSize;
   final int appFontSize;
   final bool enableAnimation;
   final SecondaryBackgroundMode secondaryBackgroundMode;
 
-  const AppearanceSetting({
-    required this.themeMode,
+  AppearanceSetting({
+    this.themeMode = ThemeMode.system,
     required this.selection,
     required this.primaryColor,
     required this.secondaryColor,

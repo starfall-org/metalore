@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-
 
 import '../../../core/data/ai_profile_store.dart';
 import '../../../core/data/mcpserver_store.dart';
@@ -18,6 +18,7 @@ class AddAgentViewModel extends ChangeNotifier {
   // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController promptController = TextEditingController();
+  final TextEditingController avatarController = TextEditingController();
 
   // State variables representing all fields of AIProfile
   bool enableStream = true;
@@ -218,5 +219,13 @@ class AddAgentViewModel extends ChangeNotifier {
     nameController.dispose();
     promptController.dispose();
     super.dispose();
+  }
+
+  void pickImage(BuildContext context) async {
+    final imagePicker = ImagePicker();
+    final image = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      avatarController.text = image.path;
+    }
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/models/ai/model.dart';
-import '../../../../shared/utils/utils.dart';
+import '../../../../shared/utils/icon_builder.dart';
 import '../../../../shared/widgets/item_card.dart';
 
 class ModelCard extends StatelessWidget {
@@ -47,7 +47,7 @@ class ModelCard extends StatelessWidget {
   }
 
   Widget _getModelIcon() {
-    return buildBrandLogo(model.name);
+    return buildIcon(model.name);
   }
 
   Widget _getModelTypeLabel() {

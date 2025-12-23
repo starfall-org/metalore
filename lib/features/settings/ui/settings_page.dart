@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/config/routes.dart';
 import '../../../shared/translate/tl.dart';
-import 'widgets/settings_card.dart';
-import 'widgets/settings_section_header.dart';
 import 'widgets/settings_tile.dart';
-
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -28,91 +25,31 @@ class SettingsPage extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            SettingsSectionHeader('General'),
-            SettingsCard(
-              child: Column(
-                children: [
-                  SettingsTile(
-                    icon: Icons.api,
-                    title: 'Providers',
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.aiProviders),
-                  ),
-                  const Divider(height: 1, indent: 56, endIndent: 16),
-                  SettingsTile(
-                    icon: Icons.palette_outlined,
-                    title: 'Appearance',
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.appearance),
-                  ),
-                  const Divider(height: 1, indent: 56, endIndent: 16),
-                  SettingsTile(
-                    icon: Icons.tune,
-                    title: 'Languages',
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.preferences),
-                  ),
-                ],
-              ),
+            SettingsTile(
+              icon: Icons.palette_outlined,
+              title: tl('Appearance'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.appearance),
             ),
-            const SizedBox(height: 24),
-            SettingsSectionHeader('Online Features'),
-            SettingsCard(
-              child: Column(
-                children: [
-                  SettingsTile(
-                    icon: Icons.speaker_notes,
-                    title: 'Speech Services',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.aiSpeechServices),
-                  ),
-                  const Divider(height: 1, indent: 56, endIndent: 16),
-                  SettingsTile(
-                    icon: Icons.extension_outlined,
-                    title: 'MCP Servers',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.mcpServers),
-                  ),
-                  const Divider(height: 1, indent: 56, endIndent: 16),
-                  SettingsTile(
-                    icon: Icons.generating_tokens,
-                    title: 'ai_profiles.title',
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.aiProfiles),
-                  ),
-                ],
-              ),
+            SettingsTile(
+              icon: Icons.tune,
+              title: tl('Preferences'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.preferences),
             ),
-            const SizedBox(height: 24),
-            SettingsSectionHeader('About'),
-            SettingsCard(
-              child: Column(
-                children: [
-                  SettingsTile(
-                    icon: Icons.system_update_outlined,
-                    title: 'Update',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.update),
-                  ),
-                  const Divider(height: 1, indent: 56, endIndent: 16),
-                  SettingsTile(
-                    icon: Icons.info_outline,
-                    title: 'About App',
-                    onTap: () => Navigator.pushNamed(context, AppRoutes.about),
-                  ),
-                ],
-              ),
+            SettingsTile(
+              icon: Icons.system_update_outlined,
+              title: tl('Update'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.update),
             ),
-            const SizedBox(height: 24),
-            SettingsSectionHeader('Data'),
-            SettingsCard(
-              child: Column(
-                children: [
-                  SettingsTile(
-                    icon: Icons.storage,
-                    title: 'Data Controls',
-                    onTap: () =>
-                        Navigator.pushNamed(context, AppRoutes.userData),
-                  ),
-                ],
-              ),
+            SettingsTile(
+              icon: Icons.info_outline,
+              title: tl('About'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.about),
+            ),
+
+            SettingsTile(
+              icon: Icons.storage,
+              title: tl('Data'),
+              onTap: () => Navigator.pushNamed(context, AppRoutes.userData),
             ),
           ],
         ),

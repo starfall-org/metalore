@@ -4,7 +4,6 @@ import '../../../../core/models/ai/model.dart';
 import '../../../../shared/translate/tl.dart';
 import 'files_action_sheet.dart';
 
-
 class ChatInputArea extends StatelessWidget {
   final TextEditingController controller;
   final Function(String) onSubmitted;
@@ -94,7 +93,7 @@ class ChatInputArea extends StatelessWidget {
                 minLines: 1,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: tl('Ask {}'),
+                  hintText: tl('Ask ${selectedAIModel?.name ?? 'AI'}'),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24),
                     borderSide: BorderSide.none,
@@ -134,13 +133,13 @@ class ChatInputArea extends StatelessWidget {
                       ),
                       IconButton(
                         icon: Icon(
-                          Icons.settings_input_component,
+                          Icons.extension,
                           color: Theme.of(context).iconTheme.color,
                         ),
                         onPressed: () {
                           onOpenMenu?.call();
                         },
-                        tooltip: tl('Menu'),
+                        tooltip: tl('Quick Actions'),
                       ),
                     ],
                   ),

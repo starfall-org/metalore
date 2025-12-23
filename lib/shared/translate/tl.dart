@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:translator/translator.dart';
 
-import '../../core/data/translation_cache.dart';
+import '../../core/data/translation_cache_store.dart';
 import '../prefs/language.dart';
-import 'service.dart';
-
+// import 'service.dart';
 
 /// Dịch text từ English sang ngôn ngữ được cài đặt trong language preferences
 /// Input is always English
 /// Output is the language have set in language preference
 /// if no translate model is set or error or the default language is set to English, return the text as it is
 String tl(String text) {
+  final translator = GoogleTranslator();
   try {
     // Lấy language preferences hiện tại
     final languageRepo = LanguageSp.instance;
@@ -53,10 +54,17 @@ String tl(String text) {
     // Giữ logic async nhưng bọc trong hàm sync: chạy nền để dịch và populate cache
     scheduleMicrotask(() async {
       try {
-        await TranslationService.instance.translate(
-          text: text,
+        var result = await translator.translate(
+          text,
+          from: 'en',
+          to: targetLanguage,
+        );
+        final translationCacheRepo = TranslationCacheRepository.instance;
+        translationCacheRepo.saveTranslation(
+          originalText: text,
           sourceLanguage: 'en',
           targetLanguage: targetLanguage,
+          translatedText: result.text,
         );
       } catch (e) {
         debugPrint('Background translation failed: $e');

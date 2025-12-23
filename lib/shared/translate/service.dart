@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../api/ai/base.dart';
-import '../../core/data/translation_cache.dart';
+import '../../core/data/translation_cache_store.dart';
 
 class TranslationService {
   static TranslationService? _instance;

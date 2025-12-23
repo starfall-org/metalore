@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../core/config/routes.dart';
 import '../../../../core/data/chat_store.dart';
-import '../../../../core/models/ai/model.dart';
 import '../../../../core/models/chat/conversation.dart';
 import '../../../../shared/translate/tl.dart';
-import '../../../../shared/utils/utils.dart';
+import '../../../../shared/utils/icon_builder.dart';
 import '../../../ai/ui/profiles_page.dart';
-
 
 class ChatDrawer extends StatefulWidget {
   final Function(String) onSessionSelected;
@@ -211,14 +209,8 @@ class _ChatDrawerState extends State<ChatDrawer> {
   Widget _buildModelIcon() {
     if (widget.selectedProviderName != null &&
         widget.selectedModelName != null) {
-      // Tạo một AIModel giả để sử dụng buildLogoIcon
-      final fakeModel = AIModel(
-        name: widget.selectedModelName!,
-        displayName: widget.selectedModelName!,
-      );
-      return buildLogoIcon(fakeModel, size: 20);
+      return buildIcon(widget.selectedModelName!);
     }
-    // Fallback to delete icon if no model info
     return Icon(
       Icons.delete,
       color: Theme.of(context).colorScheme.onError,

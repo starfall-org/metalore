@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-
+import '../../../shared/utils/app_version.dart';
 import '../../../shared/translate/tl.dart';
 
 /// Màn hình cập nhật ứng dụng
@@ -15,8 +14,18 @@ class _UpdatePageState extends State<UpdatePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isCheckingForUpdates = false;
   bool _hasUpdate = false;
-  final String _currentVersion = '1.0.0';
-  final String _latestVersion = '1.1.0';
+  String _currentVersion = '0.0.0';
+  final String _latestVersion = '0.0.0';
+
+  @override
+  void initState() {
+    super.initState();
+    getAppVersion().then((version) {
+      setState(() {
+        _currentVersion = version;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,13 +248,13 @@ class _UpdatePageState extends State<UpdatePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        tl('New version available'),
+                        tl('Placholder text'),
                         style: Theme.of(context).textTheme.headlineSmall
                             ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        '${'Latest version'}: $_latestVersion',
+                        '${'Placholder text'}: $_latestVersion',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: Theme.of(context).textTheme.bodySmall?.color,
                         ),
@@ -293,11 +302,7 @@ class _UpdatePageState extends State<UpdatePage> {
           ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        ...[
-          'Performance and speed improvements',
-          'Optimized user interface',
-          'New features and bug fixes',
-        ].map(
+        ...['Coming soon', 'Coming soon', 'Coming soon'].map(
           (feature) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 2),
             child: Row(
@@ -333,16 +338,14 @@ class _UpdatePageState extends State<UpdatePage> {
           child: Column(
             children: [
               _buildHistoryItem(
-                version: '1.0.0',
-                date: '2024-12-21',
-                features: ['Initial release', 'Basic chat features'],
+                version: '0.0.0',
+                date: DateTime.now().toString(),
+                features: [
+                  'No update history',
+                  "This feature will be added in the future",
+                ],
               ),
               const Divider(height: 1),
-              _buildHistoryItem(
-                version: '0.9.0',
-                date: '2024-12-01',
-                features: ['UI improvements', 'Performance optimization'],
-              ),
             ],
           ),
         ),

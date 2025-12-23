@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../../../core/models/ai/profile.dart';
@@ -53,9 +55,9 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
           title: Text(isEditing ? 'Edit AI Profile' : 'Add AI Profile'),
           bottom: const TabBar(
             tabs: [
-              Tab(text: 'General'),
-              Tab(text: 'Request'),
-              Tab(text: 'MCP'),
+              Tab(text: 'Information'),
+              Tab(text: 'Configuration'),
+              Tab(text: 'Tools'),
             ],
           ),
           actions: [
@@ -83,7 +85,7 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
             children: [
               _buildGeneralTab(),
               _buildRequestTab(),
-              _buildMCPServerTab(),
+              _buildToolsTab(),
             ],
           ),
         ),
@@ -102,15 +104,29 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
             Center(
               child: Stack(
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.surfaceContainerHighest,
-                    child: Icon(
-                      Icons.person,
-                      size: 50,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  GestureDetector(
+                    onTap: () {
+                      _viewModel.pickImage(context);
+                    },
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerHighest,
+                      child: _viewModel.avatarController.text.isNotEmpty
+                          ? Image.file(
+                              File(_viewModel.avatarController.text),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
+                            ),
                     ),
                   ),
                   Positioned(
@@ -305,7 +321,7 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
     );
   }
 
-  Widget _buildMCPServerTab() {
+  Widget _buildToolsTab() {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(24.0),

@@ -4,7 +4,7 @@ import '../../../../core/models/ai/provider.dart';
 import '../../../../shared/translate/tl.dart';
 import '../../../../shared/widgets/common_dropdown.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
-import '../../../../shared/utils/utils.dart';
+import '../../../../shared/utils/icon_builder.dart';
 import '../../controllers/edit_provider_controller.dart';
 import '../widgets/edit_model_sheet.dart';
 import '../widgets/fetch_models_sheet.dart';
@@ -60,34 +60,32 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                 ),
               ],
             )
-          : null,
-      appBar: AppBar(
-        title: Text(widget.provider != null ? 'Edit Provider' : 'Add Provider'),
+          : FloatingActionButton.extended(
+              onPressed: () => _viewModel.saveProvider(
+                context,
+                existingProvider: widget.provider,
+              ),
+              label: const Text('Save'),
+              icon: const Icon(Icons.save),
+            ),
+      bottomNavigationBar: BottomAppBar(
         elevation: 0,
-        bottom: TabBar(
+        child: TabBar(
           controller: _tabController,
           tabs: [
             Tab(icon: Icon(Icons.edit)),
-            Tab(icon: Icon(Icons.list)),
-            Tab(icon: Icon(Icons.abc)),
+            Tab(icon: Icon(Icons.token)),
+            Tab(icon: Icon(Icons.http)),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: () => _viewModel.saveProvider(
-              context,
-              existingProvider: widget.provider,
-            ),
-          ),
-        ],
       ),
+
       body: SafeArea(
         top: false,
         bottom: true,
         child: TabBarView(
           controller: _tabController,
-          children: [_buildEditTab(), _buildModelsTab(), _buildABCBTab()],
+          children: [_buildEditTab(), _buildModelsTab(), _buildHttpTab()],
         ),
       ),
     );
@@ -108,16 +106,17 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                   value: type,
                   label: type.name,
                   icon: buildLogoIcon(
-                    Provider(
-                      type: type,
-                      vertexAI: type == ProviderType.google
-                          ? _viewModel.vertexAI
-                          : false,
-                      azureAI: type == ProviderType.openai
-                          ? _viewModel.azureAI
-                          : false,
-                      openAIRoutes: const OpenAIRoutes(),
-                    ),
+                    _viewModel.vertexAI
+                        ? 'vertex-color'
+                        : _viewModel.azureAI
+                        ? 'azure-color'
+                        : type == ProviderType.openai
+                        ? 'openai'
+                        : type == ProviderType.google
+                        ? 'aistudio'
+                        : type == ProviderType.anthropic
+                        ? 'anthropic'
+                        : 'ollama',
                     size: 24,
                   ),
                 );
@@ -339,7 +338,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
     );
   }
 
-  Widget _buildABCBTab() {
+  Widget _buildHttpTab() {
     return Container();
   }
 

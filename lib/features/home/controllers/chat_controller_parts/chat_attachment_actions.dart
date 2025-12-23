@@ -27,11 +27,8 @@ extension ChatViewModelAttachmentActions on ChatViewModel {
 
   Future<void> pickAttachmentsFromGallery(BuildContext context) async {
     try {
-      final result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.media,
-      );
-      final paths = result?.paths.whereType<String>().toList() ?? const [];
+      final result = await ImagePicker().pickMultiImage();
+      final paths = result.map((e) => e.path).toList() ?? const [];
       if (paths.isEmpty) return;
 
       for (final p in paths) {
@@ -64,6 +61,5 @@ extension ChatViewModelAttachmentActions on ChatViewModel {
 
   void openAttachmentsSidebar(List<String> attachments) {
     setInspectingAttachments(attachments);
-    openEndDrawer();
   }
 }
