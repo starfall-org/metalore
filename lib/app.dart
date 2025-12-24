@@ -41,55 +41,62 @@ class AIGatewayApp extends StatelessWidget {
                     surface: Color(settings.surfaceColor),
                   );
 
-            // Apply custom text colors if they are set (not default values)
+            // Apply custom text colors only if they match the current brightness
+            // Otherwise use ColorScheme defaults (fixes black text in dark mode when using system theme)
             final Color customTextColor = Color(settings.textColor);
             final Color customTextHintColor = Color(settings.textHintColor);
 
+            final bool useCustomTextColor = (lightScheme.brightness == Brightness.light && customTextColor.computeLuminance() < 0.5) ||
+                                             (lightScheme.brightness == Brightness.dark && customTextColor.computeLuminance() > 0.5);
+
             final TextTheme customLightTextTheme = TextTheme(
-              bodyLarge: TextStyle(color: customTextColor),
-              bodyMedium: TextStyle(color: customTextColor),
-              bodySmall: TextStyle(color: customTextColor),
-              labelLarge: TextStyle(color: customTextColor),
-              labelMedium: TextStyle(color: customTextColor),
-              labelSmall: TextStyle(color: customTextColor),
-              titleLarge: TextStyle(color: customTextColor),
-              titleMedium: TextStyle(color: customTextColor),
-              titleSmall: TextStyle(color: customTextColor),
-              headlineLarge: TextStyle(color: customTextColor),
-              headlineMedium: TextStyle(color: customTextColor),
-              headlineSmall: TextStyle(color: customTextColor),
-              displayLarge: TextStyle(color: customTextColor),
-              displayMedium: TextStyle(color: customTextColor),
-              displaySmall: TextStyle(color: customTextColor),
-            ).apply(bodyColor: customTextColor, displayColor: customTextColor);
+              bodyLarge: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              bodyMedium: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              bodySmall: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              labelLarge: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              labelMedium: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              labelSmall: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              titleLarge: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              titleMedium: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              titleSmall: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              headlineLarge: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              headlineMedium: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              headlineSmall: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              displayLarge: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              displayMedium: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+              displaySmall: useCustomTextColor ? TextStyle(color: customTextColor) : null,
+            );
+
+            final bool useCustomTextColorDark = (darkScheme.brightness == Brightness.light && customTextColor.computeLuminance() < 0.5) ||
+                                                (darkScheme.brightness == Brightness.dark && customTextColor.computeLuminance() > 0.5);
 
             final TextTheme customDarkTextTheme = TextTheme(
-              bodyLarge: TextStyle(color: customTextColor),
-              bodyMedium: TextStyle(color: customTextColor),
-              bodySmall: TextStyle(color: customTextColor),
-              labelLarge: TextStyle(color: customTextColor),
-              labelMedium: TextStyle(color: customTextColor),
-              labelSmall: TextStyle(color: customTextColor),
-              titleLarge: TextStyle(color: customTextColor),
-              titleMedium: TextStyle(color: customTextColor),
-              titleSmall: TextStyle(color: customTextColor),
-              headlineLarge: TextStyle(color: customTextColor),
-              headlineMedium: TextStyle(color: customTextColor),
-              headlineSmall: TextStyle(color: customTextColor),
-              displayLarge: TextStyle(color: customTextColor),
-              displayMedium: TextStyle(color: customTextColor),
-              displaySmall: TextStyle(color: customTextColor),
-            ).apply(bodyColor: customTextColor, displayColor: customTextColor);
+              bodyLarge: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              bodyMedium: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              bodySmall: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              labelLarge: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              labelMedium: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              labelSmall: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              titleLarge: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              titleMedium: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              titleSmall: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              headlineLarge: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              headlineMedium: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              headlineSmall: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              displayLarge: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              displayMedium: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+              displaySmall: useCustomTextColorDark ? TextStyle(color: customTextColor) : null,
+            );
 
             // Update hint colors in the theme
             final InputDecorationTheme lightInputDecorationTheme =
                 InputDecorationTheme(
-                  hintStyle: TextStyle(color: customTextHintColor),
+                  hintStyle: useCustomTextColor ? TextStyle(color: customTextHintColor) : null,
                 );
 
             final InputDecorationTheme darkInputDecorationTheme =
                 InputDecorationTheme(
-                  hintStyle: TextStyle(color: customTextHintColor),
+                  hintStyle: useCustomTextColorDark ? TextStyle(color: customTextHintColor) : null,
                 );
 
             // Main background colors
