@@ -50,6 +50,8 @@ class AppearanceViewModel extends ChangeNotifier {
       newSettings = settings.copyWith(
         selection: selection,
         themeMode: mode,
+        primaryColor: defaultSettings.primaryColor,
+        secondaryColor: defaultSettings.secondaryColor,
         backgroundColor: defaultSettings.backgroundColor,
         surfaceColor: defaultSettings.surfaceColor,
         textColor: defaultSettings.textColor,
