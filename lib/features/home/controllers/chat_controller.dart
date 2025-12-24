@@ -1,140 +1,111 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
+import 'package:uuid/uuid.dart';
 
-import '../../../core/models/chat/message.dart';
-import '../../../shared/translate/tl.dart';
 import '../../../core/data/ai_profile_store.dart';
 import '../../../core/data/chat_store.dart';
 import '../../../core/data/mcpserver_store.dart';
 import '../../../core/data/ai_provider_store.dart';
-import '../../../core/models/ai/model.dart';
 import '../../../core/models/ai/profile.dart';
-import '../../../core/models/ai/provider.dart';
 import '../../../core/models/chat/conversation.dart';
-import '../../../core/models/mcp/mcp_server.dart';
 import '../../../shared/prefs/preferences.dart';
-import '../services/chat_service.dart';
+import '../../../shared/translate/tl.dart';
 import '../services/tts_service.dart';
-import '../ui/widgets/edit_message_sheet.dart';
 import '../utils/chat_logic_utils.dart';
 import 'chat_controller_parts/chat_navigation_interface.dart';
 
-part 'chat_controller_parts/chat_viewmodel_actions.dart';
-part 'chat_controller_parts/chat_message_actions.dart';
-part 'chat_controller_parts/chat_attachment_actions.dart';
-part 'chat_controller_parts/chat_operations.dart';
-part 'chat_controller_parts/chat_edit_actions.dart';
-part 'chat_controller_parts/chat_ui_actions.dart';
+// Import các controller con
+import 'session_controller.dart';
+import 'message_controller.dart';
+import 'attachment_controller.dart';
+import 'model_selection_controller.dart';
+import 'profile_controller.dart';
 
+/// Main ChatController orchestrates all sub-controllers
 class ChatController extends ChangeNotifier {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController textController = TextEditingController();
   final ScrollController scrollController = ScrollController();
 
   final ChatNavigationInterface navigator;
-  final ChatRepository chatRepository;
-  final AIProfileRepository aiProfileRepository;
-  final ProviderRepository providerRepository;
   final PreferencesSp preferencesSp;
-  final MCPRepository mcpRepository;
   final TTSService ttsService;
 
-  StreamSubscription? _providerSubscription;
-  Conversation? currentSession;
-  AIProfile? selectedProfile;
-  bool isLoading = true;
-  bool isGenerating = false;
-
-  final List<String> pendingAttachments = [];
-
-  // Right sidebar: attachments to inspect
-  final List<String> inspectingAttachments = [];
-
-  // Providers and model selection state
-  List<Provider> providers = [];
-  List<MCPServer> mcpServers = [];
-  final Map<String, bool> providerCollapsed = {}; // true = collapsed
-  String? selectedProviderName;
-  String? selectedModelName;
-
-  AIModel? get selectedAIModel {
-    if (selectedProviderName == null || selectedModelName == null) return null;
-    try {
-      final provider = providers.firstWhere(
-        (p) => p.name == selectedProviderName,
-      );
-      return provider.models.firstWhere((m) => m.name == selectedModelName);
-    } catch (e) {
-      return null;
-    }
-  }
+  // Sub-controllers
+  late final SessionController sessionController;
+  late final MessageController messageController;
+  late final AttachmentController attachmentController;
+  late final ModelSelectionController modelSelectionController;
+  late final ProfileController profileController;
 
   ChatController({
     required this.navigator,
-    required this.chatRepository,
-    required this.aiProfileRepository,
-    required this.providerRepository,
+    required ChatRepository chatRepository,
+    required AIProfileRepository aiProfileRepository,
+    required ProviderRepository providerRepository,
     required this.preferencesSp,
-    required this.mcpRepository,
+    required MCPRepository mcpRepository,
     required this.ttsService,
   }) {
-    _providerSubscription = providerRepository.changes.listen((_) {
-      refreshProviders();
-    });
+    // Initialize sub-controllers
+    sessionController = SessionController(chatRepository: chatRepository);
+    messageController = MessageController();
+    attachmentController = AttachmentController();
+    modelSelectionController = ModelSelectionController(
+      providerRepository: providerRepository,
+    );
+    profileController = ProfileController(
+      aiProfileRepository: aiProfileRepository,
+      mcpRepository: mcpRepository,
+    );
+
+    // Listen to sub-controllers changes
+    sessionController.addListener(notifyListeners);
+    messageController.addListener(notifyListeners);
+    attachmentController.addListener(notifyListeners);
+    modelSelectionController.addListener(notifyListeners);
+    profileController.addListener(notifyListeners);
   }
 
-  void notify() => notifyListeners();
+  // Convenience getters for backward compatibility
+  Conversation? get currentSession => sessionController.currentSession;
+  AIProfile? get selectedProfile => profileController.selectedProfile;
+  bool get isLoading => sessionController.isLoading;
+  bool get isGenerating => messageController.isGenerating;
+  List<String> get pendingAttachments => attachmentController.pendingAttachments;
+  List<String> get inspectingAttachments => attachmentController.inspectingAttachments;
+  List<dynamic> get providers => modelSelectionController.providers;
+  List<dynamic> get mcpServers => profileController.mcpServers;
+  Map<String, bool> get providerCollapsed => modelSelectionController.providerCollapsed;
+  String? get selectedProviderName => modelSelectionController.selectedProviderName;
+  String? get selectedModelName => modelSelectionController.selectedModelName;
+  dynamic get selectedAIModel => modelSelectionController.selectedAIModel;
 
-  Future<void> initChat() async {
-    final sessions = chatRepository.getConversations();
+  Future<void> initChat() => sessionController.initChat();
+  Future<void> createNewSession() => sessionController.createNewSession();
+  Future<void> loadSession(String sessionId) => sessionController.loadSession(sessionId);
+  void clearLoadingState() => sessionController.clearLoadingState();
 
-    if (sessions.isNotEmpty) {
-      currentSession = sessions.first;
-      isLoading = false;
-    } else {
-      await createNewSession();
-    }
-    notifyListeners();
-  }
+  Future<void> loadSelectedProfile() => profileController.loadSelectedProfile();
+  Future<void> updateProfile(AIProfile profile) => profileController.updateProfile(profile);
+  Future<void> loadMCPServers() => profileController.loadMCPServers();
 
-  Future<void> loadSelectedProfile() async {
-    final profile = await aiProfileRepository.getOrInitSelectedProfile();
-    selectedProfile = profile;
-    notifyListeners();
-  }
+  Future<void> refreshProviders() => modelSelectionController.refreshProviders();
+  void setProviderCollapsed(String providerName, bool collapsed) =>
+      modelSelectionController.setProviderCollapsed(providerName, collapsed);
 
-  Future<void> updateProfile(AIProfile profile) async {
-    selectedProfile = profile;
-    await aiProfileRepository.updateProfile(profile);
-    notifyListeners();
-  }
-
-  Future<void> loadMCPServers() async {
-    mcpServers = mcpRepository.getItems().whereType<MCPServer>().toList();
-    notifyListeners();
-  }
-
-  Future<void> refreshProviders() async {
-    providers = providerRepository.getProviders();
-    // Initialize collapse map entries for unseen providers
-    for (final p in providers) {
-      providerCollapsed.putIfAbsent(p.name, () => false);
-    }
-    notifyListeners();
-  }
-
-  void setProviderCollapsed(String providerName, bool collapsed) {
-    providerCollapsed[providerName] = collapsed;
-    notifyListeners();
-  }
+  Future<void> pickAttachments(BuildContext context) =>
+      attachmentController.pickAttachments(context);
+  Future<void> pickAttachmentsFromGallery(BuildContext context) =>
+      attachmentController.pickAttachmentsFromGallery(context);
+  void removeAttachmentAt(int index) => attachmentController.removeAttachmentAt(index);
+  void setInspectingAttachments(List<String> attachments) =>
+      attachmentController.setInspectingAttachments(attachments);
+  void openAttachmentsSidebar(List<String> attachments) =>
+      attachmentController.openAttachmentsSidebar(attachments);
 
   bool shouldPersistSelections() {
     final prefs = preferencesSp.currentPreferences;
-    // If preferAgentSettings is on and profile has an override, use it
     if (selectedProfile?.persistChatSelection != null) {
       return selectedProfile!.persistChatSelection!;
     }
@@ -142,54 +113,298 @@ class ChatController extends ChangeNotifier {
   }
 
   void selectModel(String providerName, String modelName) {
-    selectedProviderName = providerName;
-    selectedModelName = modelName;
+    modelSelectionController.selectModel(providerName, modelName);
 
     // Persist selection into current conversation if preference allows
     if (currentSession != null && shouldPersistSelections()) {
-      currentSession = currentSession!.copyWith(
+      final updatedSession = currentSession!.copyWith(
         providerName: providerName,
         modelName: modelName,
         updatedAt: DateTime.now(),
       );
+      sessionController.updateSession(updatedSession);
       // ignore: discarded_futures
-      chatRepository.saveConversation(currentSession!);
+      sessionController.saveCurrentSession();
+    }
+  }
+
+  Future<void> handleSubmitted(String text, BuildContext context) async {
+    if (((text.trim().isEmpty) && pendingAttachments.isEmpty) ||
+        currentSession == null) {
+      return;
     }
 
-    notifyListeners();
-  }
+    final List<String> attachments = List<String>.from(pendingAttachments);
+    textController.clear();
+    attachmentController.clearPendingAttachments();
 
-  Future<void> createNewSession() async {
-    final session = await chatRepository.createConversation();
-    currentSession = session;
-    isLoading = false;
-    notifyListeners();
-  }
+    // Resolve provider and model
+    final providerRepo = await ProviderRepository.init();
+    final providersList = providerRepo.getProviders();
+    final persist = shouldPersistSelections();
 
-  Future<void> loadSession(String sessionId) async {
-    isLoading = true;
-    notifyListeners();
-
-    final sessions = chatRepository.getConversations();
-    final session = sessions.firstWhere(
-      (s) => s.id == sessionId,
-      orElse: () => sessions.first,
+    final selection = ChatLogicUtils.resolveProviderAndModel(
+      currentSession: currentSession,
+      persistSelection: persist,
+      selectedProvider: selectedProviderName,
+      selectedModel: selectedModelName,
+      providers: providersList,
     );
 
-    currentSession = session;
-    isLoading = false;
-    notifyListeners();
+    final providerName = selection.provider;
+    final modelName = selection.model;
+
+    // If persistence is enabled and not loaded from session, store selection
+    if (currentSession != null &&
+        persist &&
+        (currentSession!.providerName == null ||
+            currentSession!.modelName == null)) {
+      final updatedSession = currentSession!.copyWith(
+        providerName: providerName,
+        modelName: modelName,
+        updatedAt: DateTime.now(),
+      );
+      sessionController.updateSession(updatedSession);
+      await sessionController.saveCurrentSession();
+    }
+
+    // Prepare allowed tool names if persistence is enabled
+    List<String>? allowedToolNames;
+    if (persist) {
+      if (currentSession!.enabledToolNames == null) {
+        final profile = selectedProfile ??
+            AIProfile(
+              id: const Uuid().v4(),
+              name: 'Default Profile',
+              config: AiConfig(systemPrompt: '', enableStream: true),
+            );
+        final names = await profileController.snapshotEnabledToolNames(profile);
+        final updatedSession = currentSession!.copyWith(
+          enabledToolNames: names,
+          updatedAt: DateTime.now(),
+        );
+        sessionController.updateSession(updatedSession);
+        await sessionController.saveCurrentSession();
+      }
+      allowedToolNames = currentSession!.enabledToolNames;
+    }
+
+    final profile = selectedProfile ??
+        AIProfile(
+          id: const Uuid().v4(),
+          name: 'Default Profile',
+          config: AiConfig(systemPrompt: '', enableStream: true),
+        );
+
+    await messageController.sendMessage(
+      text: text,
+      attachments: attachments,
+      currentSession: currentSession!,
+      profile: profile,
+      providerName: providerName,
+      modelName: modelName,
+      enableStream: profile.config.enableStream,
+      onSessionUpdate: (session) {
+        sessionController.updateSession(session);
+        // ignore: discarded_futures
+        sessionController.saveCurrentSession();
+      },
+      onScrollToBottom: scrollToBottom,
+      isNearBottom: isNearBottom,
+      allowedToolNames: allowedToolNames,
+    );
+
+    scrollToBottom();
   }
 
-  // Clear loading state (useful for error recovery)
-  void clearLoadingState() {
-    isLoading = false;
-    notifyListeners();
+  Future<void> regenerateLast(BuildContext context) async {
+    if (currentSession == null) return;
+
+    final providerRepo = await ProviderRepository.init();
+    final providersList = providerRepo.getProviders();
+    final persist = shouldPersistSelections();
+
+    final selection = ChatLogicUtils.resolveProviderAndModel(
+      currentSession: currentSession,
+      persistSelection: persist,
+      selectedProvider: selectedProviderName,
+      selectedModel: selectedModelName,
+      providers: providersList,
+    );
+
+    final providerName = selection.provider;
+    final modelName = selection.model;
+
+    if (currentSession != null &&
+        persist &&
+        (currentSession!.providerName == null ||
+            currentSession!.modelName == null)) {
+      final updatedSession = currentSession!.copyWith(
+        providerName: providerName,
+        modelName: modelName,
+        updatedAt: DateTime.now(),
+      );
+      sessionController.updateSession(updatedSession);
+      await sessionController.saveCurrentSession();
+    }
+
+    List<String>? allowedToolNames;
+    if (persist) {
+      if (currentSession!.enabledToolNames == null) {
+        final profile = selectedProfile ??
+            AIProfile(
+              id: const Uuid().v4(),
+              name: 'Default Profile',
+              config: AiConfig(systemPrompt: '', enableStream: true),
+            );
+        final names = await profileController.snapshotEnabledToolNames(profile);
+        final updatedSession = currentSession!.copyWith(
+          enabledToolNames: names,
+          updatedAt: DateTime.now(),
+        );
+        sessionController.updateSession(updatedSession);
+        await sessionController.saveCurrentSession();
+      }
+      allowedToolNames = currentSession!.enabledToolNames;
+    }
+
+    final profile = selectedProfile ??
+        AIProfile(
+          id: const Uuid().v4(),
+          name: 'Default Profile',
+          config: AiConfig(systemPrompt: '', enableStream: true),
+        );
+
+    await messageController.regenerateLast(
+      context: context,
+      currentSession: currentSession!,
+      profile: profile,
+      providerName: providerName,
+      modelName: modelName,
+      enableStream: profile.config.enableStream,
+      onSessionUpdate: (session) {
+        sessionController.updateSession(session);
+        // ignore: discarded_futures
+        sessionController.saveCurrentSession();
+      },
+      onScrollToBottom: scrollToBottom,
+      isNearBottom: isNearBottom,
+      allowedToolNames: allowedToolNames,
+    );
+  }
+
+  String getTranscript() {
+    return sessionController.getTranscript(profileName: selectedProfile?.name);
+  }
+
+  Future<void> copyTranscript(BuildContext context) async {
+    final txt = getTranscript();
+    if (txt.isEmpty) return;
+    await Clipboard.setData(ClipboardData(text: txt));
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tl('Transcript copied'))),
+      );
+    }
+  }
+
+  Future<void> clearChat() => sessionController.clearChat();
+
+  Future<void> speakLastModelMessage() async {
+    if (currentSession == null || currentSession!.messages.isEmpty) return;
+    final lastModel = currentSession!.messages.lastWhere(
+      (m) => m.role == ChatRole.model,
+      orElse: () => ChatMessage(
+        id: '',
+        role: ChatRole.model,
+        content: '',
+        timestamp: DateTime.now(),
+      ),
+    );
+    if (lastModel.content.isEmpty) return;
+    await ttsService.speak(lastModel.content);
+  }
+
+  Future<void> copyMessage(BuildContext context, dynamic message) =>
+      messageController.copyMessage(context, message);
+
+  Future<void> deleteMessage(dynamic message) async {
+    if (currentSession == null) return;
+    await messageController.deleteMessage(
+      message: message,
+      currentSession: currentSession!,
+      onSessionUpdate: (session) {
+        sessionController.updateSession(session);
+        // ignore: discarded_futures
+        sessionController.saveCurrentSession();
+      },
+    );
+  }
+
+  Future<void> openEditMessageDialog(
+    BuildContext context,
+    dynamic message,
+  ) async {
+    if (currentSession == null) return;
+    await messageController.openEditMessageDialog(
+      context,
+      message,
+      currentSession!,
+      (session) {
+        sessionController.updateSession(session);
+        // ignore: discarded_futures
+        sessionController.saveCurrentSession();
+      },
+      regenerateLast,
+    );
+  }
+
+  // UI Actions
+  void scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  bool isNearBottom() {
+    if (!scrollController.hasClients) return true;
+    final position = scrollController.position;
+    return position.pixels >= position.maxScrollExtent - 100;
+  }
+
+  void openDrawer() {
+    scaffoldKey.currentState?.openDrawer();
+  }
+
+  void openEndDrawer() {
+    scaffoldKey.currentState?.openEndDrawer();
+  }
+
+  void closeEndDrawer() {
+    scaffoldKey.currentState?.closeEndDrawer();
   }
 
   @override
   void dispose() {
-    _providerSubscription?.cancel();
+    sessionController.removeListener(notifyListeners);
+    messageController.removeListener(notifyListeners);
+    attachmentController.removeListener(notifyListeners);
+    modelSelectionController.removeListener(notifyListeners);
+    profileController.removeListener(notifyListeners);
+
+    sessionController.dispose();
+    messageController.dispose();
+    attachmentController.dispose();
+    modelSelectionController.dispose();
+    profileController.dispose();
+
     textController.dispose();
     scrollController.dispose();
     ttsService.stop();
