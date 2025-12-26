@@ -41,55 +41,38 @@ class AIGatewayApp extends StatelessWidget {
                     surface: Color(settings.surfaceColor),
                   );
 
-            // Apply custom text colors if they are set (not default values)
+            // Apply custom text colors only if they match the current brightness
+            // Otherwise use ColorScheme defaults (fixes black text in dark mode when using system theme)
             final Color customTextColor = Color(settings.textColor);
             final Color customTextHintColor = Color(settings.textHintColor);
 
-            final TextTheme customLightTextTheme = TextTheme(
-              bodyLarge: TextStyle(color: customTextColor),
-              bodyMedium: TextStyle(color: customTextColor),
-              bodySmall: TextStyle(color: customTextColor),
-              labelLarge: TextStyle(color: customTextColor),
-              labelMedium: TextStyle(color: customTextColor),
-              labelSmall: TextStyle(color: customTextColor),
-              titleLarge: TextStyle(color: customTextColor),
-              titleMedium: TextStyle(color: customTextColor),
-              titleSmall: TextStyle(color: customTextColor),
-              headlineLarge: TextStyle(color: customTextColor),
-              headlineMedium: TextStyle(color: customTextColor),
-              headlineSmall: TextStyle(color: customTextColor),
-              displayLarge: TextStyle(color: customTextColor),
-              displayMedium: TextStyle(color: customTextColor),
-              displaySmall: TextStyle(color: customTextColor),
-            ).apply(bodyColor: customTextColor, displayColor: customTextColor);
+            final bool useCustomTextColor = (lightScheme.brightness == Brightness.light && customTextColor.computeLuminance() < 0.5) ||
+                                             (lightScheme.brightness == Brightness.dark && customTextColor.computeLuminance() > 0.5);
 
-            final TextTheme customDarkTextTheme = TextTheme(
-              bodyLarge: TextStyle(color: customTextColor),
-              bodyMedium: TextStyle(color: customTextColor),
-              bodySmall: TextStyle(color: customTextColor),
-              labelLarge: TextStyle(color: customTextColor),
-              labelMedium: TextStyle(color: customTextColor),
-              labelSmall: TextStyle(color: customTextColor),
-              titleLarge: TextStyle(color: customTextColor),
-              titleMedium: TextStyle(color: customTextColor),
-              titleSmall: TextStyle(color: customTextColor),
-              headlineLarge: TextStyle(color: customTextColor),
-              headlineMedium: TextStyle(color: customTextColor),
-              headlineSmall: TextStyle(color: customTextColor),
-              displayLarge: TextStyle(color: customTextColor),
-              displayMedium: TextStyle(color: customTextColor),
-              displaySmall: TextStyle(color: customTextColor),
-            ).apply(bodyColor: customTextColor, displayColor: customTextColor);
+            final TextTheme customLightTextTheme = useCustomTextColor
+                ? const TextTheme().apply(bodyColor: customTextColor, displayColor: customTextColor)
+                : const TextTheme();
+
+            final bool useCustomTextColorDark = (darkScheme.brightness == Brightness.light && customTextColor.computeLuminance() < 0.5) ||
+                                                (darkScheme.brightness == Brightness.dark && customTextColor.computeLuminance() > 0.5);
+
+            final TextTheme customDarkTextTheme = useCustomTextColorDark
+                ? const TextTheme().apply(bodyColor: customTextColor, displayColor: customTextColor)
+                : const TextTheme();
 
             // Update hint colors in the theme
+            final bool useCustomHintColor = (lightScheme.brightness == Brightness.light && customTextHintColor.computeLuminance() < 0.5) ||
+                                             (lightScheme.brightness == Brightness.dark && customTextHintColor.computeLuminance() > 0.5);
             final InputDecorationTheme lightInputDecorationTheme =
                 InputDecorationTheme(
-                  hintStyle: TextStyle(color: customTextHintColor),
+                  hintStyle: useCustomHintColor ? TextStyle(color: customTextHintColor) : null,
                 );
 
+            final bool useCustomHintColorDark = (darkScheme.brightness == Brightness.light && customTextHintColor.computeLuminance() < 0.5) ||
+                                                (darkScheme.brightness == Brightness.dark && customTextHintColor.computeLuminance() > 0.5);
             final InputDecorationTheme darkInputDecorationTheme =
                 InputDecorationTheme(
-                  hintStyle: TextStyle(color: customTextHintColor),
+                  hintStyle: useCustomHintColorDark ? TextStyle(color: customTextHintColor) : null,
                 );
 
             // Main background colors
