@@ -9,6 +9,21 @@ import '../../../settings/ui/widgets/settings_card.dart';
 import '../../controllers/edit_profile_controller.dart';
 import '../widgets/view_profile_dialog.dart';
 
+/// Helper để tạo theme-aware image cho edit profile screen
+Widget _buildThemeAwareImageForProfile(BuildContext context, Widget child) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  return ColorFiltered(
+    colorFilter: ColorFilter.mode(
+      isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+      BlendMode.overlay,
+    ),
+    child: child,
+  );
+}
+
 class AddProfileScreen extends StatefulWidget {
   final AIProfile? profile;
 
@@ -98,11 +113,7 @@ class _AddProfileScreenState extends State<AddProfileScreen>
         bottom: true,
         child: TabBarView(
           controller: _tabController,
-          children: [
-            _buildGeneralTab(),
-            _buildRequestTab(),
-            _buildToolsTab(),
-          ],
+          children: [_buildGeneralTab(), _buildRequestTab(), _buildToolsTab()],
         ),
       ),
     );
@@ -129,11 +140,14 @@ class _AddProfileScreenState extends State<AddProfileScreen>
                         context,
                       ).colorScheme.surfaceContainerHighest,
                       child: _viewModel.avatarController.text.isNotEmpty
-                          ? Image.file(
-                              File(_viewModel.avatarController.text),
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
+                          ? _buildThemeAwareImageForProfile(
+                              context,
+                              Image.file(
+                                File(_viewModel.avatarController.text),
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              ),
                             )
                           : Icon(
                               Icons.person,

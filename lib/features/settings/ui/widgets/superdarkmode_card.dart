@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../../shared/translate/tl.dart';
 import 'settings_card.dart';
 
-
 class SuperDarkModeCard extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;

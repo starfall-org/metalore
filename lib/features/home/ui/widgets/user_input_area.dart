@@ -5,6 +5,21 @@ import '../../../../core/models/ai/model.dart';
 import '../../../../shared/translate/tl.dart';
 import 'files_action_sheet.dart';
 
+/// Helper để tạo theme-aware image
+Widget _buildThemeAwareImageForUserInput(BuildContext context, Widget child) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  return ColorFiltered(
+    colorFilter: ColorFilter.mode(
+      isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+      BlendMode.overlay,
+    ),
+    child: child,
+  );
+}
+
 class UserInputArea extends StatefulWidget {
   final TextEditingController controller;
   final Function(String) onSubmitted;
@@ -98,7 +113,8 @@ class _UserInputAreaState extends State<UserInputArea> {
   Widget build(BuildContext context) {
     final canSend =
         !widget.isGenerating &&
-        ((widget.controller.text.trim().isNotEmpty) || widget.attachments.isNotEmpty);
+        ((widget.controller.text.trim().isNotEmpty) ||
+            widget.attachments.isNotEmpty);
 
     return GestureDetector(
       onTapDown: (_) {
@@ -228,13 +244,16 @@ class _UserInputAreaState extends State<UserInputArea> {
                               if (widget.selectedAIModel!.icon != null)
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
-                                  child: Image.asset(
-                                    widget.selectedAIModel!.icon!,
-                                    width: 20,
-                                    height: 20,
-                                    errorBuilder:
-                                        (context, error, stackTrace) =>
-                                            const Icon(Icons.token, size: 20),
+                                  child: _buildThemeAwareImageForUserInput(
+                                    context,
+                                    Image.asset(
+                                      widget.selectedAIModel!.icon!,
+                                      width: 20,
+                                      height: 20,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.token, size: 20),
+                                    ),
                                   ),
                                 )
                               else

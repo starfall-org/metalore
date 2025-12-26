@@ -151,8 +151,12 @@ class _ModelsDrawerState extends State<ModelsDrawer> {
                                       vertical: 8,
                                     ),
                                     side: BorderSide(
-                                      color: Theme.of(context).inputDecorationTheme.hintStyle?.color ?? 
-                                             Theme.of(context).colorScheme.outline,
+                                      color:
+                                          Theme.of(context)
+                                              .inputDecorationTheme
+                                              .hintStyle
+                                              ?.color ??
+                                          Theme.of(context).colorScheme.outline,
                                       width: 1,
                                     ),
                                   ),
@@ -201,8 +205,11 @@ class _ModelsDrawerState extends State<ModelsDrawer> {
                               context,
                             ).colorScheme.onSecondary,
                             side: BorderSide(
-                              color: Theme.of(context).inputDecorationTheme.hintStyle?.color ?? 
-                                     Theme.of(context).colorScheme.outline,
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).inputDecorationTheme.hintStyle?.color ??
+                                  Theme.of(context).colorScheme.outline,
                               width: 1,
                             ),
                           ),

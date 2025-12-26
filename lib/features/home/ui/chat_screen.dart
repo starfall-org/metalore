@@ -17,6 +17,21 @@ import 'widgets/model_picker_sheet.dart';
 import 'widgets/quick_actions_sheet.dart';
 import 'widgets/user_input_area.dart';
 
+/// Helper để tạo theme-aware image cho chat screen
+Widget _buildThemeAwareImageForChatScreen(BuildContext context, Widget child) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  return ColorFiltered(
+    colorFilter: ColorFilter.mode(
+      isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+      BlendMode.overlay,
+    ),
+    child: child,
+  );
+}
+
 /// Màn hình chat chính cho ứng dụng
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -66,7 +81,8 @@ class _ChatPageState extends State<ChatPage>
     // Restore sidebar state
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final activeSidebar = _viewModel.preferencesSp.currentPreferences.activeSidebar;
+      final activeSidebar =
+          _viewModel.preferencesSp.currentPreferences.activeSidebar;
       if (activeSidebar == 'left') {
         _scaffoldKey.currentState?.openDrawer();
       } else if (activeSidebar == 'right') {
@@ -270,7 +286,7 @@ class _ChatPageState extends State<ChatPage>
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: CircleAvatar(
-          radius: 14,
+          radius: 18,
           backgroundColor: Theme.of(
             context,
           ).colorScheme.primary.withValues(alpha: 0.1),
@@ -280,7 +296,7 @@ class _ChatPageState extends State<ChatPage>
                     : 'A'))
                 .toUpperCase(),
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 14,
               color: Theme.of(context).colorScheme.primary,
               fontWeight: FontWeight.w600,
             ),
@@ -406,10 +422,13 @@ class _ChatPageState extends State<ChatPage>
           width: 48,
           height: 48,
           color: Theme.of(context).colorScheme.surface,
-          child: Image.file(
-            File(path),
-            fit: BoxFit.cover,
-            errorBuilder: (c, e, s) => _fallbackIcon(context),
+          child: _buildThemeAwareImageForChatScreen(
+            context,
+            Image.file(
+              File(path),
+              fit: BoxFit.cover,
+              errorBuilder: (c, e, s) => _fallbackIcon(context),
+            ),
           ),
         ),
       );

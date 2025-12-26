@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import '../base.dart';
 import '../../../core/models/ai/provider.dart';
 
-
 /// Google Vertex AI service sử dụng REST API
 /// Chỉ chia sẻ AIModel và DTO models, không chia sẻ các đối tượng nội bộ với providers khác
 class GoogleVertexAI {
@@ -173,17 +172,40 @@ class GoogleVertexAI {
 
     // Thêm tools nếu có
     if (request.tools.isNotEmpty) {
-      body['tools'] = [
-        {
-          'functionDeclarations': request.tools.map((tool) {
-            return {
-              'name': tool.name,
-              if (tool.description != null) 'description': tool.description,
-              'parameters': tool.parameters,
-            };
-          }).toList(),
-        },
-      ];
+      final toolsList = <Map<String, dynamic>>[];
+      final functionDeclarations = <Map<String, dynamic>>[];
+      bool hasGoogleSearch = false;
+      bool hasCodeExecution = false;
+
+      for (final tool in request.tools) {
+        if (tool.name == '__google_search__') {
+          hasGoogleSearch = true;
+        } else if (tool.name == '__code_execution__') {
+          hasCodeExecution = true;
+        } else if (tool.name == '__url_context__') {
+          hasGoogleSearch = true;
+        } else {
+          functionDeclarations.add({
+            'name': tool.name,
+            if (tool.description != null) 'description': tool.description,
+            'parameters': tool.parameters,
+          });
+        }
+      }
+
+      if (hasGoogleSearch) {
+        toolsList.add({'google_search_retrieval': {}});
+      }
+
+      if (hasCodeExecution) {
+        toolsList.add({'code_execution': {}});
+      }
+
+      if (functionDeclarations.isNotEmpty) {
+        toolsList.add({'function_declarations': functionDeclarations});
+      }
+
+      body['tools'] = toolsList;
     }
 
     return body;

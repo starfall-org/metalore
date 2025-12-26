@@ -5,7 +5,20 @@ import '../../../../shared/translate/tl.dart';
 import '../../../../shared/widgets/app_dialog.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 
+/// Helper để tạo theme-aware image cho edit message sheet
+Widget _buildThemeAwareImageForEditSheet(BuildContext context, Widget child) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
 
+  return ColorFiltered(
+    colorFilter: ColorFilter.mode(
+      isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+      BlendMode.overlay,
+    ),
+    child: child,
+  );
+}
 
 class EditMessageResult {
   final String content;
@@ -112,10 +125,13 @@ class _EditMessageSheetState extends State<EditMessageSheet> {
             height: size,
             color: Theme.of(context).colorScheme.surfaceContainerHighest,
             child: isImg
-                ? Image.file(
-                    File(path),
-                    fit: BoxFit.cover,
-                    errorBuilder: (c, e, s) => _fallbackTile(path),
+                ? _buildThemeAwareImageForEditSheet(
+                    context,
+                    Image.file(
+                      File(path),
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, s) => _fallbackTile(path),
+                    ),
                   )
                 : _fallbackTile(path),
           ),

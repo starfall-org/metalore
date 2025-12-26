@@ -8,6 +8,26 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../core/config/services.dart';
 
+/// Widget helper để điều chỉnh màu nền icon theo theme
+Widget _buildThemeAwareImage({
+  required Widget child,
+  required BuildContext context,
+}) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  // Trong chế độ tối: tăng độ sáng một chút để hình ảnh trắng không bị khó nhìn
+  // Trong chế độ sáng: ám đen một chút để hình ảnh đen không bị khó nhìn
+  return ColorFiltered(
+    colorFilter: ColorFilter.mode(
+      isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+      BlendMode.overlay,
+    ),
+    child: child,
+  );
+}
+
 void initIcons() {
   final hasInitialized =
       AppServices.instance.preferencesSp.currentPreferences.hasInitializedIcons;
@@ -37,15 +57,22 @@ Future<void> _cacheAllIcons() async {
 }
 
 Widget buildLogoIcon(String name, {double size = 24}) {
-  if ((name.isNotEmpty)) {
-    return Image.asset(
-      'assets/brand_logos/$name.png',
-      width: size,
-      height: size,
-    );
-  }
+  return Builder(
+    builder: (context) {
+      if (name.isNotEmpty) {
+        return _buildThemeAwareImage(
+          context: context,
+          child: Image.asset(
+            'assets/brand_logos/$name.png',
+            width: size,
+            height: size,
+          ),
+        );
+      }
 
-  return SizedBox(width: size, height: size, child: Icon(Icons.token));
+      return SizedBox(width: size, height: size, child: Icon(Icons.token));
+    },
+  );
 }
 
 Widget buildIcon(String name) {
@@ -55,31 +82,37 @@ Widget buildIcon(String name) {
       if (snapshot.hasData &&
           snapshot.data != null &&
           snapshot.data!.existsSync()) {
-        return Image.file(
-          snapshot.data!,
-          height: 24,
-          width: 24,
-          errorBuilder: (context, error, stackTrace) =>
-              _buildAssetFallback(name),
+        return _buildThemeAwareImage(
+          context: context,
+          child: Image.file(
+            snapshot.data!,
+            height: 24,
+            width: 24,
+            errorBuilder: (context, error, stackTrace) =>
+                _buildAssetFallback(name, context),
+          ),
         );
       }
 
       // Trigger download if not cached
       _cacheNetworkIcon(name);
 
-      return _buildAssetFallback(name);
+      return _buildAssetFallback(name, context);
     },
   );
 }
 
-Widget _buildAssetFallback(String name) {
-  return Image.asset(
-    'assets/brand_logos/fallback.png',
-    height: 24,
-    width: 24,
-    errorBuilder: (context, error, stackTrace) {
-      return const Icon(Icons.token, size: 24);
-    },
+Widget _buildAssetFallback(String name, BuildContext context) {
+  return _buildThemeAwareImage(
+    context: context,
+    child: Image.asset(
+      'assets/brand_logos/fallback.png',
+      height: 24,
+      width: 24,
+      errorBuilder: (context, error, stackTrace) {
+        return const Icon(Icons.token, size: 24);
+      },
+    ),
   );
 }
 

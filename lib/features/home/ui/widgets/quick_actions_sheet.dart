@@ -5,7 +5,6 @@ import '../../../../core/models/mcp/mcp_server.dart';
 import '../../../../shared/translate/tl.dart';
 import '../../controllers/chat_controller.dart';
 
-
 class QuickActionsSheet extends StatefulWidget {
   final ChatController viewModel;
 
@@ -192,24 +191,40 @@ class _QuickActionsSheetState extends State<QuickActionsSheet> {
                     _profile = widget.viewModel.selectedProfile!;
                   }
 
+                  final model = widget.viewModel.selectedAIModel;
+                  final tools = model?.builtInTools;
+
                   return ListView(
                     children: [
                       // Section: Built-in Tools
-                      _buildSectionHeader('Built-in Tools'),
-                      _buildBuiltInToolTile(
-                        'Google Search',
-                        'google_search',
-                        Icons.search,
-                        'Search the web for up-to-date information.',
-                      ),
-                      _buildBuiltInToolTile(
-                        'Code Execution',
-                        'code_execution',
-                        Icons.code,
-                        'Execute Python code to solve complex problems.',
-                      ),
-
-                      const Divider(),
+                      if (tools != null &&
+                          (tools.googleSearch ||
+                              tools.codeExecution ||
+                              tools.urlContext)) ...[
+                        _buildSectionHeader('Built-in Tools'),
+                        if (tools.googleSearch)
+                          _buildBuiltInToolTile(
+                            'Google Search',
+                            'google_search',
+                            Icons.search,
+                            'Search the web for up-to-date information.',
+                          ),
+                        if (tools.codeExecution)
+                          _buildBuiltInToolTile(
+                            'Code Execution',
+                            'code_execution',
+                            Icons.code,
+                            'Execute Python code to solve complex problems.',
+                          ),
+                        if (tools.urlContext)
+                          _buildBuiltInToolTile(
+                            'URL Context',
+                            'url_context',
+                            Icons.link,
+                            'Access and read content from specific URLs.',
+                          ),
+                        const Divider(),
+                      ],
 
                       // Section: MCP Servers
                       _buildSectionHeader('MCP Servers'),

@@ -111,10 +111,12 @@ class ChatService {
     // Default capabilities if not explicitly defined
     bool supportsSearch = lower.contains('gemini');
     bool supportsCode = lower.contains('gemini');
+    bool supportsUrlContext = lower.contains('gemini');
 
     if (selectedModel != null && selectedModel.builtInTools != null) {
       supportsSearch = selectedModel.builtInTools!.googleSearch;
       supportsCode = selectedModel.builtInTools!.codeExecution;
+      supportsUrlContext = selectedModel.builtInTools!.urlContext;
     }
 
     // 2. Check profile activation
@@ -137,6 +139,18 @@ class ChatService {
       builtin.add(
         const AIToolFunction(
           name: '__code_execution__',
+          description: '',
+          parameters: {},
+        ),
+      );
+    }
+
+    if (supportsUrlContext &&
+        profile.activeBuiltInTools.contains('url_context')) {
+      // Use reserved name for URL Context
+      builtin.add(
+        const AIToolFunction(
+          name: '__url_context__',
           description: '',
           parameters: {},
         ),

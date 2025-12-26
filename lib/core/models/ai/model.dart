@@ -54,10 +54,14 @@ class AIModel {
     final lowerName = name.toLowerCase();
     BuiltInTools? builtInTools;
     if (lowerName.contains('gemini')) {
+      final isProOrFlash =
+          lowerName.contains('pro') ||
+          lowerName.contains('flash') ||
+          lowerName.contains('2.0');
       builtInTools = BuiltInTools(
         urlContext: true,
-        googleSearch: false,
-        codeExecution: false,
+        googleSearch: isProOrFlash,
+        codeExecution: isProOrFlash,
       );
     }
 

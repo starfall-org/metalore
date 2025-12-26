@@ -159,6 +159,9 @@ class GoogleAIStudio {
           hasGoogleSearch = true;
         } else if (tool.name == '__code_execution__') {
           hasCodeExecution = true;
+        } else if (tool.name == '__url_context__') {
+          // Dynamic Retrieval or Search can handle URL context
+          hasGoogleSearch = true;
         } else {
           functionDeclarations.add({
             'name': tool.name,
@@ -168,16 +171,22 @@ class GoogleAIStudio {
         }
       }
 
+      final isGemini2 = request.model.contains('2.0');
+
       if (hasGoogleSearch) {
-        toolsList.add({'googleSearch': {}});
+        if (isGemini2) {
+          toolsList.add({'google_search': {}});
+        } else {
+          toolsList.add({'google_search_retrieval': {}});
+        }
       }
 
       if (hasCodeExecution) {
-        toolsList.add({'codeExecution': {}});
+        toolsList.add({'code_execution': {}});
       }
 
       if (functionDeclarations.isNotEmpty) {
-        toolsList.add({'functionDeclarations': functionDeclarations});
+        toolsList.add({'function_declarations': functionDeclarations});
       }
 
       body['tools'] = toolsList;

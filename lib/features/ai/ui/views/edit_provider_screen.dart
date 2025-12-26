@@ -364,10 +364,8 @@ class _AddProviderScreenState extends State<AddProviderScreen>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => FetchModelsSheet(
-        viewModel: _viewModel,
-        onShowCapabilities: (_) {},
-      ),
+      builder: (context) =>
+          FetchModelsSheet(viewModel: _viewModel, onShowCapabilities: (_) {}),
     );
   }
 
@@ -379,10 +377,8 @@ class _AddProviderScreenState extends State<AddProviderScreen>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => EditModelSheet(
-        viewModel: _viewModel,
-        onShowCapabilities: (_) {},
-      ),
+      builder: (context) =>
+          EditModelSheet(viewModel: _viewModel, onShowCapabilities: (_) {}),
     );
   }
 

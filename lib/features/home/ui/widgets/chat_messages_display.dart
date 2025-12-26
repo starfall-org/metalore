@@ -6,6 +6,21 @@ import '../../../../core/config/theme.dart';
 import '../../../../core/models/chat/message.dart';
 import '../../../../shared/translate/tl.dart';
 
+/// Helper để tạo theme-aware image cho chat messages
+Widget _buildThemeAwareImageForChat(BuildContext context, Widget child) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
+  return ColorFiltered(
+    colorFilter: ColorFilter.mode(
+      isDark
+          ? Colors.white.withValues(alpha: 0.1)
+          : Colors.black.withValues(alpha: 0.1),
+      BlendMode.overlay,
+    ),
+    child: child,
+  );
+}
+
 class ChatMessagesDisplay extends StatelessWidget {
   final List<ChatMessage> messages;
   final ScrollController scrollController;
@@ -216,10 +231,14 @@ class ChatMessagesDisplay extends StatelessWidget {
           height: size,
           color: Theme.of(context).colorScheme.surface,
           child: isImg
-              ? Image.file(
-                  File(path),
-                  fit: BoxFit.cover,
-                  errorBuilder: (c, e, s) => _attachmentIconTile(context, path),
+              ? _buildThemeAwareImageForChat(
+                  context,
+                  Image.file(
+                    File(path),
+                    fit: BoxFit.cover,
+                    errorBuilder: (c, e, s) =>
+                        _attachmentIconTile(context, path),
+                  ),
                 )
               : _attachmentIconTile(context, path),
         ),
@@ -278,8 +297,8 @@ class ChatMessagesDisplay extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const CircleAvatar(
-                      radius: 14,
-                      child: Icon(Icons.token, size: 16),
+                      radius: 18,
+                      child: Icon(Icons.token, size: 18),
                     ),
                     IconButton(
                       visualDensity: VisualDensity.compact,
@@ -386,10 +405,14 @@ class ChatMessagesDisplay extends StatelessWidget {
             height: size,
             color: Theme.of(context).colorScheme.surface,
             child: isImg
-                ? Image.file(
-                    File(m),
-                    fit: BoxFit.cover,
-                    errorBuilder: (c, e, s) => _attachmentIconTile(context, m),
+                ? _buildThemeAwareImageForChat(
+                    context,
+                    Image.file(
+                      File(m),
+                      fit: BoxFit.cover,
+                      errorBuilder: (c, e, s) =>
+                          _attachmentIconTile(context, m),
+                    ),
                   )
                 : _attachmentIconTile(context, m),
           ),

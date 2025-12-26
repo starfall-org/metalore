@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/models/ai/provider.dart';
 import '../../../../shared/translate/tl.dart';
 
-
 class ModelPickerSheet extends StatelessWidget {
   final List<Provider> providers;
   final Map<String, bool> providerCollapsed;

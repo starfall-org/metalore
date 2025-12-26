@@ -51,8 +51,7 @@ class FilesActionSheet extends StatelessWidget {
                   Expanded(
                     child: _actionTile(
                       context,
-                      color:
-                          theme.colorScheme.secondary.withValues(alpha: 0.1),
+                      color: theme.colorScheme.secondary.withValues(alpha: 0.1),
                       icon: Icons.photo_library,
                       iconColor: theme.colorScheme.secondary,
                       label: 'Gallery',
