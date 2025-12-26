@@ -6,7 +6,6 @@ import '../../../../core/config/theme.dart';
 import '../../../../core/models/chat/message.dart';
 import '../../../../shared/translate/tl.dart';
 
-
 class ChatMessagesDisplay extends StatelessWidget {
   final List<ChatMessage> messages;
   final ScrollController scrollController;
@@ -18,6 +17,7 @@ class ChatMessagesDisplay extends StatelessWidget {
   final void Function(List<String> attachments)? onOpenAttachmentsSidebar;
   final VoidCallback? onRegenerate;
   final void Function(ChatMessage message)? onRead;
+  final void Function(ChatMessage message, int versionIndex)? onSwitchVersion;
 
   const ChatMessagesDisplay({
     super.key,
@@ -29,6 +29,7 @@ class ChatMessagesDisplay extends StatelessWidget {
     this.onOpenAttachmentsSidebar,
     this.onRegenerate,
     this.onRead,
+    this.onSwitchVersion,
   });
 
   @override
@@ -93,6 +94,53 @@ class ChatMessagesDisplay extends StatelessWidget {
                     child: MarkdownBody(
                       data: message.content,
                       selectable: true,
+                      styleSheet:
+                          MarkdownStyleSheet.fromTheme(
+                            Theme.of(context),
+                          ).copyWith(
+                            p: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontSize: 15.5,
+                              height: 1.5,
+                            ),
+                            listBullet: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium?.copyWith(fontSize: 15.5),
+                          ),
+                    ),
+                  ),
+                if (message.versions.length > 1 ||
+                    onCopy != null ||
+                    onEdit != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (message.versions.length > 1)
+                          _buildVersionSwitcher(context, message)
+                        else
+                          const SizedBox.shrink(),
+                        Row(
+                          children: [
+                            if (onCopy != null)
+                              IconButton(
+                                visualDensity: VisualDensity.compact,
+                                iconSize: 18,
+                                tooltip: tl('Copy'),
+                                icon: const Icon(Icons.copy),
+                                onPressed: () => onCopy?.call(message),
+                              ),
+                            if (onEdit != null)
+                              IconButton(
+                                visualDensity: VisualDensity.compact,
+                                iconSize: 18,
+                                tooltip: tl('Edit'),
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => onEdit?.call(message),
+                              ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -231,9 +279,11 @@ class ChatMessagesDisplay extends StatelessWidget {
                   children: [
                     const CircleAvatar(
                       radius: 14,
-                      child: Icon(Icons.smart_toy, size: 16),
+                      child: Icon(Icons.token, size: 16),
                     ),
                     IconButton(
+                      visualDensity: VisualDensity.compact,
+                      iconSize: 18,
                       icon: const Icon(Icons.volume_up),
                       tooltip: tl('Read'),
                       onPressed: () => onRead?.call(message),
@@ -269,12 +319,20 @@ class ChatMessagesDisplay extends StatelessWidget {
                     children: [
                       Row(
                         children: [
+                          if (message.versions.length > 1) ...[
+                            _buildVersionSwitcher(context, message),
+                            const SizedBox(width: 8),
+                          ],
                           IconButton(
+                            visualDensity: VisualDensity.compact,
+                            iconSize: 18,
                             tooltip: tl('Copy'),
                             icon: const Icon(Icons.copy),
                             onPressed: () => onCopy?.call(message),
                           ),
                           IconButton(
+                            visualDensity: VisualDensity.compact,
+                            iconSize: 18,
                             tooltip: tl('Regenerate'),
                             icon: const Icon(Icons.refresh),
                             onPressed: onRegenerate,
@@ -283,6 +341,7 @@ class ChatMessagesDisplay extends StatelessWidget {
                       ),
                       PopupMenuButton<String>(
                         tooltip: tl('More'),
+                        iconSize: 18,
                         icon: const Icon(Icons.more_vert),
                         onSelected: (value) {
                           switch (value) {
@@ -455,6 +514,51 @@ class ChatMessagesDisplay extends StatelessWidget {
         break;
     }
   }
+
+  Widget _buildVersionSwitcher(BuildContext context, ChatMessage message) {
+    final style = Theme.of(context).textTheme.labelSmall?.copyWith(
+      color: Theme.of(
+        context,
+      ).textTheme.labelSmall?.color?.withValues(alpha: 0.6),
+    );
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          icon: const Icon(Icons.chevron_left, size: 18),
+          onPressed: message.currentVersionIndex > 0
+              ? () => onSwitchVersion?.call(
+                  message,
+                  message.currentVersionIndex - 1,
+                )
+              : null,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Text(
+            '${message.currentVersionIndex + 1}/${message.versions.length}',
+            style: style,
+          ),
+        ),
+        IconButton(
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          icon: const Icon(Icons.chevron_right, size: 18),
+          onPressed: message.currentVersionIndex < message.versions.length - 1
+              ? () => onSwitchVersion?.call(
+                  message,
+                  message.currentVersionIndex + 1,
+                )
+              : null,
+        ),
+      ],
+    );
+  }
 }
 
 class _AnimatedMarkdown extends StatefulWidget {
@@ -522,7 +626,18 @@ class _AnimatedMarkdownState extends State<_AnimatedMarkdown>
       alignment: Alignment.topLeft,
       child: FadeTransition(
         opacity: _opacity,
-        child: MarkdownBody(data: _displayedContent ?? '', selectable: true),
+        child: MarkdownBody(
+          data: _displayedContent ?? '',
+          selectable: true,
+          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+            p: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontSize: 15.5, height: 1.5),
+            listBullet: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontSize: 15.5),
+          ),
+        ),
       ),
     );
   }

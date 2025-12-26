@@ -27,7 +27,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       setState(() {}); // Rebuild to show/hide FAB based on tab
     });
@@ -81,7 +81,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
       ),
 
       body: SafeArea(
-        top: false,
+        top: true,
         bottom: true,
         child: TabBarView(
           controller: _tabController,
@@ -95,153 +95,93 @@ class _AddProviderScreenState extends State<AddProviderScreen>
     return ListenableBuilder(
       listenable: _viewModel,
       builder: (context, child) {
-        return ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            CommonDropdown<ProviderType>(
-              value: _viewModel.selectedType,
-              labelText: tl('Compatibility'),
-              options: ProviderType.values.map((type) {
-                return DropdownOption<ProviderType>(
-                  value: type,
-                  label: type.name,
-                  icon: buildLogoIcon(
-                    _viewModel.vertexAI
-                        ? 'vertex-color'
-                        : _viewModel.azureAI
-                        ? 'azure-color'
-                        : type == ProviderType.openai
-                        ? 'openai'
-                        : type == ProviderType.google
-                        ? 'aistudio'
-                        : type == ProviderType.anthropic
-                        ? 'anthropic'
-                        : 'ollama',
-                    size: 24,
-                  ),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  _viewModel.updateSelectedType(value);
-                  _updateNameForType(value);
-                }
-              },
-            ),
-            if (_viewModel.selectedType == ProviderType.openai)
-              CheckboxListTile(
-                title: Text(tl('Azure AI')),
-                value: _viewModel.azureAI,
+        return SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              CommonDropdown<ProviderType>(
+                value: _viewModel.selectedType,
+                labelText: tl('Compatibility'),
+                options: ProviderType.values.map((type) {
+                  return DropdownOption<ProviderType>(
+                    value: type,
+                    label: type.name,
+                    icon: buildLogoIcon(
+                      _viewModel.vertexAI
+                          ? 'vertex-color'
+                          : _viewModel.azureAI
+                          ? 'azure-color'
+                          : type == ProviderType.openai
+                          ? 'openai'
+                          : type == ProviderType.google
+                          ? 'aistudio'
+                          : type == ProviderType.anthropic
+                          ? 'anthropic'
+                          : 'ollama',
+                      size: 24,
+                    ),
+                  );
+                }).toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    _viewModel.updateAzureAI(value);
+                    _viewModel.updateSelectedType(value);
+                    _updateNameForType(value);
                   }
                 },
-                controlAffinity: ListTileControlAffinity.leading,
               ),
-            if (_viewModel.selectedType == ProviderType.google)
-              CheckboxListTile(
-                title: Text(tl('Vertex AI')),
-                value: _viewModel.vertexAI,
-                onChanged: (value) {
-                  if (value != null) {
-                    _viewModel.updateVertexAI(value);
-                  }
-                },
-                controlAffinity: ListTileControlAffinity.leading,
+              if (_viewModel.selectedType == ProviderType.openai)
+                CheckboxListTile(
+                  title: Text(tl('Azure AI')),
+                  value: _viewModel.azureAI,
+                  onChanged: (value) {
+                    if (value != null) {
+                      _viewModel.updateAzureAI(value);
+                    }
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+              if (_viewModel.selectedType == ProviderType.google)
+                CheckboxListTile(
+                  title: Text(tl('Vertex AI')),
+                  value: _viewModel.vertexAI,
+                  onChanged: (value) {
+                    if (value != null) {
+                      _viewModel.updateVertexAI(value);
+                    }
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+              const SizedBox(height: 16),
+              CustomTextField(
+                controller: _viewModel.nameController,
+                label: 'Name',
               ),
-            const SizedBox(height: 16),
-            CustomTextField(
-              controller: _viewModel.nameController,
-              label: 'Name',
-            ),
-            const SizedBox(height: 16),
-            CustomTextField(
-              controller: _viewModel.apiKeyController,
-              label: 'API Key',
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            CustomTextField(
-              controller: _viewModel.baseUrlController,
-              label: 'Base URL',
-            ),
+              const SizedBox(height: 16),
+              CustomTextField(
+                controller: _viewModel.apiKeyController,
+                label: 'API Key',
+                obscureText: true,
+              ),
+              const SizedBox(height: 16),
+              CustomTextField(
+                controller: _viewModel.baseUrlController,
+                label: 'Base URL',
+              ),
 
-            const SizedBox(height: 8),
-            if (_viewModel.selectedType == ProviderType.openai)
-              CheckboxListTile(
-                title: Text(tl('Responses API')),
-                value: _viewModel.responsesApi,
-                onChanged: (value) {
-                  if (value != null) {
-                    _viewModel.updateResponsesApi(value);
-                  }
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-              ),
-            const SizedBox(height: 8),
-            if (_viewModel.selectedType == ProviderType.openai &&
-                _viewModel.responsesApi == false)
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(tl('Custom Routes')),
-                subtitle: Text(_viewModel.selectedType.name),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: _buildCustomRoutesSection(),
-                  ),
-                ],
-              ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  tl('Headers'),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 8),
+              if (_viewModel.selectedType == ProviderType.openai)
+                CheckboxListTile(
+                  title: Text(tl('Responses API')),
+                  value: _viewModel.responsesApi,
+                  onChanged: (value) {
+                    if (value != null) {
+                      _viewModel.updateResponsesApi(value);
+                    }
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add_circle_outline),
-                  onPressed: _viewModel.addHeader,
-                ),
-              ],
-            ),
-            ..._viewModel.headers.asMap().entries.map((entry) {
-              final index = entry.key;
-              final header = entry.value;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                        controller: header.key,
-                        label: 'Key',
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: CustomTextField(
-                        controller: header.value,
-                        label: 'Value',
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_circle_outline,
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                      onPressed: () => _viewModel.removeHeader(index),
-                    ),
-                  ],
-                ),
-              );
-            }),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -317,7 +257,7 @@ class _AddProviderScreenState extends State<AddProviderScreen>
                           final model = _viewModel.selectedModels[index];
                           return ModelCard(
                             model: model,
-                            onTap: () => _showModelCapabilities(model),
+                            onTap: () => _showEditModelSheet(model),
                             trailing: IconButton(
                               icon: Icon(
                                 Icons.delete,
@@ -339,7 +279,79 @@ class _AddProviderScreenState extends State<AddProviderScreen>
   }
 
   Widget _buildHttpTab() {
-    return Container();
+    return ListenableBuilder(
+      listenable: _viewModel,
+      builder: (context, child) {
+        return SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              if (_viewModel.selectedType == ProviderType.openai &&
+                  _viewModel.responsesApi == false)
+                ExpansionTile(
+                  title: Text(tl('Custom Routes')),
+                  subtitle: Text(_viewModel.selectedType.name),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: _buildCustomRoutesSection(),
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    tl('Headers'),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline),
+                    onPressed: _viewModel.addHeader,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              ..._viewModel.headers.asMap().entries.map((entry) {
+                final index = entry.key;
+                final header = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextField(
+                          controller: header.key,
+                          label: 'Key',
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: CustomTextField(
+                          controller: header.value,
+                          label: 'Value',
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.remove_circle_outline,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                        onPressed: () => _viewModel.removeHeader(index),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _showFetchModelsSheet() {
@@ -351,15 +363,10 @@ class _AddProviderScreenState extends State<AddProviderScreen>
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        side: BorderSide(
-          color: Theme.of(context).inputDecorationTheme.hintStyle?.color ?? 
-                 Theme.of(context).colorScheme.outline,
-          width: 1,
-        ),
       ),
       builder: (context) => FetchModelsSheet(
         viewModel: _viewModel,
-        onShowCapabilities: _showModelCapabilities,
+        onShowCapabilities: (_) {},
       ),
     );
   }
@@ -371,15 +378,26 @@ class _AddProviderScreenState extends State<AddProviderScreen>
       backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        side: BorderSide(
-          color: Theme.of(context).inputDecorationTheme.hintStyle?.color ?? 
-                 Theme.of(context).colorScheme.outline,
-          width: 1,
-        ),
       ),
       builder: (context) => EditModelSheet(
         viewModel: _viewModel,
-        onShowCapabilities: _showModelCapabilities,
+        onShowCapabilities: (_) {},
+      ),
+    );
+  }
+
+  void _showEditModelSheet(AIModel model) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => EditModelSheet(
+        viewModel: _viewModel,
+        modelToEdit: model,
+        onShowCapabilities: (_) {},
       ),
     );
   }
@@ -404,150 +422,5 @@ class _AddProviderScreenState extends State<AddProviderScreen>
           break;
       }
     }
-  }
-
-  void _showModelCapabilities(AIModel model) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('${'settings.capabilities'}: ${model.name}'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (model.input != null)
-              Wrap(
-                spacing: 8,
-                children: [
-                  if (model.input!.text)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.text_fields),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Text'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.tertiary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (model.input!.image)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.image_outlined),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Image'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (model.input!.audio)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.headset_outlined),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Audio'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (model.input!.video)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.movie_outlined),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Video'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-            if (model.output != null)
-              Wrap(
-                spacing: 8,
-                children: [
-                  if (model.output!.text)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.text_fields),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Text'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (model.output!.image)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.image),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Image'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (model.output!.audio)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.music_note),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Audio'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (model.output!.video)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.movie),
-                        const SizedBox(width: 4),
-                        Text(
-                          tl('Video'),
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(tl('Close')),
-          ),
-        ],
-      ),
-    );
   }
 }

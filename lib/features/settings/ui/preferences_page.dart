@@ -177,11 +177,6 @@ class _PreferencesPageState extends State<PreferencesPage> {
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        side: BorderSide(
-          color: Theme.of(context).inputDecorationTheme.hintStyle?.color ?? 
-                 Theme.of(context).colorScheme.outline,
-          width: 1,
-        ),
       ),
       builder: (context) => Container(
         decoration: BoxDecoration(

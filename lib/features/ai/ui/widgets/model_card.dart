@@ -54,19 +54,19 @@ class ModelCard extends StatelessWidget {
     switch (model.type) {
       case ModelType.chat:
         if (model.reasoning == true) {
-          return Icon(Icons.chat);
+          return Icon(Icons.chat_rounded);
         }
-        return Icon(Icons.chat_bubble);
+        return Icon(Icons.chat_bubble_rounded);
       case ModelType.image:
-        return Icon(Icons.image_search);
+        return Icon(Icons.image_search_rounded);
       case ModelType.audio:
         return Icon(Icons.music_video);
       case ModelType.video:
-        return Icon(Icons.local_movies);
+        return Icon(Icons.movie_creation_rounded);
       case ModelType.embed:
-        return Icon(Icons.compress_rounded);
+        return Icon(Icons.code_rounded);
       case ModelType.rerank:
-        return Icon(Icons.leaderboard);
+        return Icon(Icons.leaderboard_rounded);
     }
   }
 
@@ -106,10 +106,10 @@ class ModelCard extends StatelessWidget {
 
   List<Icon> _getIOIcons(AIModelIO io) {
     final List<Icon> icons = [];
-    if (io.text) icons.add(const Icon(Icons.text_fields, size: 16));
-    if (io.image) icons.add(const Icon(Icons.image_outlined, size: 16));
-    if (io.audio) icons.add(const Icon(Icons.music_note, size: 16));
-    if (io.video) icons.add(const Icon(Icons.movie, size: 16));
+    if (io.text) icons.add(const Icon(Icons.text_fields_rounded, size: 16));
+    if (io.image) icons.add(const Icon(Icons.image_rounded, size: 16));
+    if (io.audio) icons.add(const Icon(Icons.audio_file_rounded, size: 16));
+    if (io.video) icons.add(const Icon(Icons.video_file_rounded, size: 16));
     return icons;
   }
 

@@ -9,6 +9,8 @@ import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../services/chat_service.dart';
 import '../utils/chat_logic_utils.dart';
+import '../../../shared/prefs/preferences.dart';
+import '../../../shared/widgets/error_debug_dialog.dart';
 import '../ui/widgets/edit_message_sheet.dart';
 
 /// Controller responsible for message operations
@@ -32,6 +34,7 @@ class MessageController extends ChangeNotifier {
     required Function() onScrollToBottom,
     required Function() isNearBottom,
     List<String>? allowedToolNames,
+    BuildContext? context,
   }) async {
     final userMessage = ChatMessage(
       id: const Uuid().v4(),
@@ -74,6 +77,7 @@ class MessageController extends ChangeNotifier {
         onScrollToBottom: onScrollToBottom,
         isNearBottom: isNearBottom,
         allowedToolNames: allowedToolNames,
+        context: context,
       );
     } else {
       await _handleNonStreamResponse(
@@ -86,6 +90,7 @@ class MessageController extends ChangeNotifier {
         onSessionUpdate: onSessionUpdate,
         onScrollToBottom: onScrollToBottom,
         allowedToolNames: allowedToolNames,
+        context: context,
       );
     }
   }
@@ -101,6 +106,8 @@ class MessageController extends ChangeNotifier {
     required Function() onScrollToBottom,
     required Function() isNearBottom,
     List<String>? allowedToolNames,
+    String? existingMessageId,
+    BuildContext? context,
   }) async {
     final stream = ChatService.generateStream(
       userText: userText,
@@ -111,24 +118,41 @@ class MessageController extends ChangeNotifier {
       allowedToolNames: allowedToolNames,
     );
 
-    final modelId = const Uuid().v4();
-    var acc = '';
-    final placeholder = ChatMessage(
-      id: modelId,
-      role: ChatRole.model,
-      content: '',
-      timestamp: DateTime.now(),
-    );
+    final String modelId;
+    var session = currentSession;
 
-    var session = currentSession.copyWith(
-      messages: [...currentSession.messages, placeholder],
-      updatedAt: DateTime.now(),
-    );
+    if (existingMessageId != null) {
+      modelId = existingMessageId;
+      final idx = session.messages.indexWhere((m) => m.id == modelId);
+      if (idx != -1) {
+        final existing = session.messages[idx];
+        final withNewVersion = existing.addVersion(
+          MessageContent(content: '', timestamp: DateTime.now()),
+        );
+        final msgs = List<ChatMessage>.from(session.messages);
+        msgs[idx] = withNewVersion;
+        session = session.copyWith(messages: msgs, updatedAt: DateTime.now());
+      }
+    } else {
+      modelId = const Uuid().v4();
+      final placeholder = ChatMessage(
+        id: modelId,
+        role: ChatRole.model,
+        content: '',
+        timestamp: DateTime.now(),
+      );
+      session = session.copyWith(
+        messages: [...session.messages, placeholder],
+        updatedAt: DateTime.now(),
+      );
+    }
+
     onSessionUpdate(session);
 
     try {
       DateTime lastUpdate = DateTime.now();
       const throttleDuration = Duration(milliseconds: 100);
+      var acc = '';
 
       await for (final chunk in stream) {
         if (chunk.isEmpty) continue;
@@ -145,19 +169,8 @@ class MessageController extends ChangeNotifier {
         final idx = msgs.indexWhere((m) => m.id == modelId);
         if (idx != -1) {
           final old = msgs[idx];
-          msgs[idx] = ChatMessage(
-            id: old.id,
-            role: old.role,
-            content: acc,
-            timestamp: old.timestamp,
-            attachments: old.attachments,
-            reasoningContent: old.reasoningContent,
-            aiMedia: old.aiMedia,
-          );
-          session = session.copyWith(
-            messages: msgs,
-            updatedAt: DateTime.now(),
-          );
+          msgs[idx] = old.updateActiveContent(acc);
+          session = session.copyWith(messages: msgs, updatedAt: DateTime.now());
           onSessionUpdate(session);
 
           if (wasAtBottom) {
@@ -173,22 +186,21 @@ class MessageController extends ChangeNotifier {
       if (idx != -1) {
         final old = msgs[idx];
         if (old.content != acc) {
-          msgs[idx] = ChatMessage(
-            id: old.id,
-            role: old.role,
-            content: acc,
-            timestamp: old.timestamp,
-            attachments: old.attachments,
-            reasoningContent: old.reasoningContent,
-            aiMedia: old.aiMedia,
-          );
-          session = session.copyWith(
-            messages: msgs,
-            updatedAt: DateTime.now(),
-          );
+          msgs[idx] = old.updateActiveContent(acc);
+          session = session.copyWith(messages: msgs, updatedAt: DateTime.now());
           onSessionUpdate(session);
         }
       }
+    } catch (e, stackTrace) {
+      debugPrint('Error in _handleStreamResponse: $e');
+      debugPrint(stackTrace.toString());
+
+      if (context != null && context.mounted) {
+        if (PreferencesSp.instance.currentPreferences.debugMode) {
+          ErrorDebugDialog.show(context, error: e, stackTrace: stackTrace);
+        }
+      }
+      rethrow;
     } finally {
       isGenerating = false;
       notifyListeners();
@@ -208,33 +220,62 @@ class MessageController extends ChangeNotifier {
     required Function(Conversation) onSessionUpdate,
     required Function() onScrollToBottom,
     List<String>? allowedToolNames,
+    String? existingMessageId,
+    BuildContext? context,
   }) async {
-    final reply = await ChatService.generateReply(
-      userText: userText,
-      history: history,
-      profile: profile,
-      providerName: providerName,
-      modelName: modelName,
-      allowedToolNames: allowedToolNames,
-    );
+    try {
+      final reply = await ChatService.generateReply(
+        userText: userText,
+        history: history,
+        profile: profile,
+        providerName: providerName,
+        modelName: modelName,
+        allowedToolNames: allowedToolNames,
+      );
 
-    final modelMessage = ChatMessage(
-      id: const Uuid().v4(),
-      role: ChatRole.model,
-      content: reply,
-      timestamp: DateTime.now(),
-    );
+      var session = currentSession;
+      if (existingMessageId != null) {
+        final idx = session.messages.indexWhere(
+          (m) => m.id == existingMessageId,
+        );
+        if (idx != -1) {
+          final existing = session.messages[idx];
+          final updated = existing.addVersion(
+            MessageContent(content: reply, timestamp: DateTime.now()),
+          );
+          final msgs = List<ChatMessage>.from(session.messages);
+          msgs[idx] = updated;
+          session = session.copyWith(messages: msgs, updatedAt: DateTime.now());
+        }
+      } else {
+        final modelMessage = ChatMessage(
+          id: const Uuid().v4(),
+          role: ChatRole.model,
+          content: reply,
+          timestamp: DateTime.now(),
+        );
+        session = session.copyWith(
+          messages: [...session.messages, modelMessage],
+          updatedAt: DateTime.now(),
+        );
+      }
 
-    final session = currentSession.copyWith(
-      messages: [...currentSession.messages, modelMessage],
-      updatedAt: DateTime.now(),
-    );
+      onSessionUpdate(session);
+    } catch (e, stackTrace) {
+      debugPrint('Error in _handleNonStreamResponse: $e');
+      debugPrint(stackTrace.toString());
 
-    isGenerating = false;
-    notifyListeners();
-
-    onSessionUpdate(session);
-    onScrollToBottom();
+      if (context != null && context.mounted) {
+        if (PreferencesSp.instance.currentPreferences.debugMode) {
+          ErrorDebugDialog.show(context, error: e, stackTrace: stackTrace);
+        }
+      }
+      rethrow;
+    } finally {
+      isGenerating = false;
+      notifyListeners();
+      onScrollToBottom();
+    }
   }
 
   Future<String?> regenerateLast({
@@ -247,6 +288,7 @@ class MessageController extends ChangeNotifier {
     required Function() onScrollToBottom,
     required Function() isNearBottom,
     List<String>? allowedToolNames,
+    BuildContext? context,
   }) async {
     if (currentSession.messages.isEmpty) return null;
 
@@ -266,43 +308,67 @@ class MessageController extends ChangeNotifier {
     final userText = msgs[lastUserIndex].content;
     final history = msgs.take(lastUserIndex).toList();
 
+    // Check if there's an existing model response following the last user message
+    ChatMessage? existingModelMessage;
+    if (lastUserIndex < msgs.length - 1) {
+      final next = msgs[lastUserIndex + 1];
+      if (next.role == ChatRole.model) {
+        existingModelMessage = next;
+      }
+    }
+
     isGenerating = true;
     notifyListeners();
 
-    final baseMessages = [...history, msgs[lastUserIndex]];
-    var session = currentSession.copyWith(
-      messages: baseMessages,
-      updatedAt: DateTime.now(),
-    );
+    try {
+      // Preserve the message list up to the user message, plus the model message if we are regenerating it
+      final List<ChatMessage> baseMessages;
+      if (existingModelMessage != null) {
+        baseMessages = [...msgs.take(lastUserIndex + 1), existingModelMessage];
+      } else {
+        baseMessages = [...msgs.take(lastUserIndex + 1)];
+      }
 
-    if (enableStream) {
-      await _handleStreamResponse(
-        userText: userText,
-        history: history,
-        profile: profile,
-        providerName: providerName,
-        modelName: modelName,
-        currentSession: session,
-        onSessionUpdate: onSessionUpdate,
-        onScrollToBottom: onScrollToBottom,
-        isNearBottom: isNearBottom,
-        allowedToolNames: allowedToolNames,
+      var session = currentSession.copyWith(
+        messages: baseMessages,
+        updatedAt: DateTime.now(),
       );
-    } else {
-      await _handleNonStreamResponse(
-        userText: userText,
-        history: history,
-        profile: profile,
-        providerName: providerName,
-        modelName: modelName,
-        currentSession: session,
-        onSessionUpdate: onSessionUpdate,
-        onScrollToBottom: onScrollToBottom,
-        allowedToolNames: allowedToolNames,
-      );
+
+      if (enableStream) {
+        await _handleStreamResponse(
+          userText: userText,
+          history: history,
+          profile: profile,
+          providerName: providerName,
+          modelName: modelName,
+          currentSession: session,
+          onSessionUpdate: onSessionUpdate,
+          onScrollToBottom: onScrollToBottom,
+          isNearBottom: isNearBottom,
+          allowedToolNames: allowedToolNames,
+          existingMessageId: existingModelMessage?.id,
+          context: context,
+        );
+      } else {
+        await _handleNonStreamResponse(
+          userText: userText,
+          history: history,
+          profile: profile,
+          providerName: providerName,
+          modelName: modelName,
+          currentSession: session,
+          onSessionUpdate: onSessionUpdate,
+          onScrollToBottom: onScrollToBottom,
+          allowedToolNames: allowedToolNames,
+          existingMessageId: existingModelMessage?.id,
+          context: context,
+        );
+      }
+
+      return null;
+    } catch (e) {
+      return e.toString();
     }
-
-    return null;
   }
 
   Future<void> copyMessage(BuildContext context, ChatMessage message) async {
@@ -351,7 +417,9 @@ class MessageController extends ChangeNotifier {
       resend: result.resend,
       currentSession: currentSession,
       onSessionUpdate: onSessionUpdate,
-      regenerateCallback: result.resend ? () => regenerateCallback(context) : null,
+      regenerateCallback: result.resend
+          ? () => regenerateCallback(context)
+          : null,
     );
   }
 
@@ -368,14 +436,14 @@ class MessageController extends ChangeNotifier {
     final idx = msgs.indexWhere((m) => m.id == original.id);
     if (idx == -1) return;
 
-    final updated = ChatMessage(
-      id: original.id,
-      role: original.role,
-      content: newContent,
-      timestamp: original.timestamp,
-      attachments: newAttachments,
-      reasoningContent: original.reasoningContent,
-      aiMedia: original.aiMedia,
+    final updated = original.addVersion(
+      MessageContent(
+        content: newContent,
+        timestamp: DateTime.now(),
+        attachments: newAttachments,
+        reasoningContent: original.reasoningContent,
+        aiMedia: original.aiMedia,
+      ),
     );
     msgs[idx] = updated;
 
@@ -389,5 +457,25 @@ class MessageController extends ChangeNotifier {
     if (resend && regenerateCallback != null) {
       regenerateCallback();
     }
+  }
+
+  Future<void> switchMessageVersion({
+    required ChatMessage message,
+    required int index,
+    required Conversation currentSession,
+    required Function(Conversation) onSessionUpdate,
+  }) async {
+    final msgs = List<ChatMessage>.from(currentSession.messages);
+    final idx = msgs.indexWhere((m) => m.id == message.id);
+    if (idx == -1) return;
+
+    msgs[idx] = message.switchVersion(index);
+
+    final session = currentSession.copyWith(
+      messages: msgs,
+      updatedAt: DateTime.now(),
+    );
+
+    onSessionUpdate(session);
   }
 }

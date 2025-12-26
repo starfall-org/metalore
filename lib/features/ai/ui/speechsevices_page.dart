@@ -4,6 +4,7 @@ import '../../../core/data/speechservice_store.dart';
 import '../../../core/models/ai/speechservice.dart';
 import '../../../shared/translate/tl.dart';
 import 'views/edit_speechservice_screen.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 
 class SpeechServicesPage extends StatefulWidget {
   const SpeechServicesPage({super.key});
@@ -66,14 +67,25 @@ class _SpeechServicesPageState extends State<SpeechServicesPage> {
             ? Center(child: CircularProgressIndicator())
             : _profiles.isEmpty
             ? Center(child: Text(tl('No TTS profiles configured')))
-            : ListView.separated(
+            : ReorderableListView.builder(
                 itemCount: _profiles.length,
-                separatorBuilder: (context, index) => const Divider(height: 1),
+                onReorder: _onReorder,
                 itemBuilder: (context, index) =>
                     _buildProfileTile(_profiles[index]),
               ),
       ),
     );
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final SpeechService item = _profiles.removeAt(oldIndex);
+      _profiles.insert(newIndex, item);
+    });
+    _repository.saveOrder(_profiles.map((e) => e.id).toList());
   }
 
   Widget _buildProfileTile(SpeechService profile) {
@@ -88,9 +100,7 @@ class _SpeechServicesPageState extends State<SpeechServicesPage> {
       direction: DismissDirection.endToStart,
       onDismissed: (direction) {
         _deleteProfile(profile.id);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(tl('${profile.name} deleted'))));
+        context.showSuccessSnackBar(tl('${profile.name} deleted'));
       },
       child: ListTile(
         leading: CircleAvatar(

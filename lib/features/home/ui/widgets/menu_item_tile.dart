@@ -40,13 +40,8 @@ class MenuItemTile extends StatelessWidget {
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Row(
             children: [
               // Icon
@@ -54,7 +49,9 @@ class MenuItemTile extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: (iconColor ?? colorScheme.primary).withValues(alpha: 0.1),
+                  color: (iconColor ?? colorScheme.primary).withValues(
+                    alpha: 0.1,
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
@@ -64,7 +61,7 @@ class MenuItemTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              
+
               // Title và subtitle
               Expanded(
                 child: Column(
@@ -88,7 +85,7 @@ class MenuItemTile extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Badge
               if (badge != null) ...[
                 Container(
@@ -110,14 +107,6 @@ class MenuItemTile extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
               ],
-              
-              // Trailing arrow
-              if (showTrailing)
-                Icon(
-                  Icons.chevron_right,
-                  size: 20,
-                  color: colorScheme.onSurface.withValues(alpha: 0.3),
-                ),
             ],
           ),
         ),

@@ -63,7 +63,10 @@ abstract class SharedPreferencesBaseRepository<T> {
   List<String> getItemIds() {
     if (!Hive.isBoxOpen(_boxName)) return <String>[];
     final box = Hive.box(_boxName);
-    return box.keys.map((k) => k.toString()).toList();
+    return box.keys
+        .map((k) => k.toString())
+        .where((k) => !k.startsWith('__'))
+        .toList();
   }
 
   // CRUD
@@ -108,6 +111,7 @@ abstract class SharedPreferencesBaseRepository<T> {
 
     for (final key in box.keys) {
       final id = key.toString();
+      if (id.startsWith('__')) continue;
       final raw = box.get(id);
       if (raw == null) continue;
       try {
@@ -120,7 +124,40 @@ abstract class SharedPreferencesBaseRepository<T> {
         // skip malformed entry
       }
     }
+
+    // Apply persistent order if available
+    final order = getOrder();
+    if (order.isNotEmpty) {
+      final itemMap = {for (var item in items) getItemId(item): item};
+      final sortedItems = <T>[];
+      for (var id in order) {
+        if (itemMap.containsKey(id)) {
+          sortedItems.add(itemMap[id] as T);
+          itemMap.remove(id);
+        }
+      }
+      // append remaining items (if any new ones were added but not yet in order list)
+      sortedItems.addAll(itemMap.values);
+      return sortedItems;
+    }
+
     return items;
+  }
+
+  Future<void> saveOrder(List<String> ids) async {
+    final box = await _openBox();
+    await box.put('__order__', ids);
+    changeNotifier.value++;
+  }
+
+  List<String> getOrder() {
+    if (!Hive.isBoxOpen(_boxName)) return <String>[];
+    final box = Hive.box(_boxName);
+    final raw = box.get('__order__');
+    if (raw is List) {
+      return raw.cast<String>();
+    }
+    return <String>[];
   }
 
   Future<void> deleteItem(String id) async {

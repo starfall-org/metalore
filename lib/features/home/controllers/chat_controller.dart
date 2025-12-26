@@ -76,25 +76,32 @@ class ChatController extends ChangeNotifier {
   AIProfile? get selectedProfile => profileController.selectedProfile;
   bool get isLoading => sessionController.isLoading;
   bool get isGenerating => messageController.isGenerating;
-  List<String> get pendingAttachments => attachmentController.pendingAttachments;
-  List<String> get inspectingAttachments => attachmentController.inspectingAttachments;
+  List<String> get pendingAttachments =>
+      attachmentController.pendingAttachments;
+  List<String> get inspectingAttachments =>
+      attachmentController.inspectingAttachments;
   List<Provider> get providers => modelSelectionController.providers;
   List<MCPServer> get mcpServers => profileController.mcpServers;
-  Map<String, bool> get providerCollapsed => modelSelectionController.providerCollapsed;
-  String? get selectedProviderName => modelSelectionController.selectedProviderName;
+  Map<String, bool> get providerCollapsed =>
+      modelSelectionController.providerCollapsed;
+  String? get selectedProviderName =>
+      modelSelectionController.selectedProviderName;
   String? get selectedModelName => modelSelectionController.selectedModelName;
   dynamic get selectedAIModel => modelSelectionController.selectedAIModel;
 
   Future<void> initChat() => sessionController.initChat();
   Future<void> createNewSession() => sessionController.createNewSession();
-  Future<void> loadSession(String sessionId) => sessionController.loadSession(sessionId);
+  Future<void> loadSession(String sessionId) =>
+      sessionController.loadSession(sessionId);
   void clearLoadingState() => sessionController.clearLoadingState();
 
   Future<void> loadSelectedProfile() => profileController.loadSelectedProfile();
-  Future<void> updateProfile(AIProfile profile) => profileController.updateProfile(profile);
+  Future<void> updateProfile(AIProfile profile) =>
+      profileController.updateProfile(profile);
   Future<void> loadMCPServers() => profileController.loadMCPServers();
 
-  Future<void> refreshProviders() => modelSelectionController.refreshProviders();
+  Future<void> refreshProviders() =>
+      modelSelectionController.refreshProviders();
   void setProviderCollapsed(String providerName, bool collapsed) =>
       modelSelectionController.setProviderCollapsed(providerName, collapsed);
 
@@ -102,7 +109,8 @@ class ChatController extends ChangeNotifier {
       attachmentController.pickAttachments(context);
   Future<void> pickAttachmentsFromGallery(BuildContext context) =>
       attachmentController.pickAttachmentsFromGallery(context);
-  void removeAttachmentAt(int index) => attachmentController.removeAttachmentAt(index);
+  void removeAttachmentAt(int index) =>
+      attachmentController.removeAttachmentAt(index);
   void setInspectingAttachments(List<String> attachments) =>
       attachmentController.setInspectingAttachments(attachments);
   void openAttachmentsSidebar(List<String> attachments) =>
@@ -144,6 +152,8 @@ class ChatController extends ChangeNotifier {
 
     // Resolve provider and model
     final providerRepo = await ProviderRepository.init();
+    if (!context.mounted) return;
+
     final providersList = providerRepo.getProviders();
     final persist = shouldPersistSelections();
 
@@ -176,7 +186,8 @@ class ChatController extends ChangeNotifier {
     List<String>? allowedToolNames;
     if (persist) {
       if (currentSession!.enabledToolNames == null) {
-        final profile = selectedProfile ??
+        final profile =
+            selectedProfile ??
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
@@ -193,30 +204,40 @@ class ChatController extends ChangeNotifier {
       allowedToolNames = currentSession!.enabledToolNames;
     }
 
-    final profile = selectedProfile ??
+    final profile =
+        selectedProfile ??
         AIProfile(
           id: const Uuid().v4(),
           name: 'Default Profile',
           config: AiConfig(systemPrompt: '', enableStream: true),
         );
 
-    await messageController.sendMessage(
-      text: text,
-      attachments: attachments,
-      currentSession: currentSession!,
-      profile: profile,
-      providerName: providerName,
-      modelName: modelName,
-      enableStream: profile.config.enableStream,
-      onSessionUpdate: (session) {
-        sessionController.updateSession(session);
-        // ignore: discarded_futures
-        sessionController.saveCurrentSession();
-      },
-      onScrollToBottom: scrollToBottom,
-      isNearBottom: isNearBottom,
-      allowedToolNames: allowedToolNames,
-    );
+    if (!context.mounted) return;
+
+    try {
+      await messageController.sendMessage(
+        text: text,
+        attachments: attachments,
+        currentSession: currentSession!,
+        profile: profile,
+        providerName: providerName,
+        modelName: modelName,
+        enableStream: profile.config.enableStream,
+        onSessionUpdate: (session) {
+          sessionController.updateSession(session);
+          // ignore: discarded_futures
+          sessionController.saveCurrentSession();
+        },
+        onScrollToBottom: scrollToBottom,
+        isNearBottom: isNearBottom,
+        allowedToolNames: allowedToolNames,
+        context: context,
+      );
+    } catch (e) {
+      if (context.mounted) {
+        context.showErrorSnackBar(e.toString());
+      }
+    }
 
     scrollToBottom();
   }
@@ -225,6 +246,8 @@ class ChatController extends ChangeNotifier {
     if (currentSession == null) return;
 
     final providerRepo = await ProviderRepository.init();
+    if (!context.mounted) return;
+
     final providersList = providerRepo.getProviders();
     final persist = shouldPersistSelections();
 
@@ -255,7 +278,8 @@ class ChatController extends ChangeNotifier {
     List<String>? allowedToolNames;
     if (persist) {
       if (currentSession!.enabledToolNames == null) {
-        final profile = selectedProfile ??
+        final profile =
+            selectedProfile ??
             AIProfile(
               id: const Uuid().v4(),
               name: 'Default Profile',
@@ -272,12 +296,15 @@ class ChatController extends ChangeNotifier {
       allowedToolNames = currentSession!.enabledToolNames;
     }
 
-    final profile = selectedProfile ??
+    final profile =
+        selectedProfile ??
         AIProfile(
           id: const Uuid().v4(),
           name: 'Default Profile',
           config: AiConfig(systemPrompt: '', enableStream: true),
         );
+
+    if (!context.mounted) return;
 
     final errorMessage = await messageController.regenerateLast(
       currentSession: currentSession!,
@@ -293,6 +320,7 @@ class ChatController extends ChangeNotifier {
       onScrollToBottom: scrollToBottom,
       isNearBottom: isNearBottom,
       allowedToolNames: allowedToolNames,
+      context: context,
     );
 
     if (errorMessage != null && context.mounted) {
@@ -362,6 +390,20 @@ class ChatController extends ChangeNotifier {
         sessionController.saveCurrentSession();
       },
       regenerateLast,
+    );
+  }
+
+  Future<void> switchMessageVersion(ChatMessage message, int index) async {
+    if (currentSession == null) return;
+    await messageController.switchMessageVersion(
+      message: message,
+      index: index,
+      currentSession: currentSession!,
+      onSessionUpdate: (session) {
+        sessionController.updateSession(session);
+        // ignore: discarded_futures
+        sessionController.saveCurrentSession();
+      },
     );
   }
 

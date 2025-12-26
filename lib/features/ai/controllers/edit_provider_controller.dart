@@ -5,6 +5,7 @@ import '../../../core/data/ai_provider_store.dart';
 import '../../../core/models/ai/model.dart';
 import '../../../core/models/ai/provider.dart';
 import '../../../shared/translate/tl.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 
 class AddProviderViewModel extends ChangeNotifier {
   // Form State
@@ -155,9 +156,7 @@ class AddProviderViewModel extends ChangeNotifier {
 
   Future<void> fetchModels(BuildContext context) async {
     if (_apiKeyController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(tl('settings.enter_api_key'))));
+      context.showInfoSnackBar(tl('settings.enter_api_key'));
       return;
     }
 
@@ -256,9 +255,7 @@ class AddProviderViewModel extends ChangeNotifier {
         notifyListeners();
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(tl('Found ${models.length} models'))),
-          );
+          context.showSuccessSnackBar(tl('Found ${models.length} models'));
         }
       } else if (response.statusCode == 401) {
         throw Exception('settings.auth_error');
@@ -284,13 +281,7 @@ class AddProviderViewModel extends ChangeNotifier {
           errorMessage = e.toString().replaceFirst('Exception: ', '');
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMessage),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        context.showErrorSnackBar(errorMessage);
       }
     }
   }
@@ -358,9 +349,7 @@ class AddProviderViewModel extends ChangeNotifier {
     Provider? existingProvider,
   }) async {
     if (_nameController.text.isEmpty || _apiKeyController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(tl('settings.fill_required'))));
+      context.showInfoSnackBar(tl('settings.fill_required'));
       return;
     }
 
@@ -410,12 +399,7 @@ class AddProviderViewModel extends ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tl('Error saving provider: $e')),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        context.showErrorSnackBar(tl('Error saving provider: $e'));
       }
     }
   }

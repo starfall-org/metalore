@@ -7,7 +7,7 @@ import '../models/ai/profile.dart';
 
 class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
   static const String _prefix = 'profile';
-  static const String _selectedKey = 'ai_profile_settings:selected_id';
+  static const String _selectedKey = '__selected_id__';
 
   AIProfileRepository();
 

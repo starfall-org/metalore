@@ -9,7 +9,6 @@ class AppSidebar extends StatelessWidget {
   final double width;
   final SidebarPosition position;
   final Color? backgroundColor;
-  final BorderSide? borderSide;
 
   const AppSidebar({
     super.key,
@@ -17,18 +16,10 @@ class AppSidebar extends StatelessWidget {
     this.width = 300,
     this.position = SidebarPosition.left,
     this.backgroundColor,
-    this.borderSide,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final _ = backgroundColor ?? theme.scaffoldBackgroundColor;
-
-    final _ =
-        borderSide ??
-        BorderSide(color: theme.dividerColor.withAlpha(50), width: 1);
-
     return Container(
       width: width,
       height: double.infinity,
@@ -37,28 +28,6 @@ class AppSidebar extends StatelessWidget {
             (backgroundColor ??
             Theme.of(context).extension<SecondarySurface>()?.backgroundColor ??
             Theme.of(context).scaffoldBackgroundColor),
-        border: Border(
-          left: position == SidebarPosition.right
-              ? (borderSide ??
-                    Theme.of(
-                      context,
-                    ).extension<SecondarySurface>()?.borderSide ??
-                    BorderSide(
-                      color: theme.dividerColor.withAlpha(50),
-                      width: 1,
-                    ))
-              : BorderSide.none,
-          right: position == SidebarPosition.left
-              ? (borderSide ??
-                    Theme.of(
-                      context,
-                    ).extension<SecondarySurface>()?.borderSide ??
-                    BorderSide(
-                      color: theme.dividerColor.withAlpha(50),
-                      width: 1,
-                    ))
-              : BorderSide.none,
-        ),
       ),
       child: child,
     );

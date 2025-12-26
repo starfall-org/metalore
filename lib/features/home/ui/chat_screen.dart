@@ -297,6 +297,7 @@ class _ChatPageState extends State<ChatPage>
       },
       onRegenerate: () => _viewModel.regenerateLast(context),
       onRead: (m) => _viewModel.ttsService.speak(m.content),
+      onSwitchVersion: (m, idx) => _viewModel.switchMessageVersion(m, idx),
     );
   }
 

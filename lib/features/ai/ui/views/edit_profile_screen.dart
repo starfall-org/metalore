@@ -18,12 +18,18 @@ class AddProfileScreen extends StatefulWidget {
   State<AddProfileScreen> createState() => _AddProfileScreenState();
 }
 
-class _AddProfileScreenState extends State<AddProfileScreen> {
+class _AddProfileScreenState extends State<AddProfileScreen>
+    with SingleTickerProviderStateMixin {
   late AddAgentViewModel _viewModel;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      setState(() {}); // Rebuild to show/hide FAB based on tab
+    });
     _viewModel = AddAgentViewModel();
     _viewModel.initialize(widget.profile);
     _viewModel.addListener(() {
@@ -33,6 +39,7 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
 
   @override
   void dispose() {
+    _tabController.dispose();
     _viewModel.dispose();
     super.dispose();
   }
@@ -48,46 +55,54 @@ class _AddProfileScreenState extends State<AddProfileScreen> {
   Widget build(BuildContext context) {
     final isEditing = widget.profile != null;
 
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(isEditing ? 'Edit AI Profile' : 'Add AI Profile'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'Information'),
-              Tab(text: 'Configuration'),
-              Tab(text: 'Tools'),
-            ],
+    return Scaffold(
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (isEditing)
+            FloatingActionButton(
+              heroTag: "info",
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ViewProfileDialog(profile: widget.profile!),
+                  ),
+                );
+              },
+              child: const Icon(Icons.info_outline),
+            ),
+          if (isEditing) const SizedBox(width: 16),
+          FloatingActionButton.extended(
+            heroTag: "save",
+            onPressed: _saveAgent,
+            label: Text(tl('Save')),
+            icon: const Icon(Icons.check),
           ),
-          actions: [
-            if (isEditing)
-              IconButton(
-                icon: const Icon(Icons.info_outline),
-                tooltip: tl('AI Profile Details'),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ViewProfileDialog(profile: widget.profile!),
-                    ),
-                  );
-                },
-              ),
-            IconButton(icon: const Icon(Icons.check), onPressed: _saveAgent),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        elevation: 0,
+        child: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(icon: Icon(Icons.person), text: 'Info'),
+            Tab(icon: Icon(Icons.settings), text: 'Config'),
+            Tab(icon: Icon(Icons.build), text: 'Tools'),
           ],
         ),
-        body: SafeArea(
-          top: false,
-          bottom: true,
-          child: TabBarView(
-            children: [
-              _buildGeneralTab(),
-              _buildRequestTab(),
-              _buildToolsTab(),
-            ],
-          ),
+      ),
+      body: SafeArea(
+        top: true,
+        bottom: true,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildGeneralTab(),
+            _buildRequestTab(),
+            _buildToolsTab(),
+          ],
         ),
       ),
     );

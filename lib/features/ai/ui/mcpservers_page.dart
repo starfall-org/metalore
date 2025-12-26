@@ -9,6 +9,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
 import '../../../shared/utils/icon_builder.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 import 'views/edit_mcpserver_screen.dart';
 
 class MCPServersPage extends StatefulWidget {
@@ -63,16 +64,10 @@ class _MCPServersPageState extends State<MCPServersPage> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tl('Error loading MCP servers: $e')),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            action: SnackBarAction(
-              label: 'Retry',
-              textColor: Theme.of(context).colorScheme.onError,
-              onPressed: () => _loadServers(),
-            ),
-          ),
+        context.showErrorSnackBar(
+          tl('Error loading MCP servers: $e'),
+          onAction: () => _loadServers(),
+          actionLabel: tl('Retry'),
         );
       }
     }
@@ -83,18 +78,11 @@ class _MCPServersPageState extends State<MCPServersPage> {
       await _repository.deleteItem(id);
       await _loadServers(); // Use await to ensure proper sequencing
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(tl('MCP server has been deleted'))),
-        );
+        context.showSuccessSnackBar(tl('MCP server has been deleted'));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tl('Error deleting MCP server: $e')),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        context.showErrorSnackBar(tl('Error deleting MCP server: $e'));
       }
     }
   }
@@ -206,18 +194,31 @@ class _MCPServersPageState extends State<MCPServersPage> {
                 itemBuilder: (context, index) =>
                     _buildServerCard(_servers[index]),
               )
-            : ListView.builder(
+            : ReorderableListView.builder(
                 itemCount: _servers.length,
                 padding: const EdgeInsets.symmetric(vertical: 8),
+                onReorder: _onReorder,
                 itemBuilder: (context, index) =>
-                    _buildServerTile(_servers[index]),
+                    _buildServerTile(_servers[index], index),
               ),
       ),
     );
   }
 
-  Widget _buildServerTile(MCPServer server) {
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final MCPServer item = _servers.removeAt(oldIndex);
+      _servers.insert(newIndex, item);
+    });
+    _repository.saveOrder(_servers.map((e) => e.id).toList());
+  }
+
+  Widget _buildServerTile(MCPServer server, int index) {
     return ResourceTile(
+      key: ValueKey(server.id),
       title: server.name,
       subtitle: _getServerSubtitle(server),
       leadingIcon: buildIcon(server.name),
@@ -292,4 +293,3 @@ class _MCPServersPageState extends State<MCPServersPage> {
     }
   }
 }
-

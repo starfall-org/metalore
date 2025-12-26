@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 
 import 'core/app_routes.dart';
-import 'core/config/routes.dart';
 import 'core/config/theme.dart';
 import 'shared/prefs/appearance.dart';
 
@@ -46,33 +45,55 @@ class AIGatewayApp extends StatelessWidget {
             final Color customTextColor = Color(settings.textColor);
             final Color customTextHintColor = Color(settings.textHintColor);
 
-            final bool useCustomTextColor = (lightScheme.brightness == Brightness.light && customTextColor.computeLuminance() < 0.5) ||
-                                             (lightScheme.brightness == Brightness.dark && customTextColor.computeLuminance() > 0.5);
+            final bool useCustomTextColor =
+                (lightScheme.brightness == Brightness.light &&
+                    customTextColor.computeLuminance() < 0.5) ||
+                (lightScheme.brightness == Brightness.dark &&
+                    customTextColor.computeLuminance() > 0.5);
 
             final TextTheme customLightTextTheme = useCustomTextColor
-                ? const TextTheme().apply(bodyColor: customTextColor, displayColor: customTextColor)
+                ? const TextTheme().apply(
+                    bodyColor: customTextColor,
+                    displayColor: customTextColor,
+                  )
                 : const TextTheme();
 
-            final bool useCustomTextColorDark = (darkScheme.brightness == Brightness.light && customTextColor.computeLuminance() < 0.5) ||
-                                                (darkScheme.brightness == Brightness.dark && customTextColor.computeLuminance() > 0.5);
+            final bool useCustomTextColorDark =
+                (darkScheme.brightness == Brightness.light &&
+                    customTextColor.computeLuminance() < 0.5) ||
+                (darkScheme.brightness == Brightness.dark &&
+                    customTextColor.computeLuminance() > 0.5);
 
             final TextTheme customDarkTextTheme = useCustomTextColorDark
-                ? const TextTheme().apply(bodyColor: customTextColor, displayColor: customTextColor)
+                ? const TextTheme().apply(
+                    bodyColor: customTextColor,
+                    displayColor: customTextColor,
+                  )
                 : const TextTheme();
 
             // Update hint colors in the theme
-            final bool useCustomHintColor = (lightScheme.brightness == Brightness.light && customTextHintColor.computeLuminance() < 0.5) ||
-                                             (lightScheme.brightness == Brightness.dark && customTextHintColor.computeLuminance() > 0.5);
+            final bool useCustomHintColor =
+                (lightScheme.brightness == Brightness.light &&
+                    customTextHintColor.computeLuminance() < 0.5) ||
+                (lightScheme.brightness == Brightness.dark &&
+                    customTextHintColor.computeLuminance() > 0.5);
             final InputDecorationTheme lightInputDecorationTheme =
                 InputDecorationTheme(
-                  hintStyle: useCustomHintColor ? TextStyle(color: customTextHintColor) : null,
+                  hintStyle: useCustomHintColor
+                      ? TextStyle(color: customTextHintColor)
+                      : null,
                 );
 
-            final bool useCustomHintColorDark = (darkScheme.brightness == Brightness.light && customTextHintColor.computeLuminance() < 0.5) ||
-                                                (darkScheme.brightness == Brightness.dark && customTextHintColor.computeLuminance() > 0.5);
+            final bool useCustomHintColorDark =
+                (darkScheme.brightness == Brightness.light &&
+                    customTextHintColor.computeLuminance() < 0.5) ||
+                (darkScheme.brightness == Brightness.dark &&
+                    customTextHintColor.computeLuminance() > 0.5);
             final InputDecorationTheme darkInputDecorationTheme =
                 InputDecorationTheme(
-                  hintStyle: useCustomHintColorDark ? TextStyle(color: customTextHintColor) : null,
+                  hintStyle: useCustomHintColorDark
+                      ? TextStyle(color: customTextHintColor)
+                      : null,
                 );
 
             // Main background colors
@@ -97,20 +118,12 @@ class AIGatewayApp extends StatelessWidget {
               lightScheme,
               lightMainBg,
             );
-            final BorderSide lightBorderSide = BorderSide(
-              color: customTextHintColor,
-              width: 1,
-            );
 
             // Dark palette surfaces
             final Color darkSecondaryBg = deriveSecondaryBg(
               Brightness.dark,
               darkScheme,
               darkMainBg,
-            );
-            final BorderSide darkBorderSide = BorderSide(
-              color: customTextHintColor,
-              width: 1,
             );
 
             return MaterialApp(
@@ -130,31 +143,38 @@ class AIGatewayApp extends StatelessWidget {
                     systemNavigationBarColor: Colors.transparent,
                     systemNavigationBarDividerColor: Colors.transparent,
                     systemNavigationBarIconBrightness: Brightness.dark,
+                    systemNavigationBarContrastEnforced: false,
                   ),
                 ),
                 dialogTheme: DialogThemeData(
                   backgroundColor: lightSecondaryBg,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
-                    side: lightBorderSide,
                   ),
                 ),
                 drawerTheme: DrawerThemeData(
                   backgroundColor: lightSecondaryBg,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
-                    side: lightBorderSide,
                   ),
                 ),
                 navigationDrawerTheme: NavigationDrawerThemeData(
                   backgroundColor: lightSecondaryBg,
                 ),
                 extensions: <ThemeExtension<dynamic>>[
-                  SecondarySurface(
-                    backgroundColor: lightSecondaryBg,
-                    borderSide: lightBorderSide,
-                  ),
+                  SecondarySurface(backgroundColor: lightSecondaryBg),
                 ],
+                snackBarTheme: SnackBarThemeData(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: lightScheme.surfaceContainerHighest,
+                  contentTextStyle: TextStyle(
+                    color: lightScheme.onSurfaceVariant,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 6,
+                ),
               ),
               darkTheme: ThemeData(
                 colorScheme: darkScheme,
@@ -169,34 +189,41 @@ class AIGatewayApp extends StatelessWidget {
                     systemNavigationBarColor: Colors.transparent,
                     systemNavigationBarDividerColor: Colors.transparent,
                     systemNavigationBarIconBrightness: Brightness.light,
+                    systemNavigationBarContrastEnforced: false,
                   ),
                 ),
                 dialogTheme: DialogThemeData(
                   backgroundColor: darkSecondaryBg,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
-                    side: darkBorderSide,
                   ),
                 ),
                 drawerTheme: DrawerThemeData(
                   backgroundColor: darkSecondaryBg,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero,
-                    side: darkBorderSide,
                   ),
                 ),
                 navigationDrawerTheme: NavigationDrawerThemeData(
                   backgroundColor: darkSecondaryBg,
                 ),
                 extensions: <ThemeExtension<dynamic>>[
-                  SecondarySurface(
-                    backgroundColor: darkSecondaryBg,
-                    borderSide: darkBorderSide,
-                  ),
+                  SecondarySurface(backgroundColor: darkSecondaryBg),
                 ],
+                snackBarTheme: SnackBarThemeData(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: darkScheme.surfaceContainerHighest,
+                  contentTextStyle: TextStyle(
+                    color: darkScheme.onSurfaceVariant,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 6,
+                ),
               ),
               onGenerateRoute: generateRoute,
-              initialRoute: AppRoutes.chat,
+              initialRoute: '/',
             );
           },
         );

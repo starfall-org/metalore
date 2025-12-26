@@ -7,6 +7,7 @@ import '../../../core/data/mcpserver_store.dart';
 import '../../../core/models/ai/profile.dart';
 import '../../../core/models/mcp/mcp_server.dart';
 import '../../../shared/translate/tl.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 
 /// Options for chat persistence: On, Off, and Disable
 /// - On: Enable chat persistence
@@ -93,9 +94,7 @@ class AddAgentViewModel extends ChangeNotifier {
     BuildContext context,
   ) async {
     if (nameController.text.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(tl('AI Profile Name'))));
+      context.showInfoSnackBar(tl('AI Profile Name'));
       return;
     }
 

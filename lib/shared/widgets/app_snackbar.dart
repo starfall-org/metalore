@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// Kiểu hiển thị của snackbar
@@ -207,94 +208,91 @@ class AppSnackBar extends StatelessWidget {
     final textColor = _getTextColor(context);
     final icon = _getIcon();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            color: backgroundColor.withValues(alpha: 0.85),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: textColor.withValues(alpha: 0.1),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.2),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
-        ],
+          child: Row(
+            children: [
+              // Icon
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: textColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: textColor, size: 22),
+              ),
+              const SizedBox(width: 14),
+
+              // Nội dung message
+              Expanded(
+                child: Text(
+                  message,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: textColor,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ),
+
+              // Nút action hoặc undo
+              if (onAction != null && actionLabel != null) ...[
+                const SizedBox(width: 12),
+                _buildActionButton(context, actionLabel!, onAction!, textColor),
+              ] else if (onUndo != null) ...[
+                const SizedBox(width: 12),
+                _buildActionButton(
+                  context,
+                  undoLabel ?? 'Hoàn tác',
+                  onUndo!,
+                  textColor,
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
-      child: Row(
-        children: [
-          // Icon
-          Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              color: textColor.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Icon(icon, color: textColor, size: 20),
-          ),
-          const SizedBox(width: 12),
+    );
+  }
 
-          // Nội dung message
-          Expanded(
-            child: Text(
-              message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: textColor,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-
-          // Nút action hoặc undo
-          if (onAction != null && actionLabel != null) ...[
-            const SizedBox(width: 8),
-            TextButton(
-              onPressed: onAction,
-              style: TextButton.styleFrom(
-                foregroundColor: textColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                side: BorderSide(
-                  color:
-                      Theme.of(context).inputDecorationTheme.hintStyle?.color ??
-                      Theme.of(context).colorScheme.outline,
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                actionLabel!,
-                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ] else if (onUndo != null) ...[
-            const SizedBox(width: 8),
-            TextButton(
-              onPressed: onUndo,
-              style: TextButton.styleFrom(
-                foregroundColor: textColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                side: BorderSide(
-                  color:
-                      Theme.of(context).inputDecorationTheme.hintStyle?.color ??
-                      Theme.of(context).colorScheme.outline,
-                  width: 1,
-                ),
-              ),
-              child: Text(
-                undoLabel ?? 'Hoàn tác',
-                style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        ],
+  Widget _buildActionButton(
+    BuildContext context,
+    String label,
+    VoidCallback onPressed,
+    Color textColor,
+  ) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        foregroundColor: textColor,
+        backgroundColor: textColor.withValues(alpha: 0.15),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
       ),
     );
   }

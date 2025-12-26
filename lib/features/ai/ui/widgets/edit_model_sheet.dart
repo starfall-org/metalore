@@ -30,7 +30,11 @@ class _EditModelSheetState extends State<EditModelSheet> {
 
   ModelType _selectedType = ModelType.chat;
   AIModelIO _selectedInputs = AIModelIO(text: true, image: false, audio: false);
-  AIModelIO _selectedOutputs = AIModelIO(text: true, image: false, audio: false);
+  AIModelIO _selectedOutputs = AIModelIO(
+    text: true,
+    image: false,
+    audio: false,
+  );
   bool _reasoning = false;
 
   @override
@@ -48,8 +52,10 @@ class _EditModelSheetState extends State<EditModelSheet> {
 
     if (model != null) {
       _selectedType = model.type;
-      _selectedInputs = model.input ?? AIModelIO(text: true, image: false, audio: false);
-      _selectedOutputs = model.output ?? AIModelIO(text: true, image: false, audio: false);
+      _selectedInputs =
+          model.input ?? AIModelIO(text: true, image: false, audio: false);
+      _selectedOutputs =
+          model.output ?? AIModelIO(text: true, image: false, audio: false);
       _reasoning = model.reasoning;
     }
   }
@@ -91,253 +97,238 @@ class _EditModelSheetState extends State<EditModelSheet> {
   Widget build(BuildContext context) {
     return Drawer(
       width: 400,
-      child: Column(
-        children: [
-          // Header
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Text(
-                  widget.modelToEdit != null ? 'Edit Model' : 'Add Model',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Form Content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextField(
+                        controller: _nameController,
+                        label: tl('ID'),
+                        hint: tl('eg: gemini-flash'),
+                        validator: (v) =>
+                            v?.isEmpty == true ? 'Required' : null,
+                      ),
+                      const SizedBox(height: 16),
 
-          // Form Content
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextField(
-                      controller: _nameController,
-                      label: 'ID',
-                      hint: 'eg: gemini-flash',
-                      validator: (v) => v?.isEmpty == true ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 16),
+                      CustomTextField(
+                        controller: _displayNameController,
+                        label: tl('Display Name'),
+                        hint: tl('eg: Gemini Flash'),
+                        validator: (v) =>
+                            v?.isEmpty == true ? 'Required' : null,
+                      ),
+                      const SizedBox(height: 16),
 
-                    CustomTextField(
-                      controller: _displayNameController,
-                      label: 'Display Name',
-                      hint: 'eg: Gemini Flash',
-                      validator: (v) => v?.isEmpty == true ? 'Required' : null,
-                    ),
-                    const SizedBox(height: 16),
+                      CustomTextField(
+                        controller: _iconController,
+                        label: tl('Icon'),
+                        hint: tl('Icon url'),
+                      ),
+                      const SizedBox(height: 16),
 
-                    CustomTextField(
-                      controller: _iconController,
-                      label: 'Icon',
-                      hint: 'Icon url or path',
-                    ),
-                    const SizedBox(height: 16),
+                      CommonDropdown<ModelType>(
+                        labelText: tl('Type'),
+                        value: _selectedType,
+                        options: ModelType.values
+                            .map(
+                              (e) => DropdownOption(
+                                value: e,
+                                label: e.name
+                                    .replaceAll(RegExp(r'(?<!^)(?=[A-Z])'), ' ')
+                                    .capitalize(),
+                                icon: _getModelTypeIcon(e),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) {
+                          if (v != null) setState(() => _selectedType = v);
+                        },
+                      ),
+                      const SizedBox(height: 16),
 
-                    CommonDropdown<ModelType>(
-                      labelText: tl('Type'),
-                      value: _selectedType,
-                      options: ModelType.values
-                          .map(
-                            (e) => DropdownOption(
-                              value: e,
-                              label: e.name
-                                  .replaceAll(RegExp(r'(?<!^)(?=[A-Z])'), ' ')
-                                  .capitalize(),
-                              icon: _getModelTypeIcon(e),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (v) {
-                        if (v != null) setState(() => _selectedType = v);
-                      },
-                    ),
-                    const SizedBox(height: 16),
+                      CustomTextField(
+                        controller: _contextWindowController,
+                        label: 'Context Window',
 
-                    CustomTextField(
-                      controller: _contextWindowController,
-                      label: 'Context Window',
+                        keyboardType: TextInputType.number,
+                      ),
+                      const SizedBox(height: 16),
 
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 16),
+                      SwitchListTile(
+                        title: Text(tl('Reasoning')),
+                        value: _reasoning,
+                        onChanged: (v) => setState(() => _reasoning = v),
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      const SizedBox(height: 16),
 
-                    SwitchListTile(
-                      title: Text(tl('Reasoning')),
-                      value: _reasoning,
-                      onChanged: (v) => setState(() => _reasoning = v),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    const SizedBox(height: 16),
+                      Text(
+                        tl('Input Types'),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        children: [
+                          FilterChip(
+                            label: Icon(Icons.text_fields_rounded),
+                            selected: _selectedInputs.text,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedInputs.text = true;
+                                } else {
+                                  _selectedInputs.text = false;
+                                }
+                              });
+                            },
+                          ),
+                          FilterChip(
+                            label: Icon(Icons.image_rounded),
+                            selected: _selectedInputs.image,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedInputs.image = true;
+                                } else {
+                                  _selectedInputs.image = false;
+                                }
+                              });
+                            },
+                          ),
+                          FilterChip(
+                            label: Icon(Icons.audio_file_rounded),
+                            selected: _selectedInputs.audio,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedInputs.audio = true;
+                                } else {
+                                  _selectedInputs.audio = false;
+                                }
+                              });
+                            },
+                          ),
+                          FilterChip(
+                            label: Icon(Icons.video_file_rounded),
+                            selected: _selectedInputs.video,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedInputs.video = true;
+                                } else {
+                                  _selectedInputs.video = false;
+                                }
+                              });
+                            },
+                          ),
+                        ],
 
-                    Text(
-                      tl('Input Types'),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        FilterChip(
-                          label: Text(tl('Text')),
-                          selected: _selectedInputs.text,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedInputs.text = true;
-                              } else {
-                                _selectedInputs.text = false;
-                              }
-                            });
-                          },
-                        ),
-                        FilterChip(
-                          label: Text(tl('Image')),
-                          selected: _selectedInputs.image,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedInputs.image = true;
-                              } else {
-                                _selectedInputs.image = false;
-                              }
-                            });
-                          },
-                        ),
-                        FilterChip(
-                          label: Text(tl('Audio')),
-                          selected: _selectedInputs.audio,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedInputs.audio = true;
-                              } else {
-                                _selectedInputs.audio = false;
-                              }
-                            });
-                          },
-                        ),
-                        FilterChip(
-                          label: Text(tl('Video')),
-                          selected: _selectedInputs.video,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedInputs.video = true;
-                              } else {
-                                _selectedInputs.video = false;
-                              }
-                            });
-                          },
-                        ),
-                      ],
+                        //AIModelIO.values.map((type) {
+                      ),
+                      const SizedBox(height: 16),
 
-                      //AIModelIO.values.map((type) {
-                    ),
-                    const SizedBox(height: 16),
-
-                    Text(
-                      tl('Output Types'),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        FilterChip(
-                          label: Text(tl('Text')),
-                          selected: _selectedOutputs.text,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedOutputs.text = true;
-                              } else {
-                                _selectedOutputs.text = false;
-                              }
-                            });
-                          },
-                        ),
-                        FilterChip(
-                          label: Text(tl('Image')),
-                          selected: _selectedOutputs.image,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedOutputs.image = true;
-                              } else {
-                                _selectedOutputs.image = false;
-                              }
-                            });
-                          },
-                        ),
-                        FilterChip(
-                          label: Text(tl('Audio')),
-                          selected: _selectedOutputs.audio,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedOutputs.audio = true;
-                              } else {
-                                _selectedOutputs.audio = false;
-                              }
-                            });
-                          },
-                        ),
-                        FilterChip(
-                          label: Text(tl('Video')),
-                          selected: _selectedOutputs.video,
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selectedOutputs.video = true;
-                              } else {
-                                _selectedOutputs.video = false;
-                              }
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                      Text(
+                        tl('Output Types'),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        children: [
+                          FilterChip(
+                            label: Icon(Icons.text_fields_rounded),
+                            selected: _selectedOutputs.text,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedOutputs.text = true;
+                                } else {
+                                  _selectedOutputs.text = false;
+                                }
+                              });
+                            },
+                          ),
+                          FilterChip(
+                            label: Icon(Icons.image_rounded),
+                            selected: _selectedOutputs.image,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedOutputs.image = true;
+                                } else {
+                                  _selectedOutputs.image = false;
+                                }
+                              });
+                            },
+                          ),
+                          FilterChip(
+                            label: Icon(Icons.audio_file_rounded),
+                            selected: _selectedOutputs.audio,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedOutputs.audio = true;
+                                } else {
+                                  _selectedOutputs.audio = false;
+                                }
+                              });
+                            },
+                          ),
+                          FilterChip(
+                            label: Icon(Icons.video_file_rounded),
+                            selected: _selectedOutputs.video,
+                            onSelected: (selected) {
+                              setState(() {
+                                if (selected) {
+                                  _selectedOutputs.video = true;
+                                } else {
+                                  _selectedOutputs.video = false;
+                                }
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
 
-          // Footer Actions
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text(tl('Cancel')),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: FilledButton(
-                    onPressed: _save,
-                    child: Text(
-                      widget.modelToEdit != null ? 'Save' : 'common.add',
+            // Footer Actions
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(tl('Cancel')),
                     ),
                   ),
-                ),
-              ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _save,
+                      child: Text(
+                        widget.modelToEdit != null ? tl("Save") : tl("Add"),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -345,17 +336,17 @@ class _EditModelSheetState extends State<EditModelSheet> {
   Widget _getModelTypeIcon(ModelType type) {
     switch (type) {
       case ModelType.chat:
-        return Icon(Icons.chat);
+        return Icon(Icons.chat_rounded);
       case ModelType.image:
-        return Icon(Icons.image_search);
+        return Icon(Icons.image_rounded);
       case ModelType.audio:
-        return Icon(Icons.music_video);
+        return Icon(Icons.music_video_rounded);
       case ModelType.video:
-        return Icon(Icons.local_movies);
+        return Icon(Icons.movie_creation_rounded);
       case ModelType.embed:
-        return Icon(Icons.compress_rounded);
+        return Icon(Icons.code_rounded);
       case ModelType.rerank:
-        return Icon(Icons.leaderboard);
+        return Icon(Icons.leaderboard_rounded);
     }
   }
 }

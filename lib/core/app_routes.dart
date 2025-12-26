@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../features/ai/ui/mcpservers_page.dart';
 import '../features/ai/ui/profiles_page.dart';
 import '../features/ai/ui/providers_page.dart';
 import '../features/ai/ui/speechsevices_page.dart';
 import '../features/home/ui/chat_screen.dart';
-import '../features/home/ui/home_screen.dart';
 import '../features/settings/ui/about_page.dart';
 import '../features/settings/ui/appearance_page.dart';
 import '../features/settings/ui/preferences_page.dart';
@@ -17,8 +17,6 @@ import 'config/routes.dart';
 /// Generate a route based on the route name.
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
-    case AppRoutes.home:
-      return MaterialPageRoute(builder: (_) => const HomePage());
     case AppRoutes.chat:
       return MaterialPageRoute(builder: (_) => const ChatPage());
     case AppRoutes.settings:
@@ -40,7 +38,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case AppRoutes.aiProfiles:
       return MaterialPageRoute(builder: (_) => const AIProfilesScreen());
     case AppRoutes.mcpServers:
-      return MaterialPageRoute(builder: (_) => const HomePage());
+      return MaterialPageRoute(builder: (_) => const MCPServersPage());
     default:
       // Log the undefined route for debugging
       debugPrint(

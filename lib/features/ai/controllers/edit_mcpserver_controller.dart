@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/data/mcpserver_store.dart';
 import '../../../core/models/mcp/mcp_server.dart';
 import '../../../shared/translate/tl.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 
 class EditMCPServerViewModel extends ChangeNotifier {
   // Repository
@@ -38,15 +39,17 @@ class EditMCPServerViewModel extends ChangeNotifier {
       nameController.text = server.name;
       descriptionController.text = server.description ?? '';
       _selectedTransport = server.transport;
-      
+
       if (server.httpConfig != null) {
         urlController.text = server.httpConfig!.url;
         _headers.clear();
         server.httpConfig!.headers?.forEach((key, value) {
-          _headers.add(HeaderPair(
-            TextEditingController(text: key),
-            TextEditingController(text: value),
-          ));
+          _headers.add(
+            HeaderPair(
+              TextEditingController(text: key),
+              TextEditingController(text: value),
+            ),
+          );
         });
       }
       notifyListeners();
@@ -61,7 +64,7 @@ class EditMCPServerViewModel extends ChangeNotifier {
   void updateTransport(MCPTransportType transport) {
     if (_selectedTransport != transport) {
       _selectedTransport = transport;
-      
+
       // Clear URL for stdio transport
       if (transport == MCPTransportType.stdio) {
         urlController.clear();
@@ -69,16 +72,13 @@ class EditMCPServerViewModel extends ChangeNotifier {
       } else if (_headers.isEmpty) {
         addHeader(); // Add default header for HTTP transports
       }
-      
+
       notifyListeners();
     }
   }
 
   void addHeader() {
-    _headers.add(HeaderPair(
-      TextEditingController(),
-      TextEditingController(),
-    ));
+    _headers.add(HeaderPair(TextEditingController(), TextEditingController()));
     notifyListeners();
   }
 
@@ -95,7 +95,7 @@ class EditMCPServerViewModel extends ChangeNotifier {
       return tl('Please enter a server name');
     }
 
-    if (_selectedTransport != MCPTransportType.stdio && 
+    if (_selectedTransport != MCPTransportType.stdio &&
         urlController.text.trim().isEmpty) {
       return tl('Please enter a server URL');
     }
@@ -115,12 +115,9 @@ class EditMCPServerViewModel extends ChangeNotifier {
   Future<void> saveServer(BuildContext context) async {
     final validationError = validateForm();
     if (validationError != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(validationError),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
+      if (context.mounted) {
+        context.showErrorSnackBar(validationError);
+      }
       return;
     }
 
@@ -139,10 +136,12 @@ class EditMCPServerViewModel extends ChangeNotifier {
       }
 
       final server = MCPServer(
-        id: _editingServerId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            _editingServerId ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         name: nameController.text.trim(),
-        description: descriptionController.text.trim().isEmpty 
-            ? null 
+        description: descriptionController.text.trim().isEmpty
+            ? null
             : descriptionController.text.trim(),
         transport: _selectedTransport,
         httpConfig: _selectedTransport != MCPTransportType.stdio
@@ -156,16 +155,12 @@ class EditMCPServerViewModel extends ChangeNotifier {
       if (isEditMode) {
         await _repository.updateItem(server);
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(tl('MCP server updated successfully'))),
-          );
+          context.showSuccessSnackBar(tl('MCP server updated successfully'));
         }
       } else {
         await _repository.addItem(server);
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(tl('MCP server added successfully'))),
-          );
+          context.showSuccessSnackBar(tl('MCP server added successfully'));
         }
       }
 
@@ -174,12 +169,7 @@ class EditMCPServerViewModel extends ChangeNotifier {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tl('Error saving MCP server: $e')),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        context.showErrorSnackBar(tl('Error saving MCP server: $e'));
       }
     } finally {
       _isLoading = false;

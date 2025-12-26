@@ -9,6 +9,7 @@ import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';
 import '../../../shared/utils/icon_builder.dart';
+import '../../../shared/widgets/app_snackbar.dart';
 import 'views/edit_provider_screen.dart';
 
 class AiProvidersPage extends StatefulWidget {
@@ -63,16 +64,10 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tl('Error loading providers: $e')),
-            backgroundColor: Theme.of(context).colorScheme.error,
-            action: SnackBarAction(
-              label: 'Retry',
-              textColor: Theme.of(context).colorScheme.onError,
-              onPressed: () => _loadProviders(),
-            ),
-          ),
+        context.showErrorSnackBar(
+          tl('Error loading providers: $e'),
+          onAction: () => _loadProviders(),
+          actionLabel: tl('Retry'),
         );
       }
     }
@@ -83,18 +78,11 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
       await _repository.deleteProvider(name);
       await _loadProviders(); // Use await to ensure proper sequencing
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(tl('Provider $name has been deleted'))),
-        );
+        context.showSuccessSnackBar(tl('Provider $name has been deleted'));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(tl('Error deleting provider: $e')),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
+        context.showErrorSnackBar(tl('Error deleting provider: $e'));
       }
     }
   }
@@ -162,19 +150,31 @@ class _AiProvidersPageState extends State<AiProvidersPage> {
                 itemBuilder: (context, index) =>
                     _buildProviderCard(_providers[index]),
               )
-            : ListView.builder(
-                // Changed to Builder for better perf
+            : ReorderableListView.builder(
                 itemCount: _providers.length,
                 padding: const EdgeInsets.symmetric(vertical: 8),
+                onReorder: _onReorder,
                 itemBuilder: (context, index) =>
-                    _buildProviderTile(_providers[index]),
+                    _buildProviderTile(_providers[index], index),
               ),
       ),
     );
   }
 
-  Widget _buildProviderTile(Provider provider) {
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (oldIndex < newIndex) {
+        newIndex -= 1;
+      }
+      final Provider item = _providers.removeAt(oldIndex);
+      _providers.insert(newIndex, item);
+    });
+    _repository.saveOrder(_providers.map((e) => e.name).toList());
+  }
+
+  Widget _buildProviderTile(Provider provider, int index) {
     return ResourceTile(
+      key: ValueKey(provider.name),
       title: provider.name,
       subtitle: '${provider.models.length} models',
       leadingIcon: buildIcon(provider.name),

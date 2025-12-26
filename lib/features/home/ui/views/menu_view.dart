@@ -72,13 +72,6 @@ class MenuView extends StatelessWidget {
                 child: ListView(
                   padding: const EdgeInsets.all(16),
                   children: [
-                    _buildSectionTitle(context, 'Main'),
-                    const SizedBox(height: 8),
-                    MenuItemTile(
-                      icon: Icons.home_outlined,
-                      title: tl('Home'),
-                      route: AppRoutes.home,
-                    ),
                     const SizedBox(height: 24),
                     _buildSectionTitle(context, 'AI Features'),
                     const SizedBox(height: 8),
