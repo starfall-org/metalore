@@ -15,6 +15,7 @@ enum ProviderType {
 }
 
 class Provider {
+  final String id;
   final String name;
   final ProviderType type;
   final String? apiKey;
@@ -30,6 +31,7 @@ class Provider {
   final List<AIModel> models;
 
   Provider({
+    String? id,
     required this.type,
     String? name,
     this.apiKey,
@@ -43,9 +45,14 @@ class Provider {
     this.azureConfig,
     this.headers = const {},
     this.models = const [],
-  }) : name = name ?? _defaultName(type),
+  }) : id = id ?? _generateId(),
+       name = name ?? _defaultName(type),
 
        baseUrl = baseUrl ?? _defaultBaseUrl(type);
+
+  static String _generateId() {
+    return DateTime.now().millisecondsSinceEpoch.toString() + '_' + (1000 + DateTime.now().microsecond).toString();
+  }
 
   static String _defaultName(ProviderType type) {
     switch (type) {
@@ -84,6 +91,7 @@ class Provider {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'type': type.name,
       'name': name,
       'icon': icon,
@@ -124,6 +132,7 @@ class Provider {
     }
 
     return Provider(
+      id: json['id'] as String?,
       type: ProviderType.values.firstWhere((e) => e.name == json['type']),
       name: json['name'] as String?,
       icon: (json['icon'] as String?) ?? '',

@@ -84,8 +84,8 @@ class ChatController extends ChangeNotifier {
   List<MCPServer> get mcpServers => profileController.mcpServers;
   Map<String, bool> get providerCollapsed =>
       modelSelectionController.providerCollapsed;
-  String? get selectedProviderName =>
-      modelSelectionController.selectedProviderName;
+  String? get selectedProviderId =>
+      modelSelectionController.selectedProviderId;
   String? get selectedModelName => modelSelectionController.selectedModelName;
   dynamic get selectedAIModel => modelSelectionController.selectedAIModel;
 
@@ -102,8 +102,8 @@ class ChatController extends ChangeNotifier {
 
   Future<void> refreshProviders() =>
       modelSelectionController.refreshProviders();
-  void setProviderCollapsed(String providerName, bool collapsed) =>
-      modelSelectionController.setProviderCollapsed(providerName, collapsed);
+  void setProviderCollapsed(String providerId, bool collapsed) =>
+      modelSelectionController.setProviderCollapsed(providerId, collapsed);
 
   Future<void> pickAttachments(BuildContext context) =>
       attachmentController.pickAttachments(context);
@@ -160,7 +160,7 @@ class ChatController extends ChangeNotifier {
     final selection = ChatLogicUtils.resolveProviderAndModel(
       currentSession: currentSession,
       persistSelection: persist,
-      selectedProvider: selectedProviderName,
+      selectedProvider: selectedProviderId,
       selectedModel: selectedModelName,
       providers: providersList,
     );
@@ -254,7 +254,7 @@ class ChatController extends ChangeNotifier {
     final selection = ChatLogicUtils.resolveProviderAndModel(
       currentSession: currentSession,
       persistSelection: persist,
-      selectedProvider: selectedProviderName,
+      selectedProvider: selectedProviderId,
       selectedModel: selectedModelName,
       providers: providersList,
     );

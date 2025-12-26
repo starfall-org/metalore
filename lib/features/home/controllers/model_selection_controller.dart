@@ -12,7 +12,7 @@ class ModelSelectionController extends ChangeNotifier {
   StreamSubscription? _providerSubscription;
   List<Provider> providers = [];
   final Map<String, bool> providerCollapsed = {}; // true = collapsed
-  String? selectedProviderName;
+  String? selectedProviderId;
   String? selectedModelName;
 
   ModelSelectionController({
@@ -24,10 +24,10 @@ class ModelSelectionController extends ChangeNotifier {
   }
 
   AIModel? get selectedAIModel {
-    if (selectedProviderName == null || selectedModelName == null) return null;
+    if (selectedProviderId == null || selectedModelName == null) return null;
     try {
       final provider = providers.firstWhere(
-        (p) => p.name == selectedProviderName,
+        (p) => p.id == selectedProviderId,
       );
       return provider.models.firstWhere((m) => m.name == selectedModelName);
     } catch (e) {
@@ -39,28 +39,28 @@ class ModelSelectionController extends ChangeNotifier {
     providers = providerRepository.getProviders();
     // Initialize collapse map entries for unseen providers
     for (final p in providers) {
-      providerCollapsed.putIfAbsent(p.name, () => false);
+      providerCollapsed.putIfAbsent(p.id, () => false);
     }
     notifyListeners();
   }
 
-  void setProviderCollapsed(String providerName, bool collapsed) {
-    providerCollapsed[providerName] = collapsed;
+  void setProviderCollapsed(String providerId, bool collapsed) {
+    providerCollapsed[providerId] = collapsed;
     notifyListeners();
   }
 
-  void selectModel(String providerName, String modelName) {
-    selectedProviderName = providerName;
+  void selectModel(String providerId, String modelName) {
+    selectedProviderId = providerId;
     selectedModelName = modelName;
     notifyListeners();
   }
 
   void loadSelectionFromSession({
-    String? providerName,
+    String? providerId,
     String? modelName,
   }) {
-    if (providerName != null && modelName != null) {
-      selectedProviderName = providerName;
+    if (providerId != null && modelName != null) {
+      selectedProviderId = providerId;
       selectedModelName = modelName;
       notifyListeners();
     }

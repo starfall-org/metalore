@@ -39,8 +39,17 @@ class ChatLogicUtils {
       );
     }
 
-    final providerName =
-        selectedProvider ?? (providers.isNotEmpty ? providers.first.name : '');
+    String providerName;
+    
+    if (selectedProvider != null) {
+      final selectedProviderObj = providers.firstWhere(
+        (p) => p.id == selectedProvider,
+        orElse: () => providers.first,
+      );
+      providerName = selectedProviderObj.name;
+    } else {
+      providerName = providers.isNotEmpty ? providers.first.name : '';
+    }
 
     final modelName =
         selectedModel ??

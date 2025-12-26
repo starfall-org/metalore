@@ -10,7 +10,7 @@ class ConversationsDrawer extends StatefulWidget {
   final Function(String) onSessionSelected;
   final VoidCallback onNewChat;
   final VoidCallback? onAgentChanged;
-  final String? selectedProviderName;
+  final String? selectedProviderId;
   final String? selectedModelName;
 
   const ConversationsDrawer({
@@ -18,7 +18,7 @@ class ConversationsDrawer extends StatefulWidget {
     required this.onSessionSelected,
     required this.onNewChat,
     this.onAgentChanged,
-    this.selectedProviderName,
+    this.selectedProviderId,
     this.selectedModelName,
   });
 
@@ -205,7 +205,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
   }
 
   Widget _buildModelIcon() {
-    if (widget.selectedProviderName != null &&
+    if (widget.selectedProviderId != null &&
         widget.selectedModelName != null) {
       return buildIcon(widget.selectedModelName!);
     }

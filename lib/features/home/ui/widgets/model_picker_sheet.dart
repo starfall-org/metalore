@@ -6,16 +6,16 @@ import '../../../../shared/translate/tl.dart';
 class ModelPickerSheet extends StatelessWidget {
   final List<Provider> providers;
   final Map<String, bool> providerCollapsed;
-  final String? selectedProviderName;
+  final String? selectedProviderId;
   final String? selectedModelName;
-  final Function(String providerName, bool collapsed) onToggleProvider;
-  final Function(String providerName, String modelName) onSelectModel;
+  final Function(String providerId, bool collapsed) onToggleProvider;
+  final Function(String providerId, String modelName) onSelectModel;
 
   const ModelPickerSheet({
     super.key,
     required this.providers,
     required this.providerCollapsed,
-    this.selectedProviderName,
+    this.selectedProviderId,
     this.selectedModelName,
     required this.onToggleProvider,
     required this.onSelectModel,
@@ -67,7 +67,7 @@ class ModelPickerSheet extends StatelessWidget {
                 child: ListView(
                   shrinkWrap: true,
                   children: providers.map((provider) {
-                    final collapsed = providerCollapsed[provider.name] ?? false;
+                    final collapsed = providerCollapsed[provider.id] ?? false;
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -95,12 +95,12 @@ class ModelPickerSheet extends StatelessWidget {
                             collapsed ? Icons.expand_more : Icons.expand_less,
                           ),
                           onTap: () =>
-                              onToggleProvider(provider.name, !collapsed),
+                              onToggleProvider(provider.id, !collapsed),
                         ),
                         if (!collapsed)
                           ...provider.models.map((model) {
                             final isSelected =
-                                selectedProviderName == provider.name &&
+                                selectedProviderId == provider.id &&
                                 selectedModelName == model.name;
                             return ListTile(
                               contentPadding: const EdgeInsets.only(
@@ -119,7 +119,7 @@ class ModelPickerSheet extends StatelessWidget {
                                     )
                                   : null,
                               onTap: () {
-                                onSelectModel(provider.name, model.name);
+                                onSelectModel(provider.id, model.name);
                                 Navigator.pop(context);
                               },
                             );
@@ -154,10 +154,10 @@ class ModelPickerSheet extends StatelessWidget {
     BuildContext context, {
     required List<Provider> providers,
     required Map<String, bool> providerCollapsed,
-    String? selectedProviderName,
+    String? selectedProviderId,
     String? selectedModelName,
-    required Function(String providerName, bool collapsed) onToggleProvider,
-    required Function(String providerName, String modelName) onSelectModel,
+    required Function(String providerId, bool collapsed) onToggleProvider,
+    required Function(String providerId, String modelName) onSelectModel,
   }) {
     showModalBottomSheet(
       context: context,
@@ -171,7 +171,7 @@ class ModelPickerSheet extends StatelessWidget {
         child: ModelPickerSheet(
           providers: providers,
           providerCollapsed: providerCollapsed,
-          selectedProviderName: selectedProviderName,
+          selectedProviderId: selectedProviderId,
           selectedModelName: selectedModelName,
           onToggleProvider: onToggleProvider,
           onSelectModel: onSelectModel,

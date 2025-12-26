@@ -231,7 +231,7 @@ class _ChatPageState extends State<ChatPage>
             onAgentChanged: () {
               _viewModel.loadSelectedProfile();
             },
-            selectedProviderName: _viewModel.selectedProviderName,
+            selectedProviderId: _viewModel.selectedProviderId,
             selectedModelName: _viewModel.selectedModelName,
           ),
           // Drawer bên phải hiển thị tệp đính kèm
@@ -312,13 +312,13 @@ class _ChatPageState extends State<ChatPage>
       context,
       providers: _viewModel.providers,
       providerCollapsed: _viewModel.providerCollapsed,
-      selectedProviderName: _viewModel.selectedProviderName,
+      selectedProviderId: _viewModel.selectedProviderId,
       selectedModelName: _viewModel.selectedModelName,
-      onToggleProvider: (providerName, collapsed) {
-        _viewModel.setProviderCollapsed(providerName, collapsed);
+      onToggleProvider: (providerId, collapsed) {
+        _viewModel.setProviderCollapsed(providerId, collapsed);
       },
-      onSelectModel: (providerName, modelName) {
-        _viewModel.selectModel(providerName, modelName);
+      onSelectModel: (providerId, modelName) {
+        _viewModel.selectModel(providerId, modelName);
       },
     );
   }
