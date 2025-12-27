@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/model.dart';
+import '../../../../core/models/ai_model/base.dart';
 import '../../../../shared/utils/icon_builder.dart';
 import '../../../../shared/widgets/item_card.dart';
 

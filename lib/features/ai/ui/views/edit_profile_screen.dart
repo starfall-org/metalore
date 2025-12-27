@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/models/ai/profile.dart';
+import '../../../../core/models/ai_features/profile.dart';
 import '../../../../shared/translate/tl.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../settings/ui/widgets/settings_card.dart';

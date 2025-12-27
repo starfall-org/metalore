@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import '../../../core/data/ai_provider_store.dart';
-import '../../../core/models/ai/provider.dart';
-import '../../../core/models/ai/model.dart';
+import '../../../core/models/ai_features/provider.dart';
+import '../../../core/models/ai_model/base.dart';
 
 /// Controller responsible for provider and model selection
 class ModelSelectionController extends ChangeNotifier {

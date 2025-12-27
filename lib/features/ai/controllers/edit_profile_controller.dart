@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/data/ai_profile_store.dart';
 import '../../../core/data/mcpserver_store.dart';
-import '../../../core/models/ai/profile.dart';
+import '../../../core/models/ai_features/profile.dart';
 import '../../../core/models/mcp/mcp_server.dart';
 import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/app_snackbar.dart';

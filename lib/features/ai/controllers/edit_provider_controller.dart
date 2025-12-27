@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../../core/data/ai_provider_store.dart';
-import '../../../core/models/ai/model.dart';
-import '../../../core/models/ai/provider.dart';
+import '../../../core/models/ai_model/base.dart';
+import '../../../core/models/ai_features/provider.dart';
 import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 

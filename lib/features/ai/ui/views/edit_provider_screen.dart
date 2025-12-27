@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/model.dart';
-import '../../../../core/models/ai/provider.dart';
+import '../../../../core/models/ai_model/base.dart';
+import '../../../../core/models/ai_features/provider.dart';
 import '../../../../shared/translate/tl.dart';
 import '../../../../shared/widgets/common_dropdown.dart';
 import '../../../../shared/widgets/custom_text_field.dart';

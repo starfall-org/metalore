@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/models/ai/profile.dart';
+import '../../../../core/models/ai_features/profile.dart';
 import '../../../../core/models/mcp/mcp_server.dart';
 import '../../../../shared/translate/tl.dart';
 import '../../controllers/chat_controller.dart';

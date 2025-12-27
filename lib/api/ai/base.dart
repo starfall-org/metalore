@@ -1,7 +1,7 @@
-import '../../core/models/ai/api.dart';
-import '../../core/models/ai/model.dart';
-export '../../core/models/ai/api.dart';
-export '../../core/models/ai/model.dart';
+import '../../core/models/ai_features/api.dart';
+import '../../core/models/ai_model/base.dart';
+export '../../core/models/ai_features/api.dart';
+export '../../core/models/ai_model/base.dart';
 
 
 abstract class AIBaseApi {

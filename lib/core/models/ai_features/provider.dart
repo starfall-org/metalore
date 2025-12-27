@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'model.dart';
+import '../ai_model/base.dart';
 
 
 enum ProviderType {

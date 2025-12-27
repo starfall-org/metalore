@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'base.dart';
 
-import '../models/ai/provider.dart';
+import '../models/ai_features/provider.dart';
 
 
 class ProviderRepository extends SharedPreferencesBaseRepository<Provider> {

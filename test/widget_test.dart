@@ -6,12 +6,12 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ai_gateway/app.dart';
+import 'package:metalore/app.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const AIGatewayApp());
+    await tester.pumpWidget(const MetaloreApp());
 
     // Verify that our app title is present.
     // Note: The title in the AppBar is 'Chào Hỏi Và Hỗ Trợ'

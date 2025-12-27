@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'base.dart';
-import '../models/ai/profile.dart';
+import '../models/ai_features/profile.dart';
 
 class AIProfileRepository extends SharedPreferencesBaseRepository<AIProfile> {
   static const String _prefix = 'profile';

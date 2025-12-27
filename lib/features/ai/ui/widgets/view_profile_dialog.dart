@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai/profile.dart';
+import '../../../../core/models/ai_features/profile.dart';
 import '../../../../core/data/ai_profile_store.dart';
 import '../../../../shared/translate/tl.dart';
 import '../views/edit_profile_screen.dart';

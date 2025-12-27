@@ -4,7 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/models/chat/message.dart';
 import '../../../core/models/chat/conversation.dart';
-import '../../../core/models/ai/profile.dart';
+import '../../../core/models/ai_features/profile.dart';
 import '../../../shared/translate/tl.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../services/chat_service.dart';

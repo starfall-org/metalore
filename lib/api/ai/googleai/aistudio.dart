@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '../../../core/models/ai/provider.dart';
+import '../../../core/models/ai_features/provider.dart';
 import '../base.dart';
 
 class GoogleAIStudio {
