@@ -201,10 +201,10 @@ class AIModelIO {
 
   factory AIModelIO.fromJson(Map<String, dynamic> json) {
     return AIModelIO(
-      text: json['text'] as bool,
-      image: json['image'] as bool,
-      video: json['video'] as bool,
-      audio: json['audio'] as bool,
+      text: json['text'] == true,
+      image: json['image'] == true,
+      video: json['video'] == true,
+      audio: json['audio'] == true,
     );
   }
 
@@ -226,9 +226,9 @@ class BuiltInTools {
 
   factory BuiltInTools.fromJson(Map<String, dynamic> json) {
     return BuiltInTools(
-      urlContext: json['urlContext'] as bool,
-      googleSearch: json['googleSearch'] as bool,
-      codeExecution: json['codeExecution'] as bool,
+      urlContext: json['urlContext'] == true,
+      googleSearch: json['googleSearch'] == true,
+      codeExecution: json['codeExecution'] == true,
     );
   }
 

@@ -80,7 +80,7 @@ class Conversation {
               .toList() ??
           [],
       tokenCount: json['tokenCount'] as int,
-      isAgentConversation: json['isAgentConversation'] as bool,
+      isAgentConversation: json['isAgentConversation'] == true,
       providerName: json['providerName'] as String?,
       modelName: json['modelName'] as String?,
       enabledToolNames: (json['enabledToolNames'] as List?)
