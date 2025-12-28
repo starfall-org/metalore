@@ -81,13 +81,16 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     if (difference.inMinutes < 1) {
       return tl('Just now');
     } else if (difference.inMinutes < 60) {
-      return tl('${difference.inMinutes}m ago');
+      final minutes = difference.inMinutes;
+      return tl('${minutes}m ago');
     } else if (difference.inHours < 24) {
-      return tl('${difference.inHours}h ago');
+      final hours = difference.inHours;
+      return tl('${hours}h ago');
     } else if (difference.inDays < 7) {
-      return tl('${difference.inDays}d ago');
+      final days = difference.inDays;
+      return tl('${days}d ago');
     } else {
-      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+      return tl('${dateTime.day}/${dateTime.month}/${dateTime.year}');
     }
   }
 
@@ -95,26 +98,24 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Drawer(
       backgroundColor: colorScheme.surface,
       child: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context, theme, isDark),
+            _buildHeader(context, theme, colorScheme),
             Expanded(
-              child: _buildContent(context, theme, colorScheme, isDark),
+              child: _buildContent(context, theme, colorScheme),
             ),
-            _buildFooter(context, theme, colorScheme, isDark),
+            _buildFooter(context, theme, colorScheme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, ThemeData theme, bool isDark) {
-    final colorScheme = theme.colorScheme;
+  Widget _buildHeader(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 56, 20, 16),
@@ -163,14 +164,13 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
-    bool isDark,
   ) {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       children: [
         _buildNewChatButton(context, theme, colorScheme),
         const SizedBox(height: 24),
-        _buildRecentSection(context, theme, colorScheme, isDark),
+        _buildRecentSection(context, theme, colorScheme),
       ],
     );
   }
@@ -183,10 +183,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
-        onPressed: () {
-          Navigator.pop(context);
-          widget.onNewChat();
-        },
+        onPressed: widget.onNewChat,
         icon: const Icon(Icons.chat_bubble_outline, size: 20),
         label: Text(
           tl('New Chat'),
@@ -213,7 +210,6 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
-    bool isDark,
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,7 +240,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
           )
         else
           ..._filteredSessions.map((session) =>
-              _buildHistoryItem(session, theme, colorScheme, isDark)),
+              _buildHistoryItem(session, theme, colorScheme)),
       ],
     );
   }
@@ -253,7 +249,6 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     Conversation session,
     ThemeData theme,
     ColorScheme colorScheme,
-    bool isDark,
   ) {
     return Dismissible(
       key: Key(session.id),
@@ -272,10 +267,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
         _deleteSession(session.id);
       },
       child: InkWell(
-        onTap: () {
-          Navigator.pop(context);
-          widget.onSessionSelected(session.id);
-        },
+        onTap: () => widget.onSessionSelected(session.id),
         borderRadius: BorderRadius.circular(12),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -325,7 +317,6 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
-    bool isDark,
   ) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -339,9 +330,9 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
       ),
       child: Column(
         children: [
-          _buildActiveProfileButton(context, theme, colorScheme, isDark),
+          _buildActiveProfileButton(context, theme, colorScheme),
           const SizedBox(height: 16),
-          _buildUserProfile(context, theme, colorScheme, isDark),
+          _buildUserProfile(context, theme, colorScheme),
         ],
       ),
     );
@@ -351,7 +342,6 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
-    bool isDark,
   ) {
     final profileName = widget.selectedProfile?.name ?? tl('Standard Gateway');
 
@@ -363,8 +353,8 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
             builder: (context) => const AIProfilesScreen(),
           ),
         );
-        if (result == true && widget.onAgentChanged != null) {
-          widget.onAgentChanged!();
+        if (result == true) {
+          widget.onAgentChanged?.call();
         }
       },
       borderRadius: BorderRadius.circular(12),
@@ -448,8 +438,8 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     BuildContext context,
     ThemeData theme,
     ColorScheme colorScheme,
-    bool isDark,
   ) {
+    // TODO: Replace with actual user data from a user repository/service.
     final userName = tl('User');
     final userEmail = tl('user@example.com');
 
