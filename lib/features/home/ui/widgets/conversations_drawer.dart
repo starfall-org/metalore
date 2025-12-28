@@ -79,13 +79,13 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     final difference = now.difference(dateTime);
 
     if (difference.inMinutes < 1) {
-      return 'Just now';
+      return tl('Just now');
     } else if (difference.inMinutes < 60) {
-      return '${difference.inMinutes}m ago';
+      return tl('${difference.inMinutes}m ago');
     } else if (difference.inHours < 24) {
-      return '${difference.inHours}h ago';
+      return tl('${difference.inHours}h ago');
     } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
+      return tl('${difference.inDays}d ago');
     } else {
       return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
     }
@@ -102,62 +102,50 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
       child: SafeArea(
         child: Column(
           children: [
-            _buildHeader(context),
+            _buildHeader(context, theme, isDark),
             Expanded(
-              child: _buildContent(context),
+              child: _buildContent(context, theme, colorScheme, isDark),
             ),
-            _buildFooter(context),
+            _buildFooter(context, theme, colorScheme, isDark),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget _buildHeader(BuildContext context, ThemeData theme, bool isDark) {
     final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 56, 20, 16),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: isDark
-                ? const Color(0xFF2D333B)
-                : const Color(0xFFE5E7EB),
+            color: colorScheme.outlineVariant,
             width: 1,
           ),
         ),
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark
-              ? const Color(0xFF1E2329)
-              : const Color(0xFFF3F4F6),
+          color: colorScheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(12),
         ),
         child: TextField(
           controller: _searchController,
           style: TextStyle(
-            color: isDark
-                ? const Color(0xFFF9FAFB)
-                : const Color(0xFF111827),
+            color: colorScheme.onSurface,
             fontSize: 14,
           ),
           decoration: InputDecoration(
-            hintText: 'Search history...',
+            hintText: tl('Search history...'),
             hintStyle: TextStyle(
-              color: isDark
-                  ? const Color(0xFF9CA3AF)
-                  : const Color(0xFF6B7280),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               fontSize: 14,
             ),
             prefixIcon: Icon(
               Icons.search,
-              color: isDark
-                  ? const Color(0xFF9CA3AF)
-                  : const Color(0xFF6B7280),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               size: 20,
             ),
             border: InputBorder.none,
@@ -171,24 +159,27 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     );
   }
 
-  Widget _buildContent(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
+  Widget _buildContent(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       children: [
-        _buildNewChatButton(context),
+        _buildNewChatButton(context, theme, colorScheme),
         const SizedBox(height: 24),
-        _buildRecentSection(context),
+        _buildRecentSection(context, theme, colorScheme, isDark),
       ],
     );
   }
 
-  Widget _buildNewChatButton(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
+  Widget _buildNewChatButton(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton.icon(
@@ -197,44 +188,44 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
           widget.onNewChat();
         },
         icon: const Icon(Icons.chat_bubble_outline, size: 20),
-        label: const Text(
-          'New Chat',
-          style: TextStyle(
+        label: Text(
+          tl('New Chat'),
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF3B82F6),
-          foregroundColor: Colors.white,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
           elevation: 0,
-          shadowColor: const Color(0xFF3B82F6).withValues(alpha: 0.25),
+          shadowColor: colorScheme.primary.withValues(alpha: 0.25),
         ),
       ),
     );
   }
 
-  Widget _buildRecentSection(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
+  Widget _buildRecentSection(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text(
-            'Recent',
+            tl('Recent'),
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: isDark
-                  ? const Color(0xFF9CA3AF)
-                  : const Color(0xFF6B7280),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               letterSpacing: 0.5,
             ),
           ),
@@ -246,33 +237,33 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
             child: Text(
               tl('No history'),
               style: TextStyle(
-                color: isDark
-                    ? const Color(0xFF9CA3AF)
-                    : const Color(0xFF6B7280),
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 fontSize: 14,
               ),
             ),
           )
         else
-          ..._filteredSessions.map((session) => _buildHistoryItem(session)),
+          ..._filteredSessions.map((session) =>
+              _buildHistoryItem(session, theme, colorScheme, isDark)),
       ],
     );
   }
 
-  Widget _buildHistoryItem(Conversation session) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
-
+  Widget _buildHistoryItem(
+    Conversation session,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
     return Dismissible(
       key: Key(session.id),
       background: Container(
         color: colorScheme.error,
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 16),
-        child: const Icon(
+        child: Icon(
           Icons.delete,
-          color: Colors.white,
+          color: colorScheme.onError,
           size: 20,
         ),
       ),
@@ -293,9 +284,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
               Icon(
                 Icons.history,
                 size: 20,
-                color: isDark
-                    ? const Color(0xFF9CA3AF)
-                    : const Color(0xFF6B7280),
+                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -307,9 +296,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: isDark
-                            ? const Color(0xFFF9FAFB)
-                            : const Color(0xFF111827),
+                        color: colorScheme.onSurface,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -319,9 +306,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
                       _formatTimeAgo(session.updatedAt),
                       style: TextStyle(
                         fontSize: 12,
-                        color: isDark
-                            ? const Color(0xFF9CA3AF)
-                            : const Color(0xFF6B7280),
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -336,36 +321,39 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     );
   }
 
-  Widget _buildFooter(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
+  Widget _buildFooter(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
-            color: isDark
-                ? const Color(0xFF2D333B)
-                : const Color(0xFFE5E7EB),
+            color: colorScheme.outlineVariant,
             width: 1,
           ),
         ),
       ),
       child: Column(
         children: [
-          _buildActiveProfileButton(context),
+          _buildActiveProfileButton(context, theme, colorScheme, isDark),
           const SizedBox(height: 16),
-          _buildUserProfile(context),
+          _buildUserProfile(context, theme, colorScheme, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildActiveProfileButton(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final profileName = widget.selectedProfile?.name ?? 'Standard Gateway';
+  Widget _buildActiveProfileButton(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
+    final profileName = widget.selectedProfile?.name ?? tl('Standard Gateway');
 
     return InkWell(
       onTap: () async {
@@ -383,13 +371,9 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: isDark
-              ? const Color(0xFF1E2329)
-              : const Color(0xFFF3F4F6),
+          color: colorScheme.surfaceContainerLow,
           border: Border.all(
-            color: isDark
-                ? const Color(0xFF2D333B)
-                : const Color(0xFFE5E7EB),
+            color: colorScheme.outlineVariant,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -400,10 +384,10 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF9333EA), Color(0xFF3B82F6)],
+                  colors: [colorScheme.tertiary, colorScheme.primary],
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -415,8 +399,8 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
                       .take(2)
                       .join()
                       .toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: colorScheme.onPrimary,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -429,23 +413,19 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Active Profile',
+                    tl('Active Profile'),
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: isDark
-                          ? const Color(0xFF9CA3AF)
-                          : const Color(0xFF6B7280),
-                      ),
+                      color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                    ),
                   ),
                   Text(
                     profileName,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: isDark
-                          ? const Color(0xFFF9FAFB)
-                          : const Color(0xFF111827),
+                      color: colorScheme.onSurface,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -455,9 +435,7 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
             ),
             Icon(
               Icons.swap_horiz,
-              color: isDark
-                  ? const Color(0xFF9CA3AF)
-                  : const Color(0xFF6B7280),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               size: 20,
             ),
           ],
@@ -466,10 +444,14 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
     );
   }
 
-  Widget _buildUserProfile(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    final userEmail = 'user@aigateway.io';
+  Widget _buildUserProfile(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    bool isDark,
+  ) {
+    final userName = tl('User');
+    final userEmail = tl('user@example.com');
 
     return Row(
       children: [
@@ -477,17 +459,13 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
           width: 36,
           height: 36,
           decoration: BoxDecoration(
-            color: isDark
-                ? const Color(0xFF1E2329)
-                : const Color(0xFFE5E7EB),
+            color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(18),
           ),
           child: Icon(
             Icons.person,
             size: 20,
-            color: isDark
-                ? const Color(0xFFF9FAFB)
-                : const Color(0xFF111827),
+            color: colorScheme.onSurface,
           ),
         ),
         const SizedBox(width: 12),
@@ -496,26 +474,22 @@ class _ConversationsDrawerState extends State<ConversationsDrawer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Pro User',
+                userName,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: isDark
-                      ? const Color(0xFFF9FAFB)
-                      : const Color(0xFF111827),
+                  color: colorScheme.onSurface,
                 ),
               ),
               Text(
                 userEmail,
                 style: TextStyle(
                   fontSize: 12,
-                  color: isDark
-                      ? const Color(0xFF9CA3AF)
-                      : const Color(0xFF6B7280),
+                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
                 ),
                 maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                overflow: TextOverflow.ellipsis,
+              ),
             ],
           ),
         ),
