@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
-import '../../core/config/services.dart';
+import '../../app/config/services.dart';
 
 /// Widget helper để điều chỉnh màu nền icon theo theme
 Widget _buildThemeAwareImage({

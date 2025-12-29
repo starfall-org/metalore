@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../app/translate/tl.dart';
 import '../../../shared/utils/app_version.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 

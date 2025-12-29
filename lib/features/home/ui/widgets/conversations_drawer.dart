@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/data/chat_store.dart';
-import '../../../../core/models/ai_features/profile.dart';
-import '../../../../core/models/chat/conversation.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../domain/storage/chat_store.dart';
+import '../../../../core/profile/models/profile.dart';
+import '../../domain/models/conversation.dart';
+import '../../../../app/translate/tl.dart';
 import '../../../ai/ui/profiles_page.dart';
 
 class ConversationsDrawer extends StatefulWidget {

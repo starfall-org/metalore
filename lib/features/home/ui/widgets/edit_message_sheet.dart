@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
-import '../../../../shared/translate/tl.dart';
+import '../../../../app/translate/tl.dart';
 import '../../../../shared/widgets/app_dialog.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 

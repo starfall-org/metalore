@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/mcpserver_store.dart';
-import '../../../core/models/mcp/mcp_server.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../core/mcp/storage/mcpserver_store.dart';
+import '../../../core/mcp/models/mcp_server.dart';
+import '../../../app/translate/tl.dart';
 import '../../../shared/widgets/resource_tile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';

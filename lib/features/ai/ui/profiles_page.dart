@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/data/ai_profile_store.dart';
-import '../../../core/models/ai_features/profile.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../core/profile/storage/ai_profile_store.dart';
+import '../../../core/profile/models/profile.dart';
+import '../../../app/translate/tl.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';
 import '../../../shared/widgets/item_card.dart';

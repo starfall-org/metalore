@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai_features/profile.dart';
-import '../../../../core/data/ai_profile_store.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../../../core/profile/models/profile.dart';
+import '../../../../core/profile/storage/ai_profile_store.dart';
+import '../../../../app/translate/tl.dart';
 import '../views/edit_profile_screen.dart';
 
 class ViewProfileDialog extends StatelessWidget {

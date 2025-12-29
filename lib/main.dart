@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'core/config/services.dart';
+import 'app/config/services.dart';
 import 'firebase_options.dart';
 import 'shared/utils/icon_builder.dart';
-import 'app.dart';
+import 'app/app.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

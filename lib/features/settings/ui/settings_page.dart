@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/config/routes.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../app/config/routes.dart';
+import '../../../app/translate/tl.dart';
 import 'widgets/settings_tile.dart';
 
 class SettingsPage extends StatelessWidget {

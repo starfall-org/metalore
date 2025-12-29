@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai_model/base.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../../../core/llm/models/ai_model/base.dart';
+import '../../../../app/translate/tl.dart';
 import '../../../settings/ui/widgets/settings_card.dart';
-import '../../controllers/edit_provider_controller.dart';
+import '../controllers/edit_provider_controller.dart';
 import 'model_card.dart';
 
 class FetchModelsSheet extends StatelessWidget {

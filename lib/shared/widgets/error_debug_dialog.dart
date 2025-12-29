@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../translate/tl.dart';
+import '../../app/translate/tl.dart';
 import 'app_snackbar.dart';
 
 class ErrorDebugDialog extends StatelessWidget {

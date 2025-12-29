@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../../../core/models/ai_model/base.dart';
-import '../../../../core/models/ai_features/provider.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../../../core/llm/models/ai_model/base.dart';
+import '../../../../core/llm/models/ai_features/provider.dart';
+import '../../../../app/translate/tl.dart';
 import '../../../../shared/widgets/common_dropdown.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/utils/icon_builder.dart';
-import '../../controllers/edit_provider_controller.dart';
+import '../controllers/edit_provider_controller.dart';
 import '../widgets/edit_model_sheet.dart';
 import '../widgets/fetch_models_sheet.dart';
 import '../widgets/model_card.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/models/settings/preferences_setting.dart';
-import '../../../shared/prefs/language.dart';
-import '../../../shared/prefs/preferences.dart';
+import '../../../app/models/preferences_setting.dart';
+import '../../../app/storage/language.dart';
+import '../../../app/storage/preferences.dart';
 
 class PreferencesController extends ChangeNotifier {
   final LanguageSp _languageSp;

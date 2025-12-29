@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../translate/tl.dart';
+import '../../app/translate/tl.dart';
 import 'empty_state.dart';
 
 

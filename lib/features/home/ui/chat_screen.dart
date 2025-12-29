@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'dart:io';
 
-import '../../../core/config/services.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../app/config/services.dart';
+import '../../../app/translate/tl.dart';
 import '../../../shared/widgets/app_dialog.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/empty_state.dart';
-import '../controllers/chat_controller.dart';
-import '../controllers/chat_controller_parts/chat_navigation_interface.dart';
+import 'controllers/chat_controller.dart';
+import 'controllers/chat_controller_parts/chat_navigation_interface.dart';
 import 'views/menu_view.dart';
 import 'widgets/chat_messages_display.dart';
 import 'widgets/conversations_drawer.dart';

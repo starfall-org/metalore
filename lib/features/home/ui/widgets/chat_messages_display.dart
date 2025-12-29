@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'dart:io';
 
-import '../../../../core/config/theme.dart';
-import '../../../../core/models/chat/message.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../../../app/config/theme.dart';
+import '../../domain/models/message.dart';
+import '../../../../app/translate/tl.dart';
 
 /// Helper để tạo theme-aware image cho chat messages
 Widget _buildThemeAwareImageForChat(BuildContext context, Widget child) {

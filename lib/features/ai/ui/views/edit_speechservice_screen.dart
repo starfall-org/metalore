@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/data/ai_provider_store.dart';
-import '../../../../core/data/speechservice_store.dart';
-import '../../../../core/models/ai_features/provider.dart';
-import '../../../../core/models/ai_features/speechservice.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../../../core/llm/storage/ai_provider_store.dart';
+import '../../../../core/speechservice/storage/speechservice_store.dart';
+import '../../../../core/llm/models/ai_features/provider.dart';
+import '../../../../core/speechservice/models/speechservice.dart';
+import '../../../../app/translate/tl.dart';
 import '../../../../shared/widgets/common_dropdown.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/app_snackbar.dart';

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../../core/data/ai_provider_store.dart';
-import '../../../core/models/ai_features/provider.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../core/llm/storage/ai_provider_store.dart';
+import '../../../core/llm/models/ai_features/provider.dart';
+import '../../../app/translate/tl.dart';
 import '../../../shared/widgets/resource_tile.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/confirm_dialog.dart';

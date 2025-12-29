@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/translate/tl.dart';
+import '../../../../app/translate/tl.dart';
 import '../../../../shared/widgets/right_drawer.dart';
-import '../../../../core/config/routes.dart';
+import '../../../../app/config/routes.dart';
 import '../widgets/menu_item_tile.dart';
 
 class MenuView extends StatelessWidget {

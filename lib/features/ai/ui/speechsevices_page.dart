@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/data/speechservice_store.dart';
-import '../../../core/models/ai_features/speechservice.dart';
-import '../../../shared/translate/tl.dart';
+import '../../../core/speechservice/storage/speechservice_store.dart';
+import '../../../core/speechservice/models/speechservice.dart';
+import '../../../app/translate/tl.dart';
 import 'views/edit_speechservice_screen.dart';
 import '../../../shared/widgets/app_snackbar.dart';
 
