@@ -2,6 +2,7 @@ name: mcp
 description: MCP (Model Context Protocol) client implementation for Metalore
 version: 0.5.1
 homepage: https://github.com/starfall-org/metalore
+publish_to: none
 
 environment:
   sdk: ^3.10.0

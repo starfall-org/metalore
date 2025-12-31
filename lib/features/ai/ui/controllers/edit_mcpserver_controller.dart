@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mcp/mcp.dart';
-import 'package:mcp/mcp.dart';
 import 'package:metalore/core/mcp/data/mcpserver_store.dart';
 import '../../../../app/translate/tl.dart';
 import '../../../../shared/widgets/app_snackbar.dart';

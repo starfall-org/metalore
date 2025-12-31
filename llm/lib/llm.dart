@@ -1,5 +1,3 @@
-library llm;
-
 export 'models/api/api.dart';
 export 'models/llm_model/base.dart';
 export 'models/llm_provider/provider_info.dart';

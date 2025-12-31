@@ -14,7 +14,7 @@ import 'package:metalore/core/mcp/data/mcpserver_store.dart';
 import '../../../../app/data/preferences.dart';
 import '../../../../app/translate/tl.dart';
 import '../../../../shared/widgets/app_snackbar.dart';
-import 'chat_controller_parts/chat_navigation_interface.dart';
+import './chat_controller_parts/chat_navigation_interface.dart';
 
 // Import các controller con
 import 'session_controller.dart';
